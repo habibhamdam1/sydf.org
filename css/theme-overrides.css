@@ -3057,3 +3057,56 @@ html[data-theme="dark"] .data-table thead {
     border-color: var(--accent) !important;
   }
 }
+/* ============================================================
+   🛠️ ULTIMATE FIX: MOBILE MENU SOLID BACKGROUND & ALIGNMENT
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  /* 1. Mobile Menu Container: Full Screen & Solid Background */
+  .glass-header nav.active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    
+    /* Home tab ko header ke neechay laane ke liye padding-top */
+    padding-top: 100px !important; 
+    padding-bottom: 40px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    
+    overflow-y: auto !important; /* Agar links zyada hon to scroll ho */
+    
+    /* Transparency 100% Khatam */
+    background-color: var(--bg-base) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* 2. Dark Theme Solid Background (No Transparency) */
+  html[data-theme="dark"] .glass-header nav.active {
+    background-color: #0b1b2a !important; /* Deep Solid Dark */
+  }
+
+  /* 3. Light Theme Solid Background (No Transparency) */
+  html:not([data-theme="dark"]) .glass-header nav.active {
+    background-color: #fdfbf7 !important; /* Solid Light Background */
+  }
+
+  /* 4. Mobile Menu Links: Solid Boxes */
+  .glass-header nav ul li a {
+    background-color: var(--card-bg) !important; 
+    border: 1px solid var(--card-border) !important;
+  }
+
+  html[data-theme="dark"] .glass-header nav ul li a {
+    background-color: #132a3f !important; /* Solid Dark Link */
+  }
+  
+  html:not([data-theme="dark"]) .glass-header nav ul li a {
+    background-color: #ffffff !important; /* Solid White Link */
+  }
+}
