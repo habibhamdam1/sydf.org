@@ -2995,3 +2995,65 @@ html[data-theme="dark"] {
 html[data-theme="dark"] .data-table thead {
   background: rgba(15, 32, 39, 0.9) !important;
 }
+/* ============================================================
+   🛠️ FIX: HEADER COLOR & MOBILE MENU SOLID BACKGROUND
+   ============================================================ */
+
+/* 1. HEADER BACKGROUND FIX (Remove light grey, use solid theme color) */
+.glass-header {
+  background-color: var(--header-bg) !important;
+  background-image: none !important;
+  backdrop-filter: blur(20px) saturate(150%) !important; /* Header par glass chalega */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  border-bottom: 1px solid var(--card-border) !important;
+}
+
+/* 2. MOBILE MENU FIX (Solid background so page text doesn't show) */
+@media (max-width: 1024px) {
+  /* Mobile Menu Container ko Solid karo */
+  .glass-header nav.active {
+    background: var(--bg-base) !important; /* Solid dark background */
+    backdrop-filter: none !important; /* Glass effect hatao */
+    -webkit-backdrop-filter: none !important;
+    border-left: 1px solid var(--card-border) !important;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Menu Links ko Premium Button Look do */
+  .glass-header nav ul {
+    padding: 20px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Links ke darmiyan space */
+  }
+
+  .glass-header nav ul li a {
+    display: block !important;
+    text-align: center !important;
+    padding: 15px 20px !important;
+    background: var(--card-bg) !important; /* Har link ka apna box */
+    border: 1px solid var(--card-border) !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    transition: 0.3s;
+  }
+
+  /* Active ya Hover link ka color */
+  .glass-header nav ul li a:hover,
+  .glass-header nav ul li a.active {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--accent-glow);
+  }
+
+  /* Dashboard wale button ka alag look (Jo sabse neeche hai) */
+  .glass-header nav ul li a#navAuthBtn {
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+  }
+}
