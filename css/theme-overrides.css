@@ -2996,51 +2996,81 @@ html[data-theme="dark"] .data-table thead {
   background: rgba(15, 32, 39, 0.9) !important;
 }
 /* ============================================================
-   🛠️ FIX: HEADER COLOR & MOBILE MENU SOLID BACKGROUND
+   🪟 MOBILE MENU GLASSMORPHISM (PERFECT ALIGNMENT)
    ============================================================ */
 
-/* 1. HEADER BACKGROUND FIX (Remove light grey, use solid theme color) */
+/* 1. Header Background Fix */
 .glass-header {
   background-color: var(--header-bg) !important;
-  background-image: none !important;
-  backdrop-filter: blur(20px) saturate(150%) !important; /* Header par glass chalega */
+  backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
   border-bottom: 1px solid var(--card-border) !important;
 }
 
-/* 2. MOBILE MENU FIX (Solid background so page text doesn't show) */
+/* 2. Mobile Menu Container */
 @media (max-width: 1024px) {
-  /* Mobile Menu Container ko Solid karo */
   .glass-header nav.active {
-    background: var(--bg-base) !important; /* Solid dark background */
-    backdrop-filter: none !important; /* Glass effect hatao */
-    -webkit-backdrop-filter: none !important;
-    border-left: 1px solid var(--card-border) !important;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5) !important;
-  }
-
-  /* Menu Links ko Premium Button Look do */
-  .glass-header nav ul {
+    position: fixed !important;
+    top: 70px !important; /* Header ke neechay se shuru hoga taake Home tab nazar aaye */
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 70px) !important; 
+    
     padding: 20px !important;
-    display: flex;
-    flex-direction: column;
-    gap: 12px; /* Links ke darmiyan space */
+    box-sizing: border-box !important;
+    overflow-y: auto !important; 
+    z-index: 99999 !important;
+    
+    /* GLASSMORPHISM WITH HIGH OPACITY (Text hide karne ke liye) */
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
   }
 
+  /* Dark Theme Glass */
+  html[data-theme="dark"] .glass-header nav.active {
+    background-color: rgba(11, 27, 42, 0.90) !important; /* 90% Solid Dark Glass */
+  }
+
+  /* Light Theme Glass */
+  html:not([data-theme="dark"]) .glass-header nav.active {
+    background-color: rgba(253, 251, 247, 0.90) !important; /* 90% Solid Light Glass */
+  }
+
+  /* 3. Links Container */
+  .glass-header nav.active ul {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* 4. Menu Links Glass Look */
   .glass-header nav ul li a {
     display: block !important;
     text-align: center !important;
     padding: 15px 20px !important;
-    background: var(--card-bg) !important; /* Har link ka apna box */
-    border: 1px solid var(--card-border) !important;
     border-radius: 12px !important;
     font-size: 15px !important;
     font-weight: 600 !important;
     color: var(--text-primary) !important;
-    transition: 0.3s;
+    transition: 0.3s !important;
+    
+    /* Link Glassmorphism */
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
   }
 
-  /* Active ya Hover link ka color */
+  html:not([data-theme="dark"]) .glass-header nav ul li a {
+    background: rgba(0, 0, 0, 0.03) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  }
+
+  /* Hover & Active State */
   .glass-header nav ul li a:hover,
   .glass-header nav ul li a.active {
     background: var(--accent) !important;
@@ -3050,63 +3080,11 @@ html[data-theme="dark"] .data-table thead {
     box-shadow: 0 4px 15px var(--accent-glow);
   }
 
-  /* Dashboard wale button ka alag look (Jo sabse neeche hai) */
+  /* Dashboard (Login) Button Special Look */
   .glass-header nav ul li a#navAuthBtn {
-    background: var(--accent-soft) !important;
+    background: rgba(26, 188, 156, 0.15) !important;
     color: var(--accent) !important;
-    border-color: var(--accent) !important;
-  }
-}
-/* ============================================================
-   🛠️ ULTIMATE FIX: MOBILE MENU SOLID BACKGROUND & ALIGNMENT
-   ============================================================ */
-
-@media (max-width: 1024px) {
-  /* 1. Mobile Menu Container: Full Screen & Solid Background */
-  .glass-header nav.active {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 999999 !important;
-    
-    /* Home tab ko header ke neechay laane ke liye padding-top */
-    padding-top: 100px !important; 
-    padding-bottom: 40px !important;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    
-    overflow-y: auto !important; /* Agar links zyada hon to scroll ho */
-    
-    /* Transparency 100% Khatam */
-    background-color: var(--bg-base) !important;
-    background-image: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  /* 2. Dark Theme Solid Background (No Transparency) */
-  html[data-theme="dark"] .glass-header nav.active {
-    background-color: #0b1b2a !important; /* Deep Solid Dark */
-  }
-
-  /* 3. Light Theme Solid Background (No Transparency) */
-  html:not([data-theme="dark"]) .glass-header nav.active {
-    background-color: #fdfbf7 !important; /* Solid Light Background */
-  }
-
-  /* 4. Mobile Menu Links: Solid Boxes */
-  .glass-header nav ul li a {
-    background-color: var(--card-bg) !important; 
-    border: 1px solid var(--card-border) !important;
-  }
-
-  html[data-theme="dark"] .glass-header nav ul li a {
-    background-color: #132a3f !important; /* Solid Dark Link */
-  }
-  
-  html:not([data-theme="dark"]) .glass-header nav ul li a {
-    background-color: #ffffff !important; /* Solid White Link */
+    border: 1px solid rgba(26, 188, 156, 0.3) !important;
+    margin-top: 15px;
   }
 }
