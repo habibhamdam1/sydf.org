@@ -135,10 +135,10 @@
           <div class="form-group" style="margin-bottom: 20px">
             <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Nomination Fee (Rs.)</label>
             <input type="number" id="elFee" placeholder="Enter amount, 0 for free" value="0" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
-            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;">Set to 0 if nominations are free. Members will have to pay this to apply.</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;">Set to 0 if nominations are free.</p>
           </div>
           <div class="form-group" style="margin-bottom: 20px">
-            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats for Election (Fetched from Cabinet)</label>
+            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats for Election</label>
             <div class="seat-grid" id="dynamicSeatsContainer"></div>
           </div>
           <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px">Create Election</button>
@@ -316,7 +316,6 @@ window.addEventListener("load", async function () {
     });
   });
 });
-    
       // ============ LOAD ELECTIONS ============
       async function loadElections() {
         const list = document.getElementById("electionsList");
@@ -364,7 +363,6 @@ window.addEventListener("load", async function () {
             </div>`;
         }).join("");
 
-        // Attach listeners safely (no apostrophe issue)
         list.querySelectorAll(".start-election-btn").forEach(b => b.addEventListener("click", () => window.changeStatus(parseInt(b.dataset.eid), "Active")));
         list.querySelectorAll(".view-results-btn").forEach(b => b.addEventListener("click", () => window.viewResults(parseInt(b.dataset.eid), b.dataset.title)));
         list.querySelectorAll(".manage-cand-btn").forEach(b => b.addEventListener("click", () => window.manageCandidates(parseInt(b.dataset.eid), b.dataset.title)));
@@ -372,7 +370,6 @@ window.addEventListener("load", async function () {
 
       // ============ CHANGE STATUS ============
       window.changeStatus = async function (id, status) {
-        // Enforce single active election
         if (status === "Active") {
           const { data: activeOnes } = await supabaseClient.from("elections").select("id, title").eq("status", "Active");
           if (activeOnes && activeOnes.length > 0) {
@@ -381,7 +378,8 @@ window.addEventListener("load", async function () {
         }
         window.syfConfirm(`Change election status to ${status}?`, async (confirmed) => {
           if (!confirmed) return;
-          await supabaseClient.from("elections").update({ status }).eq("id", id);
+          const { error } = await supabaseClient.from("elections").update({ status }).eq("id", id);
+          if (error) return window.syfError("Error: " + error.message);
           window.syfSuccess(`Election is now ${status}!`);
           loadElections();
         });
@@ -427,11 +425,13 @@ window.addEventListener("load", async function () {
                   <strong>Fee Status:</strong> <span style="color: ${feeColor};">${escapeHtml(c.fee_status || "-")}</span><br>
                   <strong>Method:</strong> ${escapeHtml(c.payment_method || "-")} | <strong>Trx ID:</strong> ${escapeHtml(c.transaction_id || "-")}
                 </div>`;
+              
+              // ✅ YAHAN FIX HAI: c.id ke aage ' ' (single quotes) lagaye hain
               if (c.fee_status === "Pending Verification") {
                 verifyBtn = `
                   <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="verifyFee(${c.id}, 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
-                    <button onclick="verifyFee(${c.id}, 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
+                    <button onclick="verifyFee('${c.id}', 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
+                    <button onclick="verifyFee('${c.id}', 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
                   </div>`;
               }
             }
@@ -440,9 +440,10 @@ window.addEventListener("load", async function () {
             if (c.status === "Pending" || !c.status) {
               const feeOk = ["Verified", "N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
               if (feeOk) {
+                // ✅ YAHAN BHI FIX HAI: c.id ke aage ' ' (single quotes) lagaye hain
                 actionBtns = `
-                  <button onclick="updateCandidateStatus(${c.id}, 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
-                  <button onclick="updateCandidateStatus(${c.id}, 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
+                  <button onclick="updateCandidateStatus('${c.id}', 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
+                  <button onclick="updateCandidateStatus('${c.id}', 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
               } else {
                 actionBtns = `<span style="font-size:11px; color:#f59e0b; margin-left:5px;">⚠️ Verify payment first to approve.</span>`;
               }
@@ -469,26 +470,39 @@ window.addEventListener("load", async function () {
         list.innerHTML = html;
       }
 
-      // ============ VERIFY FEE ============
+      // ============ VERIFY FEE (Fixed RLS silent fail) ============
       window.verifyFee = async function (id, status) {
-        // Fee reject → candidate status also Rejected (frees member to re-apply)
         const updateData = { fee_status: status };
         if (status === "Rejected") updateData.status = "Rejected";
-        const { error } = await supabaseClient.from("election_candidates").update(updateData).eq("id", id);
+        
+        // .select() add kiya hai taake pata chale update hua ya RLS ne block kiya
+        const { data: updated, error } = await supabaseClient.from("election_candidates").update(updateData).eq("id", id).select();
+        
         if (error) return window.syfError("Error: " + error.message);
+        if (!updated || updated.length === 0) {
+          return window.syfError("Update fail! Aapki Supabase RLS policy update block kar rahi hai.");
+        }
+
         window.syfSuccess(`Payment marked as ${status}${status === "Rejected" ? " (candidate rejected too)" : ""}`);
         renderCandidatesList();
         loadElections();
       };
 
-      // ============ UPDATE CANDIDATE STATUS ============
+      // ============ UPDATE CANDIDATE STATUS (Fixed RLS silent fail) ============
       window.updateCandidateStatus = async function (id, status) {
         if (status === "Approved") {
           const { data: cand } = await supabaseClient.from("election_candidates").select("fee_status").eq("id", id).single();
           const feeOk = !cand || ["Verified", "N/A", "Free", "Unpaid"].includes(cand.fee_status) || !cand.fee_status;
           if (!feeOk) return window.syfError("Please verify payment before approving.");
         }
-        await supabaseClient.from("election_candidates").update({ status }).eq("id", id);
+        
+        const { data: updated, error } = await supabaseClient.from("election_candidates").update({ status }).eq("id", id).select();
+        
+        if (error) return window.syfError("Error: " + error.message);
+        if (!updated || updated.length === 0) {
+          return window.syfError("Update fail! Aapki Supabase RLS policy update block kar rahi hai.");
+        }
+
         window.syfSuccess(`Candidate marked as ${status}`);
         renderCandidatesList();
         loadElections();
@@ -531,3 +545,4 @@ window.addEventListener("load", async function () {
     </script>
   </body>
 </html>
+      
