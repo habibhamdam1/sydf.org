@@ -1,15 +1,11 @@
 /* ============================================================
    SYDF — COMPLETE STYLESHEET (v3)
    DEFAULT = LIGHT (ROSE) | DARK = STARRY NIGHT SKY
-   Both themes feature floating "lightning" stars.
    ============================================================ */
 
-/* ============================================================
-   1. THEME TOKENS — LIGHT MODE (ROSE) — DEFAULT
-   ============================================================ */
+/* 1. THEME TOKENS — LIGHT MODE (ROSE) — DEFAULT */
 :root,
 html {
-  /* Sky */
   --sky-top: #fff1f2;
   --sky-mid: #ffe4e6;
   --sky-bottom: #fecdd3;
@@ -19,65 +15,45 @@ html {
     #ffe4e6 40%,
     #fecdd3 100%
   );
-
-  /* Text */
   --text-primary: #4c0519;
   --text-secondary: #881337;
   --text-muted: #9f1239;
-
-  /* Accent */
   --accent: #e11d48;
   --accent-dark: #be123c;
   --accent-light: #fb7185;
   --accent-soft: rgba(225, 29, 72, 0.08);
   --accent-glow: rgba(225, 29, 72, 0.2);
   --accent-contrast: #ffffff;
-
-  /* Warm */
   --warm: #f59e0b;
   --warm-text: #b45309;
   --warm-soft: rgba(245, 158, 11, 0.1);
   --warm-glow: rgba(245, 158, 11, 0.2);
-
-  /* Cards */
   --card-bg: #ffffff;
   --card-bg-hover: #ffffff;
   --card-border: rgba(225, 29, 72, 0.15);
   --card-border-hover: rgba(225, 29, 72, 0.3);
   --card-shadow: 0 4px 22px rgba(76, 5, 25, 0.06);
   --card-shadow-hover: 0 18px 40px rgba(225, 29, 72, 0.14);
-
-  /* Header / Footer */
   --header-bg: rgba(255, 241, 242, 0.85);
   --header-border: rgba(225, 29, 72, 0.1);
   --footer-bg: rgba(255, 241, 242, 0.6);
   --footer-border: rgba(225, 29, 72, 0.1);
-
-  /* Inputs */
   --input-bg: #ffffff;
   --input-border: rgba(225, 29, 72, 0.2);
   --input-focus-bg: #ffffff;
-
-  /* Feedback */
   --error: #b91c1c;
   --error-bg: rgba(185, 28, 28, 0.08);
   --error-border: rgba(185, 28, 28, 0.3);
   --success: #047857;
   --success-bg: rgba(4, 120, 87, 0.08);
   --success-border: rgba(4, 120, 87, 0.3);
-
-  /* Specialty */
   --female-accent: #ec4899;
   --female-soft: rgba(236, 72, 153, 0.1);
   --female-border: rgba(236, 72, 153, 0.35);
-
-  /* Radii */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 26px;
-
-  /* Typography */
   --ff-main:
     "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --fw-body: 400;
@@ -86,8 +62,6 @@ html {
   --fw-bold: 700;
   --ls-tight: -0.01em;
   --ls-tighter: -0.02em;
-
-  /* Star colors — LIGHT THEME (rose gold stardust) */
   --star-white: #ffffff;
   --star-rose: #fb7185;
   --star-deep-rose: #f43f5e;
@@ -96,9 +70,7 @@ html {
   --star-soft: #fda4af;
 }
 
-/* ============================================================
-   2. THEME TOKENS — DARK MODE (STARRY NIGHT SKY)
-   ============================================================ */
+/* 2. THEME TOKENS — DARK MODE (STARRY NIGHT SKY) */
 html[data-theme="dark"] {
   --sky-top: #05101c;
   --sky-mid: #0a1d33;
@@ -111,51 +83,41 @@ html[data-theme="dark"] {
     #0d2d4a 80%,
     #0f3355 100%
   );
-
   --text-primary: #f0f6ff;
   --text-secondary: rgba(240, 246, 255, 0.88);
   --text-muted: rgba(240, 246, 255, 0.62);
-
   --accent: #5eead4;
   --accent-dark: #2dd4bf;
   --accent-light: #99f6e4;
   --accent-soft: rgba(94, 234, 212, 0.12);
   --accent-glow: rgba(94, 234, 212, 0.3);
   --accent-contrast: #05101c;
-
   --warm: #fbbf24;
   --warm-text: #fbbf24;
   --warm-soft: rgba(251, 191, 36, 0.14);
   --warm-glow: rgba(251, 191, 36, 0.35);
-
   --card-bg: rgba(12, 24, 42, 0.6);
   --card-bg-hover: rgba(18, 34, 58, 0.75);
   --card-border: rgba(140, 200, 220, 0.1);
   --card-border-hover: rgba(94, 234, 212, 0.35);
   --card-shadow: 0 6px 32px rgba(0, 0, 0, 0.45);
   --card-shadow-hover: 0 20px 50px rgba(94, 234, 212, 0.15);
-
   --header-bg: rgba(5, 16, 28, 0.72);
   --header-border: rgba(140, 200, 220, 0.08);
   --footer-bg: rgba(5, 16, 28, 0.75);
   --footer-border: rgba(140, 200, 220, 0.06);
-
   --input-bg: rgba(12, 24, 42, 0.6);
   --input-border: rgba(140, 200, 220, 0.15);
   --input-focus-bg: rgba(94, 234, 212, 0.06);
-
   --error: #fca5a5;
   --error-bg: rgba(239, 68, 68, 0.12);
   --error-border: rgba(239, 68, 68, 0.35);
   --success: #5eead4;
   --success-bg: rgba(94, 234, 212, 0.1);
   --success-border: rgba(94, 234, 212, 0.35);
-
   --female-accent: #818cf8;
   --female-soft: rgba(129, 140, 248, 0.12);
   --female-border: rgba(129, 140, 248, 0.38);
-
-  /* Star colors — DARK THEME (cool night sky + warm fireflies) */
   --star-white: #ffffff;
   --star-rose: #a5f3fc;
   --star-deep-rose: #67e8f9;
@@ -164,9 +126,7 @@ html[data-theme="dark"] {
   --star-soft: #c7d2fe;
 }
 
-/* ============================================================
-   3. RESET & BASE
-   ============================================================ */
+/* 3. RESET & BASE */
 *,
 *::before,
 *::after {
@@ -174,14 +134,12 @@ html[data-theme="dark"] {
   padding: 0;
   box-sizing: border-box;
 }
-
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   background: var(--sky-top);
   min-height: 100%;
 }
-
 body {
   font-family: var(--ff-main);
   font-weight: var(--fw-body);
@@ -196,7 +154,6 @@ body {
   transition: color 0.4s ease;
   overflow-x: hidden;
 }
-
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -206,17 +163,12 @@ button:focus:not(:focus-visible),
 a:focus:not(:focus-visible) {
   outline: none;
 }
-
 ::selection {
   background: var(--accent);
   color: var(--accent-contrast);
 }
 
-/* ============================================================
-   4. BACKGROUNDS — LIGHT (ROSE) — FLOATING LIGHTNING STARS
-   ============================================================ */
-
-/* Layer 1: Sky gradient */
+/* 4. BACKGROUNDS & ANIMATIONS */
 html::before {
   content: "";
   position: fixed;
@@ -226,8 +178,6 @@ html::before {
   background: var(--sky-gradient);
   transition: opacity 0.4s ease;
 }
-
-/* Layer 2: Horizon glow + soft nebula (LIGHT: rose/warm tones) */
 html::after {
   content: "";
   position: fixed;
@@ -266,8 +216,6 @@ html::after {
     nebulaPulse 14s ease-in-out infinite alternate,
     nebulaFloat 24s ease-in-out infinite;
 }
-
-/* Layer 3: Stars — SMALL dense layer (fast twinkle, slow downward drift) */
 body::before {
   content: "";
   position: fixed;
@@ -275,7 +223,6 @@ body::before {
   z-index: -4;
   pointer-events: none;
   background-image:
-    /* Pure white sparkle stars */
     radial-gradient(
       circle 1.5px at 25px 45px,
       var(--star-white) 0%,
@@ -297,14 +244,13 @@ body::before {
       rgba(255, 255, 255, 0.6) 60%,
       transparent 100%
     ),
-    /* Rose-gold stars */
     radial-gradient(
-        circle 1.6px at 200px 120px,
-        var(--star-rose) 0%,
-        var(--star-rose) 35%,
-        rgba(251, 113, 133, 0.5) 70%,
-        transparent 100%
-      ),
+      circle 1.6px at 200px 120px,
+      var(--star-rose) 0%,
+      var(--star-rose) 35%,
+      rgba(251, 113, 133, 0.5) 70%,
+      transparent 100%
+    ),
     radial-gradient(
       circle 1.4px at 320px 85px,
       var(--star-deep-rose) 0%,
@@ -312,14 +258,13 @@ body::before {
       rgba(244, 63, 94, 0.25) 78%,
       transparent 100%
     ),
-    /* Warm amber sparkles */
     radial-gradient(
-        circle 1.8px at 95px 220px,
-        var(--star-amber) 0%,
-        var(--star-amber) 32%,
-        rgba(251, 191, 36, 0.6) 68%,
-        transparent 100%
-      ),
+      circle 1.8px at 95px 220px,
+      var(--star-amber) 0%,
+      var(--star-amber) 32%,
+      rgba(251, 191, 36, 0.6) 68%,
+      transparent 100%
+    ),
     radial-gradient(
       circle 1.3px at 275px 260px,
       var(--star-gold) 0%,
@@ -327,13 +272,12 @@ body::before {
       rgba(245, 158, 11, 0.2) 75%,
       transparent 100%
     ),
-    /* Extra white sparkles */
     radial-gradient(
-        circle 1.4px at 360px 340px,
-        var(--star-white) 0%,
-        rgba(255, 255, 255, 0.78) 45%,
-        transparent 100%
-      ),
+      circle 1.4px at 360px 340px,
+      var(--star-white) 0%,
+      rgba(255, 255, 255, 0.78) 45%,
+      transparent 100%
+    ),
     radial-gradient(
       circle 1.5px at 180px 315px,
       var(--star-soft) 0%,
@@ -360,8 +304,6 @@ body::before {
   opacity: 0.9;
   will-change: opacity, background-position;
 }
-
-/* Layer 4: Stars — LARGE glowing layer (slow twinkle, opposite drift) */
 body::after {
   content: "";
   position: fixed;
@@ -421,11 +363,6 @@ body::after {
   will-change: opacity, background-position;
 }
 
-/* ============================================================
-   5. BACKGROUNDS — DARK (STARRY NIGHT SKY) — FLOATING STARS
-   ============================================================ */
-
-/* Layer 2 override: Horizon glow + nebula (DARK: teal/indigo/amber) */
 html[data-theme="dark"]::after {
   background:
     radial-gradient(
@@ -457,8 +394,6 @@ html[data-theme="dark"]::after {
     );
   opacity: 1;
 }
-
-/* Layer 3 override: small stars (cool cyan/white) */
 html[data-theme="dark"] body::before {
   background-image:
     radial-gradient(
@@ -535,8 +470,6 @@ html[data-theme="dark"] body::before {
       transparent 100%
     );
 }
-
-/* Layer 4 override: large stars (warm gold + pure white + cyan glow) */
 html[data-theme="dark"] body::after {
   background-image:
     radial-gradient(
@@ -584,11 +517,6 @@ html[data-theme="dark"] body::after {
     );
 }
 
-/* ============================================================
-   6. KEYFRAMES — LIGHTNING / FLICKER / FLOAT
-   ============================================================ */
-
-/* Aggressive flicker — sharp peaks = "lightning" sparkle feel */
 @keyframes twinkleStarsFast {
   0%,
   100% {
@@ -625,8 +553,6 @@ html[data-theme="dark"] body::after {
     opacity: 1;
   }
 }
-
-/* Gentler flicker for large stars */
 @keyframes twinkleStarsSlow {
   0%,
   100% {
@@ -648,8 +574,6 @@ html[data-theme="dark"] body::after {
     opacity: 1;
   }
 }
-
-/* Drift down-right (small stars) */
 @keyframes floatStarsDown {
   0% {
     background-position: 0 0;
@@ -658,8 +582,6 @@ html[data-theme="dark"] body::after {
     background-position: 400px 400px;
   }
 }
-
-/* Drift up-left (large stars — creates parallax) */
 @keyframes floatStarsUp {
   0% {
     background-position: 0 0;
@@ -668,8 +590,6 @@ html[data-theme="dark"] body::after {
     background-position: -800px -800px;
   }
 }
-
-/* Nebula breathing */
 @keyframes nebulaPulse {
   0% {
     opacity: 0.75;
@@ -687,8 +607,6 @@ html[data-theme="dark"] body::after {
     transform: translate(2%, 2%) scale(1.05);
   }
 }
-
-/* Animated underline shimmer */
 @keyframes shimmerLine {
   0% {
     background-position: 100% 0;
@@ -698,9 +616,7 @@ html[data-theme="dark"] body::after {
   }
 }
 
-/* ============================================================
-   7. TYPOGRAPHY — theme-aware
-   ============================================================ */
+/* 5. TYPOGRAPHY */
 h1,
 h2,
 h3,
@@ -719,13 +635,10 @@ a {
   color: var(--accent);
   transition: color 0.2s ease;
 }
-
-/* Dark mode: slightly tighter tracking on large headings for "premium" feel */
 html[data-theme="dark"] h1,
 html[data-theme="dark"] h2 {
   letter-spacing: -0.02em;
 }
-
 .section-title::after,
 .page-hero-content h1::after,
 .about-content h2::after,
@@ -751,7 +664,6 @@ html[data-theme="dark"] h2 {
 hr {
   display: none !important;
 }
-
 .section-title {
   text-align: center;
   font-size: 34px;
@@ -766,9 +678,7 @@ hr {
   margin-bottom: 40px;
 }
 
-/* ============================================================
-   8. HEADER
-   ============================================================ */
+/* 6. HEADER */
 .glass-header {
   position: fixed;
   top: 0;
@@ -785,11 +695,10 @@ hr {
   backdrop-filter: blur(20px) saturate(150%);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
   border-bottom: 1px solid var(--header-border);
-  z-index: 1000;
+  z-index: 100000;
   gap: 5px;
   box-sizing: border-box;
 }
-
 .logo {
   display: flex;
   align-items: center;
@@ -823,7 +732,6 @@ hr {
   font-weight: var(--fw-medium);
   text-transform: uppercase;
 }
-
 .glass-header nav {
   display: flex;
   align-items: center;
@@ -862,7 +770,6 @@ hr {
   border-color: var(--accent-soft);
   font-weight: var(--fw-semibold);
 }
-
 .btn-login {
   background: linear-gradient(
     135deg,
@@ -901,9 +808,7 @@ hr {
   background: var(--accent-soft);
 }
 
-/* ============================================================
-   9. CARDS & BUTTONS
-   ============================================================ */
+/* 7. CARDS & BUTTONS */
 .glass-card,
 .page-hero-content,
 .hero-content,
@@ -934,7 +839,6 @@ hr {
   box-shadow: var(--card-shadow-hover);
   transform: translateY(-3px);
 }
-
 .btn-primary,
 .btn-secondary {
   text-decoration: none;
@@ -976,9 +880,7 @@ hr {
   transform: translateY(-2px);
 }
 
-/* ============================================================
-   10. HERO & SECTIONS
-   ============================================================ */
+/* 8. HERO & SECTIONS */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -1012,7 +914,6 @@ hr {
   gap: 14px;
   flex-wrap: wrap;
 }
-
 .page-hero {
   min-height: 42vh;
   display: flex;
@@ -1035,7 +936,6 @@ hr {
 .page-hero-content p {
   font-size: 14px;
 }
-
 .stats-section {
   padding: 70px 40px;
   text-align: center;
@@ -1067,7 +967,6 @@ hr {
   font-size: 13px;
   font-weight: var(--fw-medium);
 }
-
 .about-preview,
 .cta-section {
   padding: 70px 40px;
@@ -1096,9 +995,7 @@ hr {
   margin-bottom: 18px;
 }
 
-/* ============================================================
-   11. FOOTER
-   ============================================================ */
+/* 9. FOOTER */
 .glass-footer {
   background: var(--footer-bg);
   backdrop-filter: blur(20px);
@@ -1158,9 +1055,7 @@ hr {
   color: var(--text-muted) !important;
 }
 
-/* ============================================================
-   12. FORMS & INPUTS
-   ============================================================ */
+/* 10. FORMS & INPUTS */
 input,
 select,
 textarea {
@@ -1204,7 +1099,6 @@ textarea {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-
 select option {
   background-color: var(--card-bg) !important;
   color: var(--text-primary) !important;
@@ -1218,9 +1112,7 @@ html:not([data-theme="dark"]) select option {
   color: #4c0519 !important;
 }
 
-/* ============================================================
-   13. AUTH PAGES
-   ============================================================ */
+/* 11. AUTH PAGES */
 .auth-page {
   display: flex;
   flex-direction: column;
@@ -1447,9 +1339,7 @@ html:not([data-theme="dark"]) select option {
   color: var(--text-muted);
 }
 
-/* ============================================================
-   14. DASHBOARD & ADMIN
-   ============================================================ */
+/* 12. DASHBOARD & ADMIN BASE */
 .dashboard-body {
   background: transparent !important;
   min-height: 100vh;
@@ -1501,7 +1391,6 @@ html:not([data-theme="dark"]) select option {
   width: 100%;
   margin: 0 auto;
 }
-
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1515,7 +1404,6 @@ html:not([data-theme="dark"]) select option {
 .sidebar-overlay.active {
   display: block;
 }
-
 .sidebar-header {
   padding: 22px 20px;
   display: flex;
@@ -1670,7 +1558,6 @@ html:not([data-theme="dark"]) select option {
   font-size: 10.5px;
   color: var(--text-muted) !important;
 }
-
 .content-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -1697,7 +1584,6 @@ html:not([data-theme="dark"]) select option {
   text-decoration: none;
   font-weight: var(--fw-medium);
 }
-
 .quick-actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1734,7 +1620,6 @@ html:not([data-theme="dark"]) select option {
   font-weight: var(--fw-medium);
   color: var(--text-secondary) !important;
 }
-
 .activity-item {
   display: flex;
   align-items: flex-start;
@@ -1770,7 +1655,6 @@ html:not([data-theme="dark"]) select option {
   padding: 24px;
   font-size: 13px;
 }
-
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -1788,9 +1672,7 @@ html:not([data-theme="dark"]) select option {
   padding: 15px;
 }
 
-/* ============================================================
-   15. SIDEBAR FOOTER BUTTONS
-   ============================================================ */
+/* 13. SIDEBAR FOOTER BUTTONS */
 .sidebar-nav ul li a.back-to-site-btn,
 .sidebar-nav ul li a.logout-btn {
   display: flex;
@@ -1822,11 +1704,7 @@ html:not([data-theme="dark"]) select option {
   display: none !important;
 }
 
-/* ============================================================
-   16. PAGE-SPECIFIC STYLES
-   ============================================================ */
-
-/* --- ABOUT PAGE --- */
+/* 14. PAGE-SPECIFIC STYLES (About, Activities, Contact, etc.) */
 .about-block {
   max-width: 900px;
   margin: 0 auto;
@@ -1942,7 +1820,7 @@ html:not([data-theme="dark"]) select option {
   color: var(--text-secondary);
 }
 
-/* --- ACTIVITIES PAGE --- */
+/* Activities */
 .activities-intro {
   padding: 60px 40px 30px;
   max-width: 1000px;
@@ -2116,7 +1994,7 @@ html:not([data-theme="dark"]) select option {
   display: none;
 }
 
-/* --- CONTACT PAGE --- */
+/* Contact */
 .contact-intro {
   padding: 60px 40px 30px;
   max-width: 1000px;
@@ -2262,7 +2140,7 @@ html:not([data-theme="dark"]) select option {
   font-weight: var(--fw-semibold);
 }
 
-/* --- DASHBOARD STATS --- */
+/* Dashboard Stats */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -2309,7 +2187,7 @@ html:not([data-theme="dark"]) select option {
   gap: 25px;
 }
 
-/* --- LEADERSHIP PAGE --- */
+/* Leadership */
 .cabinet-section {
   padding: 60px 40px;
   max-width: 1200px;
@@ -2389,9 +2267,7 @@ html:not([data-theme="dark"]) select option {
   font-style: italic;
 }
 
-/* ============================================================
-   17. RESPONSIVE
-   ============================================================ */
+/* 15. RESPONSIVE & MOBILE FIXES */
 .mobile-menu-btn {
   display: none;
 }
@@ -2417,7 +2293,7 @@ html:not([data-theme="dark"]) select option {
     border-radius: 10px;
     font-size: 22px;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 100001;
   }
   .glass-header nav {
     position: absolute;
@@ -2433,6 +2309,7 @@ html:not([data-theme="dark"]) select option {
     overflow-y: auto;
     flex-direction: column;
     padding: 15px;
+    z-index: 99999;
   }
   .glass-header nav.active {
     display: flex !important;
@@ -2464,8 +2341,11 @@ html:not([data-theme="dark"]) select option {
 }
 
 @media (max-width: 1024px) {
+  /* Dashboard Sidebar Fix */
   .dashboard-sidebar {
     transform: translateX(-100%);
+    padding-top: 70px !important;
+    z-index: 99999 !important;
   }
   .dashboard-sidebar.active {
     transform: translateX(0);
@@ -2473,21 +2353,32 @@ html:not([data-theme="dark"]) select option {
   }
   .sidebar-overlay.active {
     display: block;
+    z-index: 99998 !important;
+  }
+
+  /* Sidebar Header Fix */
+  .sidebar-header {
+    display: flex !important;
+    padding: 15px 20px !important;
+    margin-top: -70px !important;
+    position: relative;
+    z-index: 100000;
   }
   .sidebar-close {
     display: block;
+  }
+
+  /* Topbar Fix */
+  .dashboard-topbar {
+    z-index: 100000 !important;
+    padding: 12px 20px;
   }
   .dashboard-main {
     margin-left: 0;
   }
   .menu-toggle {
     display: inline-block;
-  }
-  .dashboard-topbar {
-    padding: 12px 20px;
-  }
-  .dashboard-content {
-    padding: 22px 20px 50px;
+    z-index: 100001 !important;
   }
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -2499,7 +2390,6 @@ html:not([data-theme="dark"]) select option {
 }
 
 @media (max-width: 900px) {
-  /* Mobile: keep stars but reduce animation cost + preserve visibility */
   html::after,
   body::before,
   body::after {
@@ -2557,7 +2447,6 @@ html:not([data-theme="dark"]) select option {
   }
 }
 
-/* Reduced motion — accessibility */
 @media (prefers-reduced-motion: reduce) {
   html::after,
   body::before,
@@ -2571,9 +2460,7 @@ html:not([data-theme="dark"]) select option {
   }
 }
 
-/* ============================================================
-   18. SCROLLBAR & UTILITY
-   ============================================================ */
+/* 16. SCROLLBAR & UTILITY */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -2592,7 +2479,6 @@ html:not([data-theme="dark"]) select option {
   background-clip: content-box;
   border: 2px solid transparent;
 }
-
 .back-to-top {
   position: fixed;
   bottom: 30px;
@@ -2616,7 +2502,6 @@ html:not([data-theme="dark"]) select option {
   transform: translateY(-3px);
   box-shadow: 0 14px 34px var(--accent-glow);
 }
-
 .whatsapp-fab {
   position: fixed;
   bottom: 90px;
@@ -2645,7 +2530,6 @@ html:not([data-theme="dark"]) select option {
   height: 28px;
   fill: white;
 }
-
 @media (max-width: 768px) {
   .whatsapp-fab {
     bottom: 85px;
@@ -2659,29 +2543,19 @@ html:not([data-theme="dark"]) select option {
   }
 }
 
-/* ============================================================
-   19. PRINT — WORKS FROM DARK MODE TOO
-   ============================================================ */
-/* ============================================================
-   19. PRINT — WORKS FROM DARK MODE TOO
-   ============================================================ */
+/* 17. PRINT */
 @media print {
-  /* Sirf page ka background aur text color reset karo */
   html,
   body {
     background: #fff !important;
     color: #000 !important;
   }
-
-  /* Background effects (stars/nebula) hide karo */
   html::before,
   html::after,
   body::before,
   body::after {
     display: none !important;
   }
-
-  /* Navbar, Sidebar, Footer hide karo */
   .glass-header,
   .glass-footer,
   .dashboard-sidebar,
@@ -2690,35 +2564,12 @@ html:not([data-theme="dark"]) select option {
   .whatsapp-fab {
     display: none !important;
   }
-
   .dashboard-main {
     margin-left: 0 !important;
   }
-
   a,
   a:visited {
     color: #000 !important;
     text-decoration: underline;
   }
-}
-/* ============================================================
-   🪪 FINAL PERMANENT FIX (Watermark & Mobile Stacking)
-   ============================================================ */
-
-.dashboard-content .certificate .watermark-logo,
-.dashboard-content .certificate .watermark-logo img {
-    opacity: 0.09 !important; 
-    z-index: -1 !important; /* Bilkul peechay bhej diya */
-    mix-blend-mode: multiply !important; /* White background ko transparent karega */
-    display: block !important; 
-    pointer-events: none !important;
-}
-
-.dashboard-content .certificate .cert-header,
-.dashboard-content .certificate .cert-title,
-.dashboard-content .certificate .cert-top-meta,
-.dashboard-content .certificate .cert-body,
-.dashboard-content .certificate .cert-footer {
-    z-index: 10 !important;
-    position: relative !important;
 }
