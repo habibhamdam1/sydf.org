@@ -1,5 +1,5 @@
 /* ============================================================
-   SYDF — THEME OVERRIDES (ULTIMATE CLEAN & FIXED VERSION)
+   SYDF — THEME OVERRIDES (COMPLETE & FINAL VERSION)
    ============================================================ */
 
 /* 1. DASHBOARD BODY BACKGROUND */
@@ -121,7 +121,7 @@ html:not([data-theme="dark"]) .filter-select option {
   font-weight: 600 !important;
 }
 
-/* 5. HEADINGS & BODY TEXT (DASHBOARD) */
+/* 5. HEADINGS */
 .activity-body h3,
 .app-header-info h3,
 .topbar-title h2,
@@ -164,6 +164,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-primary) !important;
 }
 
+/* 6. BODY TEXT */
 .detail-value,
 .preview-content,
 .preview-body,
@@ -213,9 +214,9 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 6. TOPBAR & SIDEBAR BASE */
+/* 7. TOPBAR & SIDEBAR */
 .dashboard-topbar {
-  z-index: 100000 !important;
+  z-index: 9999 !important;
   background: var(--header-bg) !important;
   border-bottom-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
@@ -227,7 +228,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-right-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  z-index: 99999 !important;
+  z-index: 1000 !important;
 }
 .sidebar-header {
   border-bottom-color: var(--card-border) !important;
@@ -282,7 +283,7 @@ html:not([data-theme="dark"]) .filter-select option {
   background: var(--card-border) !important;
 }
 
-/* 7. TABLES */
+/* 8. TABLES */
 .data-table thead {
   background: var(--accent-soft) !important;
   border-bottom-color: var(--card-border) !important;
@@ -307,7 +308,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--accent) !important;
 }
 
-/* 8. SMALL CARDS / LIST ITEMS */
+/* 9. SMALL CARDS / LIST ITEMS */
 .admin-list-item,
 .status-item,
 .report-item,
@@ -361,7 +362,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-bottom-color: var(--card-border) !important;
 }
 
-/* 9. WELCOME CARD & PROGRESS */
+/* 10. WELCOME CARD & PROGRESS */
 .welcome-card {
   background: linear-gradient(
     135deg,
@@ -385,7 +386,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 10. SETTINGS & LOGO */
+/* 11. SETTINGS & LOGO */
 .logo img {
   background: var(--card-bg) !important;
   box-shadow: 0 3px 12px var(--accent-glow) !important;
@@ -399,7 +400,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--warm-text) !important;
 }
 
-/* 11. ACCENT HEADINGS */
+/* 12. ACCENT HEADINGS */
 .page-hero-content h1,
 .intro-block h2,
 .about-block h2,
@@ -438,7 +439,37 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--accent) !important;
 }
 
-/* 12. WHITE-BG BUTTONS */
+/* 13. BORDERS */
+.admin-list-item,
+.status-item,
+.report-item,
+.notification-item,
+.application-header,
+.application-details,
+.application-reason,
+.session-item,
+.payment-method-card,
+.social-setting-item,
+.coord-member,
+.tehsil-tag-admin,
+.archive-member-tag,
+.tehsil-list span,
+.position-member,
+.notif-item,
+.email-preview,
+.email-preview .preview-top,
+.email-preview .preview-signature,
+.email-preview .preview-logo,
+.card-header,
+.preview-header,
+.objectives-list li,
+.hours-list li,
+.archive-member-tag,
+.settings-description {
+  border-color: var(--card-border) !important;
+}
+
+/* 14. WHITE-BG BUTTONS */
 .btn-export,
 .btn-bulk,
 .btn-action,
@@ -474,7 +505,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-color: var(--accent) !important;
 }
 
-/* 13. FORM LABELS */
+/* 15. FORM LABELS */
 .form-group label,
 .form-label,
 .email-compose-card label,
@@ -491,7 +522,7 @@ html:not([data-theme="dark"]) .filter-select option {
   opacity: 1 !important;
 }
 
-/* 14. TOAST & CONFIRM */
+/* 16. TOAST & CONFIRM */
 .syf-toast {
   background: var(--card-bg) !important;
   color: var(--text-primary) !important;
@@ -543,7 +574,7 @@ html:not([data-theme="dark"]) .filter-select option {
   background: var(--accent-soft) !important;
 }
 
-/* 15. PAGE HERO */
+/* 17. PAGE HERO */
 .page-hero-content {
   background: var(--card-bg) !important;
   border-color: var(--card-border) !important;
@@ -556,7 +587,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 16. STATUS BADGES */
+/* 18. STATUS BADGES */
 .activity-status-badge.ongoing {
   color: #1c1917 !important;
 }
@@ -567,7 +598,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: #ffffff !important;
 }
 
-/* 17. AUTH PAGES */
+/* 19. AUTH PAGES */
 .auth-form-block h2,
 .register-form-block h2,
 .welcome-content h1 {
@@ -637,7 +668,7 @@ html[data-theme="dark"] .auth-section * {
   color: var(--text-primary) !important;
 }
 
-/* 18. MEMBERSHIP / FEE BLOCK */
+/* 20. MEMBERSHIP / FEE BLOCK */
 .currency,
 .fee-amount .currency,
 .period {
@@ -671,6 +702,10 @@ html:not([data-theme="dark"]) .radio-option {
 html:not([data-theme="dark"]) .form-input::placeholder {
   color: var(--text-muted) !important;
 }
+html:not([data-theme="dark"]) .form-select option {
+  background-color: #ffffff !important;
+  color: #4c0519 !important;
+}
 html:not([data-theme="dark"]) .benefit-mini,
 html:not([data-theme="dark"]) .form-container,
 html:not([data-theme="dark"]) .info-notice {
@@ -681,7 +716,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: var(--text-secondary) !important;
 }
 
-/* 19. LEADERSHIP PAGE */
+/* 21. LEADERSHIP PAGE */
 .position-card h3 {
   color: var(--text-primary) !important;
 }
@@ -725,7 +760,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   border-color: var(--card-border) !important;
 }
 
-/* 20. DISTRICTS PAGE */
+/* 22. DISTRICTS PAGE */
 .district-card::before {
   background: linear-gradient(
     90deg,
@@ -759,7 +794,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: var(--text-secondary) !important;
 }
 
-/* 21. GALLERY PAGE */
+/* 23. GALLERY PAGE */
 .gallery-item:hover {
   box-shadow: var(--card-shadow-hover) !important;
 }
@@ -770,7 +805,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: #ffffff !important;
 }
 
-/* 22. PROFILE PAGE */
+/* 24. PROFILE PAGE */
 .profile-avatar-big {
   color: var(--accent-contrast) !important;
   border-color: var(--card-bg) !important;
@@ -869,8 +904,13 @@ html:not([data-theme="dark"]) .dashboard-content select {
   appearance: none !important;
   padding-right: 35px !important;
 }
+html:not([data-theme="dark"])
+  .dashboard-content
+  input::-webkit-calendar-picker-indicator {
+  filter: invert(0.2);
+}
 
-/* 23. MY PAYMENTS / FINANCE */
+/* 25. MY PAYMENTS / FINANCE */
 .summary-card.total .summary-value {
   color: var(--accent) !important;
 }
@@ -925,7 +965,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: #dc2626 !important;
 }
 
-/* 24. ADMIN QUICK ACTIONS / STATUS PILLS */
+/* 26. ADMIN QUICK ACTIONS / STATUS PILLS */
 .quick-action {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -955,7 +995,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--accent-contrast) !important;
 }
 
-/* 25. NOTIFICATIONS PAGE */
+/* 27. NOTIFICATIONS PAGE */
 .notif-type-box {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -980,7 +1020,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--error-border) !important;
 }
 
-/* 26. EMAIL SYSTEM PAGE */
+/* 28. EMAIL SYSTEM PAGE */
 .email-status-banner {
   background: linear-gradient(
     135deg,
@@ -1030,7 +1070,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--text-secondary) !important;
 }
 
-/* 27. REPORTS PAGE */
+/* 29. REPORTS PAGE */
 .chart-period {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -1078,7 +1118,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--success-border) !important;
 }
 
-/* 28. CABINET / LEADERSHIP ADMIN */
+/* 30. CABINET / LEADERSHIP ADMIN */
 .cabinet-info {
   background: linear-gradient(
     135deg,
@@ -1145,7 +1185,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--card-border) !important;
 }
 
-/* 29. APPLICATIONS / ADMIN MEMBERS */
+/* 31. APPLICATIONS / ADMIN MEMBERS */
 .application-card::before {
   background: var(--warm) !important;
 }
@@ -1185,7 +1225,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--card-border) !important;
 }
 
-/* 30. ADMIN WELCOME / DASHBOARD BADGES */
+/* 32. ADMIN WELCOME / DASHBOARD BADGES */
 .admin-welcome {
   background: linear-gradient(
     135deg,
@@ -1203,7 +1243,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--accent-contrast) !important;
 }
 
-/* 31. BADGE / PILL DEFENSIVE OVERRIDES */
+/* 34. BADGE / PILL DEFENSIVE OVERRIDES */
 .status-badge-active {
   background: var(--success-bg) !important;
   color: var(--success) !important;
@@ -1240,7 +1280,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   background: var(--warm) !important;
 }
 
-/* 32. CATEGORY / PAY-METHOD BADGES */
+/* 35. CATEGORY / PAY-METHOD BADGES */
 .pay-method.jazzcash {
   background: var(--error-bg) !important;
   color: var(--error) !important;
@@ -1262,7 +1302,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--card-border) !important;
 }
 
-/* 33. DONATION / SPONSOR BADGES */
+/* 36. DONATION / SPONSOR BADGES */
 .donor-badge.named {
   background: var(--success-bg) !important;
   color: var(--success) !important;
@@ -1292,7 +1332,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--card-border-hover) !important;
 }
 
-/* 34. ROLE BADGES */
+/* 37. ROLE BADGES */
 .role-president,
 .role-vp,
 .role-gs,
@@ -1308,7 +1348,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--card-border-hover) !important;
 }
 
-/* 35. INFO BANNER */
+/* 38. INFO BANNER */
 .info-banner {
   background: linear-gradient(
     135deg,
@@ -1325,7 +1365,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--text-secondary) !important;
 }
 
-/* 36. DANGER ZONE */
+/* 39. DANGER ZONE */
 .danger-action {
   background: var(--error-bg) !important;
   border-color: var(--error-border) !important;
@@ -1354,7 +1394,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: #ffffff !important;
 }
 
-/* 37. TOGGLE SWITCH */
+/* 40. TOGGLE SWITCH */
 .toggle-slider {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -1364,7 +1404,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   border-color: var(--accent) !important;
 }
 
-/* 38. SLIDER / PROGRESS */
+/* 41. SLIDER / PROGRESS */
 .slider-input {
   background: var(--card-border) !important;
 }
@@ -1378,7 +1418,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--accent) !important;
 }
 
-/* 39. COLOR PICKER & UPLOAD */
+/* 42. COLOR PICKER & UPLOAD */
 .color-input-wrapper input[type="color"] {
   border-color: var(--card-border) !important;
 }
@@ -1397,7 +1437,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--accent) !important;
 }
 
-/* 40. BG IMAGE OPTIONS */
+/* 43. BG IMAGE OPTIONS */
 .bg-preview {
   border-color: var(--card-border) !important;
 }
@@ -1409,7 +1449,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--text-secondary) !important;
 }
 
-/* 41. SOCIAL SETTING ICONS */
+/* 44. SOCIAL SETTING ICONS */
 .social-setting-icon.facebook,
 .social-setting-icon.instagram,
 .social-setting-icon.twitter,
@@ -1419,14 +1459,14 @@ html:not([data-theme="dark"]) .dashboard-content select {
   background: var(--accent-soft) !important;
 }
 
-/* 42. PAYMENT METHOD ICONS */
+/* 45. PAYMENT METHOD ICONS */
 .payment-method-icon.jazzcash,
 .payment-method-icon.easypaisa,
 .payment-method-icon.bank {
   background: var(--accent-soft) !important;
 }
 
-/* 43. TIMELINE / MINI */
+/* 46. TIMELINE / MINI */
 .timeline-content h4 {
   color: var(--text-primary) !important;
 }
@@ -1442,7 +1482,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   background: var(--accent-soft) !important;
 }
 
-/* 44. STATUS INDICATOR */
+/* 47. STATUS INDICATOR */
 .status-indicator.closed {
   background: var(--error) !important;
   box-shadow: 0 0 0 4px var(--error-bg) !important;
@@ -1451,7 +1491,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   background: var(--success) !important;
 }
 
-/* 45. ADMIN ITEM AVATAR */
+/* 48. ADMIN ITEM AVATAR */
 .admin-item-avatar {
   color: var(--accent-contrast) !important;
 }
@@ -1462,7 +1502,7 @@ html:not([data-theme="dark"]) .dashboard-content select {
   color: var(--accent) !important;
 }
 
-/* 46. FOOTER / MISC */
+/* 49. FOOTER / MISC */
 .footer-col h3,
 .footer-col h4 {
   color: var(--text-primary) !important;
@@ -1519,7 +1559,7 @@ html[data-theme="dark"] .dash-stat-card {
 }
 
 /* ============================================================
-   🔥 FORCE READABLE TEXT (DASHBOARD FIXES)
+   🔥 FORCE READABLE TEXT
    ============================================================ */
 html:not([data-theme="dark"]) .dashboard-content h1,
 html:not([data-theme="dark"]) .dashboard-content h2,
@@ -1552,7 +1592,6 @@ html:not([data-theme="dark"]) [style*="color: #ffffff"],
 html:not([data-theme="dark"]) [style*="color: rgba(255"] {
   color: var(--text-primary) !important;
 }
-
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .btn-login,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -1587,14 +1626,12 @@ html:not([data-theme="dark"]) .save-bar-message {
 }
 
 /* ============================================================
-   📱 FIX: DESKTOP MODE ON MOBILE & MOBILE MENU FIX
+   📱 FIX: DESKTOP MODE ON MOBILE
    ============================================================ */
 @media (max-width: 1024px) {
   .menu-toggle {
     display: inline-block !important;
   }
-
-  /* DASHBOARD SIDEBAR FIX */
   .dashboard-sidebar {
     transform: translateX(-100%) !important;
     padding-top: 70px !important;
@@ -1606,8 +1643,6 @@ html:not([data-theme="dark"]) .save-bar-message {
   .sidebar-overlay.active {
     z-index: 99998 !important;
   }
-
-  /* SIDEBAR HEADER (Logo aur Close button) */
   .dashboard-sidebar .sidebar-header {
     display: flex !important;
     position: absolute !important;
@@ -1621,37 +1656,35 @@ html:not([data-theme="dark"]) .save-bar-message {
     z-index: 100000 !important;
     align-items: center;
   }
-
   .dashboard-main {
     margin-left: 0 !important;
   }
-
-  /* PUBLIC MOBILE MENU FIX (Home, About Us) */
   .glass-header {
     z-index: 100000 !important;
     position: relative !important;
   }
-
   .glass-header nav.active {
     position: fixed !important;
-    top: 70px !important; /* Header ke neeche */
+    top: 70px !important;
     left: 0 !important;
     width: 100vw !important;
-    height: calc(100vh - 70px) !important; /* Header ki height minus */
+    height: calc(100vh - 70px) !important;
     z-index: 99999 !important;
     padding: 20px !important;
     box-sizing: border-box !important;
     overflow-y: auto !important;
-    background-color: var(--sky-top) !important; /* Solid background */
+    background-color: var(--sky-top) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
   }
-
   html[data-theme="dark"] .glass-header nav.active {
     background-color: #0a1d33 !important;
   }
   html:not([data-theme="dark"]) .glass-header nav.active {
     background-color: #fff1f2 !important;
   }
-
   .glass-header nav.active ul {
     display: flex !important;
     flex-direction: column !important;
@@ -1660,7 +1693,6 @@ html:not([data-theme="dark"]) .save-bar-message {
     padding: 0 !important;
     width: 100% !important;
   }
-
   .glass-header nav ul li a {
     display: block !important;
     text-align: center !important;
@@ -1673,7 +1705,6 @@ html:not([data-theme="dark"]) .save-bar-message {
     border: 1px solid var(--card-border) !important;
     color: var(--text-primary) !important;
   }
-
   .glass-header nav ul li a:hover,
   .glass-header nav ul li a.active {
     background: var(--accent) !important;
@@ -1850,7 +1881,7 @@ body::after {
 }
 
 /* ============================================================
-   🪪 ID CARD PRINT / PDF SPECIFIC FIX
+   🪪 ID CARD PRINT / PDF SPECIFIC FIX (Sabse Aakhir)
    ============================================================ */
 @media print {
   * {
@@ -1858,13 +1889,16 @@ body::after {
     print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
+
   @page {
     size: auto;
     margin: 10mm;
   }
+
   body * {
     visibility: hidden;
   }
+
   .id-cards-wrapper,
   .id-card-wrapper,
   .id-card,
@@ -1876,6 +1910,7 @@ body::after {
   .card-back * {
     visibility: visible;
   }
+
   .id-cards-wrapper {
     display: flex !important;
     flex-direction: row !important;
@@ -1889,6 +1924,7 @@ body::after {
     left: 0;
     width: 100%;
   }
+
   .dashboard-sidebar,
   .dashboard-topbar,
   .page-header-block,
@@ -1896,19 +1932,23 @@ body::after {
   .sidebar-overlay {
     display: none !important;
   }
+
   .dashboard-main {
     margin: 0 !important;
     padding: 0 !important;
   }
+
   .id-card {
     box-shadow: 0 0 0 1px #ccc !important;
     transform: none !important;
     page-break-inside: avoid !important;
     background: #f7f8fa !important;
   }
+
   body.theme-female .id-card {
     background: #faf7f5 !important;
   }
+
   .id-card .sidebar {
     background: linear-gradient(
       180deg,
@@ -1926,7 +1966,6 @@ body::after {
     ) !important;
   }
 }
-
 /* ============================================================
    💥 ULTIMATE FINAL FIX (Inputs & Dashboard Text Rescue)
    ============================================================ */
@@ -1978,7 +2017,6 @@ html[data-theme="dark"] .dashboard-content textarea {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
-
 /* ============================================================
    🎯 DASHBOARD & PROFILE: LESS TRANSPARENCY & TEXT FIX
    ============================================================ */
@@ -2038,7 +2076,6 @@ html:not([data-theme="dark"]) .sidebar-nav li a.active {
   color: var(--accent) !important;
   background: var(--accent-soft) !important;
 }
-
 /* ============================================================
    💎 ULTIMATE GLASSMORPHISM RESTORE (NO LAG) & TEXT FIX
    ============================================================ */
@@ -2121,7 +2158,6 @@ html:not([data-theme="dark"])
   .stat-value {
   color: #3b82f6 !important;
 }
-
 /* ============================================================
    💥 FINAL BULLETPROOF FIX: DASHBOARD WHITE TEXT
    ============================================================ */
@@ -2180,7 +2216,6 @@ html:not([data-theme="dark"]) .dashboard-content .text-blue,
 html:not([data-theme="dark"]) .dashboard-content .text-pink {
   -webkit-text-fill-color: unset !important;
 }
-
 /* ============================================================
    🚀 DASHBOARD.CSS HARDCODED COLOR OVERRIDE (LIGHT MODE ONLY)
    ============================================================ */
@@ -2188,6 +2223,7 @@ html:not([data-theme="dark"]) .dashboard-body {
   background: transparent !important;
   background-image: none !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
@@ -2265,7 +2301,6 @@ html:not([data-theme="dark"]) .stat-box {
   background: rgba(255, 255, 255, 0.5) !important;
   border-color: rgba(255, 255, 255, 0.8) !important;
 }
-
 /* ============================================================
    💥 FINAL BULLETPROOF FIX: DASHBOARD TEXT (FORCE OVERRIDE)
    ============================================================ */
@@ -2316,6 +2351,7 @@ html:not([data-theme="dark"])
   color: #f59e0b !important;
   -webkit-text-fill-color: #f59e0b !important;
 }
+
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(2)
@@ -2328,6 +2364,7 @@ html:not([data-theme="dark"])
   color: #ec4899 !important;
   -webkit-text-fill-color: #ec4899 !important;
 }
+
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(3)
@@ -2340,6 +2377,7 @@ html:not([data-theme="dark"])
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
 }
+
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(4)
@@ -2381,7 +2419,6 @@ html:not([data-theme="dark"])
   color: #ec4899 !important;
   -webkit-text-fill-color: #ec4899 !important;
 }
-
 /* ============================================================
    🚨 FINAL EMERGENCY FIX: DASHBOARD WHITE TEXT & OPACITY
    ============================================================ */
@@ -2423,7 +2460,6 @@ html:not([data-theme="dark"]) .dashboard-content .content-card {
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(225, 29, 72, 0.15) !important;
 }
-
 /* ============================================================
    🔥 NUCLEAR FIX: FORCE EVERY TEXT TO BE MAROON (#4c0519)
    ============================================================ */
@@ -2466,9 +2502,9 @@ html:not([data-theme="dark"]) .dashboard-content .summary-card {
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
-
 /* ============================================================
    🪪 ID CARD THEME PROTECTION
+   Male = Navy Blue | Female = Maroon
    ============================================================ */
 body .dashboard-content .page-header-block .page-header-info h1 {
   color: #ffffff !important;
@@ -2479,6 +2515,7 @@ body .dashboard-content .page-header-block .page-header-info p {
   -webkit-text-fill-color: #ffffff !important;
   opacity: 0.75 !important;
 }
+
 body .dashboard-content .page-header-block .btn-print {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -2487,6 +2524,7 @@ body .dashboard-content .page-header-block .btn-verify {
   color: #93c5fd !important;
   -webkit-text-fill-color: #93c5fd !important;
 }
+
 body .dashboard-content .loading-box h3,
 body .dashboard-content .loading-box p,
 body .dashboard-content .loading-box .ico {
@@ -2501,13 +2539,16 @@ body .dashboard-content .loading-box.err .ico {
   color: #fca5a5 !important;
   -webkit-text-fill-color: #fca5a5 !important;
 }
+
 body .dashboard-content .id-cards-wrapper .card-label {
   color: rgba(255, 255, 255, 0.5) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.5) !important;
 }
+
 body .dashboard-content .id-card .watermark-bg {
   opacity: 0.05 !important;
 }
+
 body .dashboard-content .id-card .sidebar-brand,
 body .dashboard-content .id-card .sidebar-id-block .val {
   color: #ffffff !important;
@@ -2621,7 +2662,6 @@ body .dashboard-content .id-card .member-role.coordinator {
   color: #fb923c !important;
   -webkit-text-fill-color: #fb923c !important;
 }
-
 /* ============================================================
    🗺️ DISTRICT / TEHSIL PAGES — THEME FIX
    ============================================================ */
@@ -2638,6 +2678,7 @@ html:not([data-theme="dark"]) .cta-card {
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
+
 html[data-theme="dark"] .district-header-card,
 html[data-theme="dark"] .tehsil-header-card,
 html[data-theme="dark"] .section-card,
@@ -2647,6 +2688,7 @@ html[data-theme="dark"] .info-row {
   background: rgba(12, 24, 42, 0.55) !important;
   border: 1px solid rgba(140, 200, 220, 0.15) !important;
 }
+
 html:not([data-theme="dark"]) .district-header-card h1,
 html:not([data-theme="dark"]) .tehsil-header-card h1,
 html:not([data-theme="dark"]) .tehsil-card h4,
@@ -2658,6 +2700,7 @@ html:not([data-theme="dark"]) .loading-wrap h2 {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
+
 html:not([data-theme="dark"]) .stat-lbl,
 html:not([data-theme="dark"]) .tehsil-card p,
 html:not([data-theme="dark"]) .district-footer p,
@@ -2668,26 +2711,31 @@ html:not([data-theme="dark"]) .breadcrumb {
   color: var(--text-secondary) !important;
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
+
 html:not([data-theme="dark"]) .district-card {
   background: rgba(255, 255, 255, 0.75) !important;
   border: 1px solid rgba(225, 29, 72, 0.15) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
+
 html[data-theme="dark"] .district-card {
   background: rgba(12, 24, 42, 0.55) !important;
   border: 1px solid rgba(140, 200, 220, 0.15) !important;
 }
+
 html:not([data-theme="dark"]) .district-card .district-header h3,
 html:not([data-theme="dark"]) .district-card .district-footer p {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
+
 html:not([data-theme="dark"]) .district-card .district-info,
 html:not([data-theme="dark"]) .district-card .tehsil-list span {
   color: var(--text-secondary) !important;
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
+
 html:not([data-theme="dark"]) .district-card .district-footer em {
   color: #b45309 !important;
   -webkit-text-fill-color: #b45309 !important;
@@ -2695,9 +2743,21 @@ html:not([data-theme="dark"]) .district-card .district-footer em {
 html[data-theme="dark"] .district-card .district-footer em {
   color: #fbbf24 !important;
 }
+
 html:not([data-theme="dark"]) .coord-info p {
   color: #1d4ed8 !important;
   -webkit-text-fill-color: #1d4ed8 !important;
+}
+
+html:not([data-theme="dark"]) .coord-empty {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+html[data-theme="dark"] .coord-empty {
+  color: #fbbf24 !important;
+  -webkit-text-fill-color: #fbbf24 !important;
 }
 html:not([data-theme="dark"]) .coord-empty {
   color: #b45309 !important;
@@ -2709,7 +2769,6 @@ html[data-theme="dark"] .coord-empty {
   color: #fbbf24 !important;
   -webkit-text-fill-color: #fbbf24 !important;
 }
-
 /* ============================================================
    ✅ ULTIMATE WATERMARK & SOLID FIX
    ============================================================ */
@@ -2721,6 +2780,7 @@ html:not([data-theme="dark"]) .dashboard-content .certificate {
   background: #fdf6e3 !important;
   background-image: none !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo {
   display: block !important;
   visibility: visible !important;
@@ -2735,6 +2795,7 @@ html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo {
   pointer-events: none !important;
   mix-blend-mode: normal !important;
 }
+
 html:not([data-theme="dark"])
   .dashboard-content
   .certificate
@@ -2748,6 +2809,7 @@ html:not([data-theme="dark"])
   object-fit: contain !important;
   mix-blend-mode: normal !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-header,
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-title,
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-top-meta,
@@ -2756,6 +2818,7 @@ html:not([data-theme="dark"]) .dashboard-content .certificate .cert-footer {
   z-index: 10 !important;
   position: relative !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-title h1 {
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
@@ -2780,6 +2843,7 @@ html:not([data-theme="dark"])
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .cert-meta-inside,
 html:not([data-theme="dark"]) .dashboard-content .cert-qr-wrap,
 html:not([data-theme="dark"]) .dashboard-content .cert-uid,
@@ -2787,7 +2851,6 @@ html:not([data-theme="dark"]) .dashboard-content .cert-role {
   background: #ffffff !important;
   border: 1px solid rgba(184, 148, 74, 0.3) !important;
 }
-
 /* ============================================================
    🪟 GLOBAL GLASSMORPHISM (LAG-FREE & SIDEBAR FIX)
    ============================================================ */
@@ -2797,11 +2860,13 @@ html:not([data-theme="dark"]) .dashboard-content .cert-role {
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
   --glass-blur: blur(16px) saturate(150%);
 }
+
 html[data-theme="dark"] {
   --glass-bg: rgba(15, 32, 39, 0.65);
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
+
 .glass-card,
 .content-card,
 .dash-stat-card,
@@ -2823,6 +2888,7 @@ html[data-theme="dark"] {
   -webkit-transform: translateZ(0) !important;
   will-change: backdrop-filter;
 }
+
 .dashboard-sidebar,
 .dashboard-topbar {
   background: var(--glass-bg) !important;
@@ -2831,6 +2897,19 @@ html[data-theme="dark"] {
   border: var(--glass-border) !important;
   box-shadow: var(--glass-shadow) !important;
 }
+
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    transform: translateX(-100%) !important;
+    -webkit-transform: translateX(-100%) !important;
+    transition: transform 0.3s ease !important;
+  }
+  .dashboard-sidebar.active {
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+  }
+}
+
 @media (max-width: 768px) {
   .glass-card,
   .content-card,
@@ -2855,6 +2934,7 @@ html[data-theme="dark"] {
     background: rgba(15, 32, 39, 0.8) !important;
   }
 }
+
 .table-card .data-table tbody tr,
 .admin-list-item .admin-item-avatar,
 .cert-container,
@@ -2862,13 +2942,13 @@ html[data-theme="dark"] {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
 .data-table thead {
   background: rgba(255, 255, 255, 0.9) !important;
 }
 html[data-theme="dark"] .data-table thead {
   background: rgba(15, 32, 39, 0.9) !important;
 }
-
 /* ============================================================
    🪪 FINAL PERMANENT FIX (Watermark & Mobile Stacking)
    ============================================================ */
@@ -2880,6 +2960,7 @@ html[data-theme="dark"] .data-table thead {
   display: block !important;
   pointer-events: none !important;
 }
+
 .dashboard-content .certificate .cert-header,
 .dashboard-content .certificate .cert-title,
 .dashboard-content .certificate .cert-top-meta,
@@ -2887,4 +2968,111 @@ html[data-theme="dark"] .data-table thead {
 .dashboard-content .certificate .cert-footer {
   z-index: 10 !important;
   position: relative !important;
+}
+
+/* ============================================================
+   🚨 NAYA MOBILE FIX (Jo humne discuss kiya - Sabse Aakhir Mein)
+   ============================================================ */
+@media (max-width: 1024px) {
+  /* Dashboard Sidebar */
+  .dashboard-sidebar {
+    top: 0 !important;
+    height: 100vh !important;
+    padding-top: 70px !important;
+    z-index: 99999 !important;
+  }
+
+  /* Sidebar Header */
+  .dashboard-sidebar .sidebar-header {
+    display: flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 70px !important;
+    padding: 15px 20px !important;
+    background: var(--header-bg) !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    z-index: 100000 !important;
+    align-items: center;
+  }
+
+  /* Overlay */
+  .sidebar-overlay {
+    z-index: 99998 !important;
+  }
+
+  /* PUBLIC MOBILE MENU */
+  .glass-header {
+    z-index: 100000 !important;
+  }
+
+  .glass-header nav.active {
+    position: fixed !important;
+    top: 70px !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 70px) !important;
+    z-index: 99999 !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    background-color: var(--sky-top) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+
+  html[data-theme="dark"] .glass-header nav.active {
+    background-color: #0a1d33 !important;
+  }
+  html:not([data-theme="dark"]) .glass-header nav.active {
+    background-color: #fff1f2 !important;
+  }
+
+  .glass-header nav.active ul {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .glass-header nav ul li a {
+    display: block !important;
+    text-align: center !important;
+    padding: 15px 20px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .glass-header nav ul li a:hover,
+  .glass-header nav ul li a.active {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--accent-glow);
+  }
+
+  /* LOGIN BUTTON FIX */
+  .glass-header nav ul li a.btn-login {
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-dark)
+    ) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 15px var(--accent-glow) !important;
+  }
 }
