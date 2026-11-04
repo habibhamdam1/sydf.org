@@ -1,5 +1,5 @@
 // ==========================================
-// SYDF - MAIN JAVASCRIPT (v23 - MOBILE FIX)
+// SYDF - MAIN JAVASCRIPT (FINAL FIXED VERSION)
 // ==========================================
 
 console.log("SYDF Website Loaded Successfully!");
@@ -20,7 +20,9 @@ console.log("SYDF Website Loaded Successfully!");
   }
 })();
 
+// ==========================================
 // GLOBAL ANIMATION SYSTEM
+// ==========================================
 const observerOptions = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
 const observer = new IntersectionObserver(function (entries) {
   entries.forEach((entry) => {
@@ -41,7 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// ==========================================
 // NAVBAR SCROLL EFFECT
+// ==========================================
 window.addEventListener("scroll", function () {
   const header = document.querySelector(".glass-header");
   if (!header) return;
@@ -54,7 +58,9 @@ window.addEventListener("scroll", function () {
   }
 });
 
+// ==========================================
 // SMOOTH SCROLL
+// ==========================================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     const href = this.getAttribute("href");
@@ -65,11 +71,12 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
+// ==========================================
 // BACK TO TOP BUTTON
+// ==========================================
 const backToTopBtn = document.createElement("button");
 backToTopBtn.innerHTML = "↑";
 backToTopBtn.className = "back-to-top";
-backToTopBtn.style.cssText = `position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); border: 1px solid var(--card-border-hover); font-size: 22px; cursor: pointer; display: none; z-index: 999; backdrop-filter: blur(10px); transition: 0.3s;`;
 document.body.appendChild(backToTopBtn);
 
 window.addEventListener("scroll", function () {
@@ -79,7 +86,9 @@ backToTopBtn.addEventListener("click", function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+// ==========================================
 // AUTO-LOAD SUPABASE
+// ==========================================
 (function () {
   if (typeof supabase === "undefined") {
     const script1 = document.createElement("script");
@@ -94,7 +103,9 @@ backToTopBtn.addEventListener("click", function () {
   }
 })();
 
+// ==========================================
 // AUTHENTICATION & LOGOUT
+// ==========================================
 async function getCurrentUser() {
   let attempts = 0;
   while (
@@ -254,7 +265,7 @@ function updateUserInfo(user) {
 }
 
 // ==========================================
-// SIDEBAR TOGGLE (UPDATED FOR MOBILE FIX)
+// SIDEBAR TOGGLE (WITH SCROLL LOCK)
 // ==========================================
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("dashboardSidebar");
@@ -266,7 +277,7 @@ if (menuToggle && sidebar) {
     e.preventDefault();
     sidebar.classList.add("active");
     if (sidebarOverlay) sidebarOverlay.classList.add("active");
-    document.body.style.overflow = "hidden"; // Scroll lock
+    document.body.style.overflow = "hidden"; // Lock background scroll
   });
 }
 if (sidebarClose && sidebar) {
@@ -274,7 +285,7 @@ if (sidebarClose && sidebar) {
     e.preventDefault();
     sidebar.classList.remove("active");
     if (sidebarOverlay) sidebarOverlay.classList.remove("active");
-    document.body.style.overflow = "";
+    document.body.style.overflow = ""; // Unlock scroll
   });
 }
 if (sidebarOverlay) {
@@ -285,13 +296,15 @@ if (sidebarOverlay) {
   });
 }
 
+// ==========================================
 // DYNAMIC HEADER & FOOTER
+// ==========================================
 document.addEventListener("DOMContentLoaded", function () {
   const isAdminPage =
     window.location.pathname.includes("admin") &&
     !window.location.pathname.includes("admin-login");
 
-  // HEADER
+  // 1. HEADER & MOBILE BUTTON
   if (!isAdminPage) {
     const existingNav = document.querySelector(".glass-header nav");
     const headerDiv = document.querySelector(".glass-header");
@@ -334,6 +347,13 @@ document.addEventListener("DOMContentLoaded", function () {
         e.stopPropagation();
         existingNav.classList.toggle("active");
         this.innerHTML = existingNav.classList.contains("active") ? "✕" : "☰";
+
+        // SCROLL LOCK FOR PUBLIC MENU
+        if (existingNav.classList.contains("active")) {
+          document.body.style.overflow = "hidden";
+        } else {
+          document.body.style.overflow = "";
+        }
       });
 
       document.addEventListener("click", function (e) {
@@ -343,6 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
           existingNav.classList.remove("active");
           btn.innerHTML = "☰";
+          document.body.style.overflow = "";
         }
       });
     }
@@ -352,8 +373,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const img = document.createElement("img");
       img.src = "images/logo.png";
       img.alt = "SYDF Logo";
-      img.style.cssText =
-        "width:40px;height:40px;border-radius:50%;object-fit:contain;background:var(--card-bg);padding:2px;margin-right:8px;flex-shrink:0;box-shadow:0 3px 12px var(--accent-glow);";
       img.onerror = function () {
         this.remove();
       };
@@ -371,7 +390,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // FOOTER & SIDEBAR
+  // 2. ASYNC FOOTER & SIDEBAR INJECTIONS
   (async function loadDynamicParts() {
     let attempts = 0;
     while (
@@ -412,20 +431,28 @@ document.addEventListener("DOMContentLoaded", function () {
         if (existingFooter) {
           existingFooter.innerHTML = `
             <div class="footer-content">
-                <div class="footer-col"><h3>SYDF</h3><p>Swat Youth Development Forum</p><p>Empowering Youth, Building Future</p><div style="margin-top: 15px; display: flex; gap: 10px;">${fbLink !== "#" ? `<a href="${fbLink}" target="_blank" title="Facebook" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📘</a>` : ""}${igLink !== "#" ? `<a href="${igLink}" target="_blank" title="Instagram" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📷</a>` : ""}${ytLink !== "#" ? `<a href="${ytLink}" target="_blank" title="YouTube" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">▶️</a>` : ""}${waLink !== "#" ? `<a href="${waLink}" target="_blank" title="WhatsApp" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">💬</a>` : ""}</div></div>
+                <div class="footer-col">
+                    <h3>SYDF</h3><p>Swat Youth Development Forum</p><p>Empowering Youth, Building Future</p>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        ${fbLink !== "#" ? `<a href="${fbLink}" target="_blank" title="Facebook" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📘</a>` : ""}
+                        ${igLink !== "#" ? `<a href="${igLink}" target="_blank" title="Instagram" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📷</a>` : ""}
+                        ${ytLink !== "#" ? `<a href="${ytLink}" target="_blank" title="YouTube" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">▶️</a>` : ""}
+                        ${waLink !== "#" ? `<a href="${waLink}" target="_blank" title="WhatsApp" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">💬</a>` : ""}
+                    </div>
+                </div>
                 <div class="footer-col"><h4>Explore</h4><ul><li><a href="about.html">About Us</a></li><li><a href="leadership.html">Leadership</a></li><li><a href="districts.html">Districts</a></li><li><a href="activities.html">Activities</a></li><li><a href="events.html">Events</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="news.html">News & Blog</a></li><li><a href="members.html">Members Directory</a></li></ul></div>
                 <div class="footer-col"><h4>Get Involved</h4><ul><li><a href="membership.html">Membership</a></li><li><a href="donate.html">Donate</a></li><li><a href="sponsor.html">Sponsor an Activity</a></li><li><a href="volunteer.html">Volunteer</a></li><li><a href="partners.html">Our Partners</a></li><li><a href="stories.html">Success Stories</a></li></ul></div>
                 <div class="footer-col"><h4>Support & Legal</h4><ul><li><a href="contact.html">Contact Us</a></li><li><a href="public-report.html" style="color: var(--warm-text); font-weight: 600;">🛡️ Public Grievances</a></li><li><a href="faq.html">FAQ</a></li><li><a href="feedback.html">Send Feedback</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="login.html">Member Login</a></li></ul></div>
                 <div class="footer-col"><h4>Contact</h4><p>${contactAddress}</p><p>${contactEmail}</p><p>${contactPhone}</p></div>
             </div>
-            <div class="footer-bottom"><p>&copy; ${new Date().getFullYear()} Swat Youth Development Forum. All Rights Reserved.</p></div>`;
+            <div class="footer-bottom"><p>&copy; ${new Date().getFullYear()} Swat Youth Development Forum. All Rights Reserved.</p></div>
+           `;
         }
       } catch (err) {
         console.log("Footer error:", err);
       }
     }
 
-    // SIDEBAR INJECTIONS
     const sidebarNav = document.querySelector(
       ".dashboard-sidebar .sidebar-nav",
     );
@@ -653,8 +680,18 @@ async function enforceAdminPermissions() {
   ];
   if (!admin || !allowedRoles.includes(admin.role)) {
     await supabaseClient.auth.signOut();
-    alert("⛔ Access Denied: You do not have Admin privileges.");
-    window.location.replace("login.html");
+
+    // TOAST FIX FOR ADMIN ACCESS DENY
+    if (typeof window.syfToast === "function") {
+      window.syfToast(
+        "⛔ Access Denied: You do not have Admin privileges.",
+        "error",
+      );
+      setTimeout(() => window.location.replace("login.html"), 2500);
+    } else {
+      alert("⛔ Access Denied: You do not have Admin privileges.");
+      window.location.replace("login.html");
+    }
     return;
   }
   window.currentAdminRole = admin.role;
@@ -803,6 +840,7 @@ window.addEventListener("load", async function () {
 window.getCurrentUser = getCurrentUser;
 window.logoutUser = logoutUser;
 
+// AUTO-LOAD SERVICES
 (function () {
   if (typeof window.sendEmail === "undefined") {
     const script = document.createElement("script");
@@ -832,6 +870,7 @@ window.logoutUser = logoutUser;
   }
 })();
 
+// SERVICE WORKER KILLER
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then(function (registrations) {
     for (let registration of registrations) {
@@ -840,25 +879,3 @@ if ("serviceWorker" in navigator) {
     }
   });
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  const allElements = document.querySelectorAll("[style]");
-  allElements.forEach((el) => {
-    const style = el.getAttribute("style");
-    if (!style) return;
-    if (
-      style.includes("color: white") ||
-      style.includes("color: #fff") ||
-      style.includes("color: rgba(255")
-    ) {
-      el.style.color = "";
-    }
-    if (
-      style.includes("background: #0f2027") ||
-      style.includes("background: #203a43") ||
-      style.includes("background: rgba(15, 32, 39")
-    ) {
-      el.style.background = "";
-    }
-  });
-});
