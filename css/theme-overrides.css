@@ -1,5 +1,5 @@
-use/* ============================================================
-   SYDF — THEME OVERRIDES (COMPLETE & FINAL VERSION)
+/* ============================================================
+   SYDF — THEME OVERRIDES (ULTIMATE CLEAN & FIXED VERSION)
    ============================================================ */
 
 /* 1. DASHBOARD BODY BACKGROUND */
@@ -121,7 +121,7 @@ html:not([data-theme="dark"]) .filter-select option {
   font-weight: 600 !important;
 }
 
-/* 5. HEADINGS */
+/* 5. HEADINGS & BODY TEXT (DASHBOARD) */
 .activity-body h3,
 .app-header-info h3,
 .topbar-title h2,
@@ -164,7 +164,6 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-primary) !important;
 }
 
-/* 6. BODY TEXT */
 .detail-value,
 .preview-content,
 .preview-body,
@@ -214,9 +213,9 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 7. TOPBAR & SIDEBAR */
+/* 6. TOPBAR & SIDEBAR BASE */
 .dashboard-topbar {
-  z-index: 9999 !important;
+  z-index: 100000 !important;
   background: var(--header-bg) !important;
   border-bottom-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
@@ -228,7 +227,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-right-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  z-index: 1000 !important;
+  z-index: 99999 !important;
 }
 .sidebar-header {
   border-bottom-color: var(--card-border) !important;
@@ -283,7 +282,7 @@ html:not([data-theme="dark"]) .filter-select option {
   background: var(--card-border) !important;
 }
 
-/* 8. TABLES */
+/* 7. TABLES */
 .data-table thead {
   background: var(--accent-soft) !important;
   border-bottom-color: var(--card-border) !important;
@@ -308,7 +307,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--accent) !important;
 }
 
-/* 9. SMALL CARDS / LIST ITEMS */
+/* 8. SMALL CARDS / LIST ITEMS */
 .admin-list-item,
 .status-item,
 .report-item,
@@ -362,7 +361,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-bottom-color: var(--card-border) !important;
 }
 
-/* 10. WELCOME CARD & PROGRESS */
+/* 9. WELCOME CARD & PROGRESS */
 .welcome-card {
   background: linear-gradient(
     135deg,
@@ -386,7 +385,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 11. SETTINGS & LOGO */
+/* 10. SETTINGS & LOGO */
 .logo img {
   background: var(--card-bg) !important;
   box-shadow: 0 3px 12px var(--accent-glow) !important;
@@ -400,7 +399,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--warm-text) !important;
 }
 
-/* 12. ACCENT HEADINGS */
+/* 11. ACCENT HEADINGS */
 .page-hero-content h1,
 .intro-block h2,
 .about-block h2,
@@ -439,37 +438,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--accent) !important;
 }
 
-/* 13. BORDERS */
-.admin-list-item,
-.status-item,
-.report-item,
-.notification-item,
-.application-header,
-.application-details,
-.application-reason,
-.session-item,
-.payment-method-card,
-.social-setting-item,
-.coord-member,
-.tehsil-tag-admin,
-.archive-member-tag,
-.tehsil-list span,
-.position-member,
-.notif-item,
-.email-preview,
-.email-preview .preview-top,
-.email-preview .preview-signature,
-.email-preview .preview-logo,
-.card-header,
-.preview-header,
-.objectives-list li,
-.hours-list li,
-.archive-member-tag,
-.settings-description {
-  border-color: var(--card-border) !important;
-}
-
-/* 14. WHITE-BG BUTTONS */
+/* 12. WHITE-BG BUTTONS */
 .btn-export,
 .btn-bulk,
 .btn-action,
@@ -505,7 +474,7 @@ html:not([data-theme="dark"]) .filter-select option {
   border-color: var(--accent) !important;
 }
 
-/* 15. FORM LABELS */
+/* 13. FORM LABELS */
 .form-group label,
 .form-label,
 .email-compose-card label,
@@ -522,7 +491,7 @@ html:not([data-theme="dark"]) .filter-select option {
   opacity: 1 !important;
 }
 
-/* 16. TOAST & CONFIRM */
+/* 14. TOAST & CONFIRM */
 .syf-toast {
   background: var(--card-bg) !important;
   color: var(--text-primary) !important;
@@ -574,7 +543,7 @@ html:not([data-theme="dark"]) .filter-select option {
   background: var(--accent-soft) !important;
 }
 
-/* 17. PAGE HERO */
+/* 15. PAGE HERO */
 .page-hero-content {
   background: var(--card-bg) !important;
   border-color: var(--card-border) !important;
@@ -587,7 +556,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: var(--text-secondary) !important;
 }
 
-/* 18. STATUS BADGES */
+/* 16. STATUS BADGES */
 .activity-status-badge.ongoing {
   color: #1c1917 !important;
 }
@@ -598,7 +567,7 @@ html:not([data-theme="dark"]) .filter-select option {
   color: #ffffff !important;
 }
 
-/* 19. AUTH PAGES */
+/* 17. AUTH PAGES */
 .auth-form-block h2,
 .register-form-block h2,
 .welcome-content h1 {
@@ -668,7 +637,7 @@ html[data-theme="dark"] .auth-section * {
   color: var(--text-primary) !important;
 }
 
-/* 20. MEMBERSHIP / FEE BLOCK */
+/* 18. MEMBERSHIP / FEE BLOCK */
 .currency,
 .fee-amount .currency,
 .period {
@@ -702,10 +671,6 @@ html:not([data-theme="dark"]) .radio-option {
 html:not([data-theme="dark"]) .form-input::placeholder {
   color: var(--text-muted) !important;
 }
-html:not([data-theme="dark"]) .form-select option {
-  background-color: #ffffff !important;
-  color: #4c0519 !important;
-}
 html:not([data-theme="dark"]) .benefit-mini,
 html:not([data-theme="dark"]) .form-container,
 html:not([data-theme="dark"]) .info-notice {
@@ -716,7 +681,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: var(--text-secondary) !important;
 }
 
-/* 21. LEADERSHIP PAGE */
+/* 19. LEADERSHIP PAGE */
 .position-card h3 {
   color: var(--text-primary) !important;
 }
@@ -760,7 +725,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   border-color: var(--card-border) !important;
 }
 
-/* 22. DISTRICTS PAGE */
+/* 20. DISTRICTS PAGE */
 .district-card::before {
   background: linear-gradient(
     90deg,
@@ -794,7 +759,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: var(--text-secondary) !important;
 }
 
-/* 23. GALLERY PAGE */
+/* 21. GALLERY PAGE */
 .gallery-item:hover {
   box-shadow: var(--card-shadow-hover) !important;
 }
@@ -805,7 +770,7 @@ html:not([data-theme="dark"]) .toggle-pass {
   color: #ffffff !important;
 }
 
-/* 24. PROFILE PAGE */
+/* 22. PROFILE PAGE */
 .profile-avatar-big {
   color: var(--accent-contrast) !important;
   border-color: var(--card-bg) !important;
@@ -904,13 +869,8 @@ html:not([data-theme="dark"]) .dashboard-content select {
   appearance: none !important;
   padding-right: 35px !important;
 }
-html:not([data-theme="dark"])
-  .dashboard-content
-  input::-webkit-calendar-picker-indicator {
-  filter: invert(0.2);
-}
 
-/* 25. MY PAYMENTS / FINANCE */
+/* 23. MY PAYMENTS / FINANCE */
 .summary-card.total .summary-value {
   color: var(--accent) !important;
 }
@@ -965,7 +925,7 @@ html:not([data-theme="dark"])
   color: #dc2626 !important;
 }
 
-/* 26. ADMIN QUICK ACTIONS / STATUS PILLS */
+/* 24. ADMIN QUICK ACTIONS / STATUS PILLS */
 .quick-action {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -995,7 +955,7 @@ html:not([data-theme="dark"])
   color: var(--accent-contrast) !important;
 }
 
-/* 27. NOTIFICATIONS PAGE */
+/* 25. NOTIFICATIONS PAGE */
 .notif-type-box {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -1020,7 +980,7 @@ html:not([data-theme="dark"])
   border-color: var(--error-border) !important;
 }
 
-/* 28. EMAIL SYSTEM PAGE */
+/* 26. EMAIL SYSTEM PAGE */
 .email-status-banner {
   background: linear-gradient(
     135deg,
@@ -1070,7 +1030,7 @@ html:not([data-theme="dark"])
   color: var(--text-secondary) !important;
 }
 
-/* 29. REPORTS PAGE */
+/* 27. REPORTS PAGE */
 .chart-period {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -1118,7 +1078,7 @@ html:not([data-theme="dark"])
   border-color: var(--success-border) !important;
 }
 
-/* 30. CABINET / LEADERSHIP ADMIN */
+/* 28. CABINET / LEADERSHIP ADMIN */
 .cabinet-info {
   background: linear-gradient(
     135deg,
@@ -1185,7 +1145,7 @@ html:not([data-theme="dark"])
   border-color: var(--card-border) !important;
 }
 
-/* 31. APPLICATIONS / ADMIN MEMBERS */
+/* 29. APPLICATIONS / ADMIN MEMBERS */
 .application-card::before {
   background: var(--warm) !important;
 }
@@ -1225,7 +1185,7 @@ html:not([data-theme="dark"])
   border-color: var(--card-border) !important;
 }
 
-/* 32. ADMIN WELCOME / DASHBOARD BADGES */
+/* 30. ADMIN WELCOME / DASHBOARD BADGES */
 .admin-welcome {
   background: linear-gradient(
     135deg,
@@ -1243,7 +1203,7 @@ html:not([data-theme="dark"])
   color: var(--accent-contrast) !important;
 }
 
-/* 34. BADGE / PILL DEFENSIVE OVERRIDES */
+/* 31. BADGE / PILL DEFENSIVE OVERRIDES */
 .status-badge-active {
   background: var(--success-bg) !important;
   color: var(--success) !important;
@@ -1280,7 +1240,7 @@ html:not([data-theme="dark"])
   background: var(--warm) !important;
 }
 
-/* 35. CATEGORY / PAY-METHOD BADGES */
+/* 32. CATEGORY / PAY-METHOD BADGES */
 .pay-method.jazzcash {
   background: var(--error-bg) !important;
   color: var(--error) !important;
@@ -1302,7 +1262,7 @@ html:not([data-theme="dark"])
   border-color: var(--card-border) !important;
 }
 
-/* 36. DONATION / SPONSOR BADGES */
+/* 33. DONATION / SPONSOR BADGES */
 .donor-badge.named {
   background: var(--success-bg) !important;
   color: var(--success) !important;
@@ -1332,7 +1292,7 @@ html:not([data-theme="dark"])
   border-color: var(--card-border-hover) !important;
 }
 
-/* 37. ROLE BADGES */
+/* 34. ROLE BADGES */
 .role-president,
 .role-vp,
 .role-gs,
@@ -1348,7 +1308,7 @@ html:not([data-theme="dark"])
   border-color: var(--card-border-hover) !important;
 }
 
-/* 38. INFO BANNER */
+/* 35. INFO BANNER */
 .info-banner {
   background: linear-gradient(
     135deg,
@@ -1365,7 +1325,7 @@ html:not([data-theme="dark"])
   color: var(--text-secondary) !important;
 }
 
-/* 39. DANGER ZONE */
+/* 36. DANGER ZONE */
 .danger-action {
   background: var(--error-bg) !important;
   border-color: var(--error-border) !important;
@@ -1394,7 +1354,7 @@ html:not([data-theme="dark"])
   color: #ffffff !important;
 }
 
-/* 40. TOGGLE SWITCH */
+/* 37. TOGGLE SWITCH */
 .toggle-slider {
   background: var(--card-bg-hover) !important;
   border-color: var(--card-border) !important;
@@ -1404,7 +1364,7 @@ html:not([data-theme="dark"])
   border-color: var(--accent) !important;
 }
 
-/* 41. SLIDER / PROGRESS */
+/* 38. SLIDER / PROGRESS */
 .slider-input {
   background: var(--card-border) !important;
 }
@@ -1418,7 +1378,7 @@ html:not([data-theme="dark"])
   color: var(--accent) !important;
 }
 
-/* 42. COLOR PICKER & UPLOAD */
+/* 39. COLOR PICKER & UPLOAD */
 .color-input-wrapper input[type="color"] {
   border-color: var(--card-border) !important;
 }
@@ -1437,7 +1397,7 @@ html:not([data-theme="dark"])
   color: var(--accent) !important;
 }
 
-/* 43. BG IMAGE OPTIONS */
+/* 40. BG IMAGE OPTIONS */
 .bg-preview {
   border-color: var(--card-border) !important;
 }
@@ -1449,7 +1409,7 @@ html:not([data-theme="dark"])
   color: var(--text-secondary) !important;
 }
 
-/* 44. SOCIAL SETTING ICONS */
+/* 41. SOCIAL SETTING ICONS */
 .social-setting-icon.facebook,
 .social-setting-icon.instagram,
 .social-setting-icon.twitter,
@@ -1459,14 +1419,14 @@ html:not([data-theme="dark"])
   background: var(--accent-soft) !important;
 }
 
-/* 45. PAYMENT METHOD ICONS */
+/* 42. PAYMENT METHOD ICONS */
 .payment-method-icon.jazzcash,
 .payment-method-icon.easypaisa,
 .payment-method-icon.bank {
   background: var(--accent-soft) !important;
 }
 
-/* 46. TIMELINE / MINI */
+/* 43. TIMELINE / MINI */
 .timeline-content h4 {
   color: var(--text-primary) !important;
 }
@@ -1482,7 +1442,7 @@ html:not([data-theme="dark"])
   background: var(--accent-soft) !important;
 }
 
-/* 47. STATUS INDICATOR */
+/* 44. STATUS INDICATOR */
 .status-indicator.closed {
   background: var(--error) !important;
   box-shadow: 0 0 0 4px var(--error-bg) !important;
@@ -1491,7 +1451,7 @@ html:not([data-theme="dark"])
   background: var(--success) !important;
 }
 
-/* 48. ADMIN ITEM AVATAR */
+/* 45. ADMIN ITEM AVATAR */
 .admin-item-avatar {
   color: var(--accent-contrast) !important;
 }
@@ -1502,7 +1462,7 @@ html:not([data-theme="dark"])
   color: var(--accent) !important;
 }
 
-/* 49. FOOTER / MISC */
+/* 46. FOOTER / MISC */
 .footer-col h3,
 .footer-col h4 {
   color: var(--text-primary) !important;
@@ -1559,7 +1519,7 @@ html[data-theme="dark"] .dash-stat-card {
 }
 
 /* ============================================================
-   🔥 FORCE READABLE TEXT
+   🔥 FORCE READABLE TEXT (DASHBOARD FIXES)
    ============================================================ */
 html:not([data-theme="dark"]) .dashboard-content h1,
 html:not([data-theme="dark"]) .dashboard-content h2,
@@ -1592,6 +1552,7 @@ html:not([data-theme="dark"]) [style*="color: #ffffff"],
 html:not([data-theme="dark"]) [style*="color: rgba(255"] {
   color: var(--text-primary) !important;
 }
+
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .btn-login,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -1626,20 +1587,100 @@ html:not([data-theme="dark"]) .save-bar-message {
 }
 
 /* ============================================================
-   📱 FIX: DESKTOP MODE ON MOBILE
+   📱 FIX: DESKTOP MODE ON MOBILE & MOBILE MENU FIX
    ============================================================ */
 @media (max-width: 1024px) {
   .menu-toggle {
     display: inline-block !important;
   }
+
+  /* DASHBOARD SIDEBAR FIX */
   .dashboard-sidebar {
     transform: translateX(-100%) !important;
+    padding-top: 70px !important;
+    z-index: 99999 !important;
   }
   .dashboard-sidebar.active {
     transform: translateX(0) !important;
   }
+  .sidebar-overlay.active {
+    z-index: 99998 !important;
+  }
+
+  /* SIDEBAR HEADER (Logo aur Close button) */
+  .dashboard-sidebar .sidebar-header {
+    display: flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 70px !important;
+    padding: 15px 20px !important;
+    background: var(--header-bg) !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    z-index: 100000 !important;
+    align-items: center;
+  }
+
   .dashboard-main {
     margin-left: 0 !important;
+  }
+
+  /* PUBLIC MOBILE MENU FIX (Home, About Us) */
+  .glass-header {
+    z-index: 100000 !important;
+    position: relative !important;
+  }
+
+  .glass-header nav.active {
+    position: fixed !important;
+    top: 70px !important; /* Header ke neeche */
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 70px) !important; /* Header ki height minus */
+    z-index: 99999 !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    background-color: var(--sky-top) !important; /* Solid background */
+  }
+
+  html[data-theme="dark"] .glass-header nav.active {
+    background-color: #0a1d33 !important;
+  }
+  html:not([data-theme="dark"]) .glass-header nav.active {
+    background-color: #fff1f2 !important;
+  }
+
+  .glass-header nav.active ul {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .glass-header nav ul li a {
+    display: block !important;
+    text-align: center !important;
+    padding: 15px 20px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .glass-header nav ul li a:hover,
+  .glass-header nav ul li a.active {
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--accent-glow);
   }
 }
 
@@ -1809,26 +1850,21 @@ body::after {
 }
 
 /* ============================================================
-   🪪 ID CARD PRINT / PDF SPECIFIC FIX (Sabse Aakhir)
+   🪪 ID CARD PRINT / PDF SPECIFIC FIX
    ============================================================ */
 @media print {
-  /* Force browser to print colors */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
-
   @page {
     size: auto;
     margin: 10mm;
   }
-
-  /* Hide everything except ID cards */
   body * {
     visibility: hidden;
   }
-
   .id-cards-wrapper,
   .id-card-wrapper,
   .id-card,
@@ -1840,8 +1876,6 @@ body::after {
   .card-back * {
     visibility: visible;
   }
-
-  /* Position ID cards nicely */
   .id-cards-wrapper {
     display: flex !important;
     flex-direction: row !important;
@@ -1855,8 +1889,6 @@ body::after {
     left: 0;
     width: 100%;
   }
-
-  /* Remove page headers, sidebars, buttons */
   .dashboard-sidebar,
   .dashboard-topbar,
   .page-header-block,
@@ -1864,25 +1896,19 @@ body::after {
   .sidebar-overlay {
     display: none !important;
   }
-
   .dashboard-main {
     margin: 0 !important;
     padding: 0 !important;
   }
-
-  /* ID Card styling */
   .id-card {
     box-shadow: 0 0 0 1px #ccc !important;
     transform: none !important;
     page-break-inside: avoid !important;
     background: #f7f8fa !important;
   }
-
   body.theme-female .id-card {
     background: #faf7f5 !important;
   }
-
-  /* Force Sidebar colors */
   .id-card .sidebar {
     background: linear-gradient(
       180deg,
@@ -1900,11 +1926,10 @@ body::after {
     ) !important;
   }
 }
+
 /* ============================================================
    💥 ULTIMATE FINAL FIX (Inputs & Dashboard Text Rescue)
    ============================================================ */
-
-/* 1. Fix Inputs, Selects & Textareas (Force Text & Fill Color) */
 html:not([data-theme="dark"]) .dashboard-content input,
 html:not([data-theme="dark"]) .dashboard-content select,
 html:not([data-theme="dark"]) .dashboard-content textarea,
@@ -1912,11 +1937,10 @@ html:not([data-theme="dark"]) .profile-form input,
 html:not([data-theme="dark"]) .profile-form select {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
-  background-color: #ffffff !important; /* Force solid white bg */
+  background-color: #ffffff !important;
   opacity: 1 !important;
 }
 
-/* 2. Fix Profile Page Headers (Personal Information, etc.) */
 html:not([data-theme="dark"]) .form-card-header h3,
 html:not([data-theme="dark"]) .form-card-header p,
 html:not([data-theme="dark"]) .profile-header-info h1,
@@ -1926,7 +1950,6 @@ html:not([data-theme="dark"]) .form-card-header i {
   -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 3. Fix Dashboard Text (Engagement Score, Badges, etc.) */
 html:not([data-theme="dark"]) .dashboard-content h2,
 html:not([data-theme="dark"]) .dashboard-content h3,
 html:not([data-theme="dark"]) .dashboard-content h4,
@@ -1941,7 +1964,6 @@ html:not([data-theme="dark"]) .stat-value {
   -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 4. Destroy ANY remaining rgba(255) inline styles (Jo dashboard me hain) */
 html:not([data-theme="dark"]) [style*="rgba(255"],
 html:not([data-theme="dark"]) [style*="rgba(240"],
 html:not([data-theme="dark"]) [style*="color: white"],
@@ -1950,33 +1972,25 @@ html:not([data-theme="dark"]) [style*="color: #fff"] {
   -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 5. Dark Mode Exceptions (Inputs ko dark me bhi theek rakhein) */
 html[data-theme="dark"] .dashboard-content input,
 html[data-theme="dark"] .dashboard-content select,
 html[data-theme="dark"] .dashboard-content textarea {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
+
 /* ============================================================
    🎯 DASHBOARD & PROFILE: LESS TRANSPARENCY & TEXT FIX
    ============================================================ */
-
-/* 1. Make background of dashboard cards more solid so text is readable */
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-card,
 html:not([data-theme="dark"]) .dashboard-content .summary-card,
 html:not([data-theme="dark"]) .dashboard-content .payment-table-card {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.95
-  ) !important; /* Increased opacity from 0.65 to 0.95 */
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(5px) !important;
 }
 
-/* 2. Force All Text in Dashboard/Profile to be Dark (Except Buttons/Badges) */
 html:not([data-theme="dark"]) .dashboard-content h1,
 html:not([data-theme="dark"]) .dashboard-content h2,
 html:not([data-theme="dark"]) .dashboard-content h3,
@@ -1995,7 +2009,6 @@ html:not([data-theme="dark"]) .profile-form label {
   color: var(--text-primary) !important;
 }
 
-/* 3. Fix specific white text issue in "Your Engagement Score" */
 html:not([data-theme="dark"]) .score-label,
 html:not([data-theme="dark"]) .score-value,
 html:not([data-theme="dark"]) .stat-label,
@@ -2006,7 +2019,6 @@ html:not([data-theme="dark"]) .dashboard-content .welcome-text p {
   color: var(--text-primary) !important;
 }
 
-/* 4. Badges, Avatars and Buttons wapas white text use karein */
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
 html:not([data-theme="dark"]) .dashboard-content .badge,
@@ -2016,7 +2028,6 @@ html:not([data-theme="dark"]) .dashboard-content .profile-avatar-big {
   color: #ffffff !important;
 }
 
-/* 5. Sidebar background ko solid karo taake text clear ho */
 html:not([data-theme="dark"]) .dashboard-sidebar {
   background: rgba(255, 255, 255, 0.95) !important;
 }
@@ -2027,28 +2038,21 @@ html:not([data-theme="dark"]) .sidebar-nav li a.active {
   color: var(--accent) !important;
   background: var(--accent-soft) !important;
 }
+
 /* ============================================================
    💎 ULTIMATE GLASSMORPHISM RESTORE (NO LAG) & TEXT FIX
    ============================================================ */
-
-/* 1. MAIN CARDS: True Glassmorphism (Transparent + Blur) */
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .engagement-card {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.35
-  ) !important; /* 35% White, 65% Transparent */
-  backdrop-filter: blur(16px) saturate(140%) !important; /* Premium Glass Blur */
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important; /* White Glass Border */
-  box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important; /* Soft Rose Shadow */
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important;
 }
 
-/* 2. INNER BOXES (Payments, Activities, etc.): Halka Glass */
 html:not([data-theme="dark"]) .dashboard-content .score-box,
 html:not([data-theme="dark"]) .dashboard-content .stat-box,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-card,
@@ -2059,7 +2063,6 @@ html:not([data-theme="dark"]) .dashboard-content .summary-card {
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
 }
 
-/* 3. FORCE ALL SMALL TEXT TO BE DARK (Fix for "PAYMENTS", "/ 40", etc.) */
 html:not([data-theme="dark"]) .dashboard-content .score-label,
 html:not([data-theme="dark"]) .dashboard-content .stat-label,
 html:not([data-theme="dark"]) .dashboard-content .score-subtitle,
@@ -2078,7 +2081,6 @@ html:not([data-theme="dark"]) .dashboard-content h5 {
   color: var(--text-primary) !important;
 }
 
-/* 4. EXCEPTIONS: Jo cheezein colored ya white honi chahiye */
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .badge,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -2088,15 +2090,13 @@ html:not([data-theme="dark"]) .dashboard-content .status-badge-pending {
   color: #ffffff !important;
 }
 
-/* 5. Score Numbers (0, 2, 7) ko unka color wapas do */
 html:not([data-theme="dark"]) .dashboard-content .score-value,
 html:not([data-theme="dark"]) .dashboard-content .stat-value,
 html:not([data-theme="dark"]) .dashboard-content .text-teal,
 html:not([data-theme="dark"]) .dashboard-content .text-orange,
 html:not([data-theme="dark"]) .dashboard-content .text-blue {
-  color: inherit !important; /* Unka inline color ya class color kaam karega */
+  color: inherit !important;
 }
-/* Specific score colors (Agar inline style nahi hai toh) */
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(1)
@@ -2121,12 +2121,10 @@ html:not([data-theme="dark"])
   .stat-value {
   color: #3b82f6 !important;
 }
+
 /* ============================================================
    💥 FINAL BULLETPROOF FIX: DASHBOARD WHITE TEXT
-   (Uses -webkit-text-fill-color to force override)
    ============================================================ */
-
-/* 1. FORCE ALL TEXT IN DASHBOARD TO DARK MAROON */
 html:not([data-theme="dark"]) .dashboard-content h1,
 html:not([data-theme="dark"]) .dashboard-content h2,
 html:not([data-theme="dark"]) .dashboard-content h3,
@@ -2151,7 +2149,6 @@ html:not([data-theme="dark"])
   -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 2. RESTORE WHITE TEXT ONLY FOR BUTTONS, AVATARS & BADGES */
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .btn-login,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -2172,8 +2169,6 @@ html:not([data-theme="dark"]) .dashboard-content .q-icon {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* 3. RESTORE COLORS FOR SCORE NUMBERS (9, 0, 2, 7) */
-/* Hum inko chhedenge nahi, ye apne original colors (Teal/Orange/Pink) mein rahenge */
 html:not([data-theme="dark"]) .dashboard-content .score-value,
 html:not([data-theme="dark"]) .dashboard-content .stat-value,
 html:not([data-theme="dark"]) .dashboard-content .overview-value,
@@ -2185,31 +2180,26 @@ html:not([data-theme="dark"]) .dashboard-content .text-blue,
 html:not([data-theme="dark"]) .dashboard-content .text-pink {
   -webkit-text-fill-color: unset !important;
 }
+
 /* ============================================================
    🚀 DASHBOARD.CSS HARDCODED COLOR OVERRIDE (LIGHT MODE ONLY)
    ============================================================ */
-
-/* 1. Fix the Dashboard Body Background (Remove Dark Gradient) */
 html:not([data-theme="dark"]) .dashboard-body {
   background: transparent !important;
   background-image: none !important;
 }
-
-/* 2. Restore Glassmorphism for all Dashboard Cards */
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-card,
 html:not([data-theme="dark"]) .dashboard-content .score-card {
-  background: rgba(255, 255, 255, 0.45) !important; /* 45% White for Glass */
+  background: rgba(255, 255, 255, 0.45) !important;
   backdrop-filter: blur(16px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
   border: 1px solid rgba(255, 255, 255, 0.8) !important;
   box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important;
 }
 
-/* 3. FORCE ALL TEXT TO DARK MAROON (Overriding hardcoded color: white) */
-/* Headings */
 html:not([data-theme="dark"]) .welcome-text h1,
 html:not([data-theme="dark"]) .topbar-title h2,
 html:not([data-theme="dark"]) .card-header h3,
@@ -2229,7 +2219,6 @@ html:not([data-theme="dark"]) .dashboard-content h5 {
   -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* Paragraphs & Small Text */
 html:not([data-theme="dark"]) .welcome-text p,
 html:not([data-theme="dark"]) .topbar-title p,
 html:not([data-theme="dark"]) .dash-stat-info p,
@@ -2245,7 +2234,6 @@ html:not([data-theme="dark"])
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
 
-/* 4. Fix Engagement Score Labels (Jo bilkul white the) */
 html:not([data-theme="dark"]) .score-label,
 html:not([data-theme="dark"]) .score-title,
 html:not([data-theme="dark"]) .score-subtitle,
@@ -2256,7 +2244,6 @@ html:not([data-theme="dark"]) .stat-title {
   opacity: 1 !important;
 }
 
-/* 5. Restore Colors for specific items that should stay white/colored */
 html:not([data-theme="dark"]) .user-avatar,
 html:not([data-theme="dark"]) .badge,
 html:not([data-theme="dark"]) .btn-primary,
@@ -2271,7 +2258,6 @@ html:not([data-theme="dark"]) .btn-primary {
   color: #ffffff !important;
 }
 
-/* 6. Inner boxes ko halka transparent karo taake glass look aaye */
 html:not([data-theme="dark"]) .notif-item,
 html:not([data-theme="dark"]) .quick-action,
 html:not([data-theme="dark"]) .payment-next,
@@ -2279,35 +2265,27 @@ html:not([data-theme="dark"]) .stat-box {
   background: rgba(255, 255, 255, 0.5) !important;
   border-color: rgba(255, 255, 255, 0.8) !important;
 }
+
 /* ============================================================
    💥 FINAL BULLETPROOF FIX: DASHBOARD TEXT (FORCE OVERRIDE)
    ============================================================ */
-
-/* 1. FORCE EVERY SINGLE TEXT TO BE DARK MAROON & FULLY OPAQUE */
 html:not([data-theme="dark"]) .dashboard-content,
 html:not([data-theme="dark"]) .dashboard-content * {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
-  opacity: 1 !important; /* Remove any faint/transparent effect */
+  opacity: 1 !important;
 }
 
-/* 2. KEEP THE BACKGROUND GLASSY BUT READABLE */
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .score-card {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.75
-  ) !important; /* 75% Solid for readability */
+  background: rgba(255, 255, 255, 0.75) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
 }
 
-/* 3. RESTORE WHITE TEXT ONLY FOR BUTTONS, AVATARS & STATUS BADGES */
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .btn-primary *,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -2320,8 +2298,6 @@ html:not([data-theme="dark"]) .dashboard-content .status-badge-overdue {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* 4. RESTORE SPECIFIC COLORS FOR SCORE NUMBERS (9, 0, 2, 7) */
-/* Hum in numbers ko chhodenge nahi, inko apne original colors mein rehne denge */
 html:not([data-theme="dark"]) .dashboard-content .score-value,
 html:not([data-theme="dark"]) .dashboard-content .score-value * {
   color: var(--accent) !important;
@@ -2340,7 +2316,6 @@ html:not([data-theme="dark"])
   color: #f59e0b !important;
   -webkit-text-fill-color: #f59e0b !important;
 }
-
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(2)
@@ -2353,7 +2328,6 @@ html:not([data-theme="dark"])
   color: #ec4899 !important;
   -webkit-text-fill-color: #ec4899 !important;
 }
-
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(3)
@@ -2366,7 +2340,6 @@ html:not([data-theme="dark"])
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
 }
-
 html:not([data-theme="dark"])
   .dashboard-content
   .stat-box:nth-child(4)
@@ -2380,7 +2353,6 @@ html:not([data-theme="dark"])
   -webkit-text-fill-color: #3b82f6 !important;
 }
 
-/* 5. RESTORE SUMMARY CARD NUMBERS */
 html:not([data-theme="dark"])
   .dashboard-content
   .summary-card.total
@@ -2409,11 +2381,10 @@ html:not([data-theme="dark"])
   color: #ec4899 !important;
   -webkit-text-fill-color: #ec4899 !important;
 }
+
 /* ============================================================
    🚨 FINAL EMERGENCY FIX: DASHBOARD WHITE TEXT & OPACITY
    ============================================================ */
-
-/* 1. Welcome Card Text ("Assalam-o-Alaikum") */
 html:not([data-theme="dark"]) .welcome-text h1,
 html:not([data-theme="dark"]) .welcome-text p {
   color: #4c0519 !important;
@@ -2421,7 +2392,6 @@ html:not([data-theme="dark"]) .welcome-text p {
   opacity: 1 !important;
 }
 
-/* 2. Engagement Score Box Text ("PAYMENTS", "/ 40", etc.) */
 html:not([data-theme="dark"]) .score-label,
 html:not([data-theme="dark"]) .score-title,
 html:not([data-theme="dark"]) .score-subtitle,
@@ -2430,10 +2400,9 @@ html:not([data-theme="dark"]) .stat-title {
   color: #4c0519 !important;
   -webkit-text-fill-color: #4c0519 !important;
   opacity: 1 !important;
-  font-weight: 600 !important; /* Text ko thoda mota kiya taake clear parhe */
+  font-weight: 600 !important;
 }
 
-/* 3. Stats Cards Text ("Total Paid", "Months Active", etc.) */
 html:not([data-theme="dark"]) .summary-label,
 html:not([data-theme="dark"]) .summary-sub,
 html:not([data-theme="dark"]) .dash-stat-info p,
@@ -2446,33 +2415,25 @@ html:not([data-theme="dark"]) .progress-text {
   opacity: 1 !important;
 }
 
-/* 4. Background Glassmorphism (Cards ko thoda solid rakhein taake text chamke) */
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.85
-  ) !important; /* Zyada solid white taake text clear ho */
+  background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(225, 29, 72, 0.15) !important;
 }
+
 /* ============================================================
    🔥 NUCLEAR FIX: FORCE EVERY TEXT TO BE MAROON (#4c0519)
    ============================================================ */
-
-/* 1. Dashboard ke har ek text ko zabardasti Maroon karo */
 html:not([data-theme="dark"]) .dashboard-content,
 html:not([data-theme="dark"]) .dashboard-content * {
   color: #4c0519 !important;
   -webkit-text-fill-color: #4c0519 !important;
-  opacity: 1 !important; /* Pheela (faint) text clear ho jayega */
+  opacity: 1 !important;
 }
 
-/* 2. EXCEPTIONS: Jo cheezein White rahni chahiye (Buttons, Avatars, Badges) */
 html:not([data-theme="dark"]) .dashboard-content .btn-primary,
 html:not([data-theme="dark"]) .dashboard-content .btn-primary *,
 html:not([data-theme="dark"]) .dashboard-content .user-avatar,
@@ -2490,14 +2451,12 @@ html:not([data-theme="dark"]) .dashboard-content .welcome-badge * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* 3. EXCEPTIONS: Score wale numbers (9, 0, 2, 7) apne colors mein rahein */
 html:not([data-theme="dark"]) .dashboard-content .score-value,
 html:not([data-theme="dark"]) .dashboard-content .stat-value,
 html:not([data-theme="dark"]) .dashboard-content .summary-value {
   -webkit-text-fill-color: unset !important;
 }
 
-/* 4. CARDS KA BACKGROUND: Thoda solid (85%) kar do taake Maroon text ekdum chamke */
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
@@ -2507,14 +2466,10 @@ html:not([data-theme="dark"]) .dashboard-content .summary-card {
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
+
 /* ============================================================
    🪪 ID CARD THEME PROTECTION
-   Male = Navy Blue | Female = Maroon
-   Ye block ID card ko upar wale ".dashboard-content *" override
-   se bachata hai.
    ============================================================ */
-
-/* --- Page header (title + subtitle) → WHITE --- */
 body .dashboard-content .page-header-block .page-header-info h1 {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -2524,8 +2479,6 @@ body .dashboard-content .page-header-block .page-header-info p {
   -webkit-text-fill-color: #ffffff !important;
   opacity: 0.75 !important;
 }
-
-/* --- Header buttons --- */
 body .dashboard-content .page-header-block .btn-print {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -2534,8 +2487,6 @@ body .dashboard-content .page-header-block .btn-verify {
   color: #93c5fd !important;
   -webkit-text-fill-color: #93c5fd !important;
 }
-
-/* --- Loading / Status box → WHITE --- */
 body .dashboard-content .loading-box h3,
 body .dashboard-content .loading-box p,
 body .dashboard-content .loading-box .ico {
@@ -2550,21 +2501,13 @@ body .dashboard-content .loading-box.err .ico {
   color: #fca5a5 !important;
   -webkit-text-fill-color: #fca5a5 !important;
 }
-
-/* --- Card labels (◆ Front ◆ / ◆ Back ◆) --- */
 body .dashboard-content .id-cards-wrapper .card-label {
   color: rgba(255, 255, 255, 0.5) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.5) !important;
 }
-
-/* --- Watermark ko wapas halka karo (0.05 opacity) --- */
 body .dashboard-content .id-card .watermark-bg {
   opacity: 0.05 !important;
 }
-
-/* ============================================================
-   ID CARD — SIDEBAR (always white)
-   ============================================================ */
 body .dashboard-content .id-card .sidebar-brand,
 body .dashboard-content .id-card .sidebar-id-block .val {
   color: #ffffff !important;
@@ -2576,9 +2519,6 @@ body .dashboard-content .id-card .sidebar-id-block .lbl {
   opacity: 0.75 !important;
 }
 
-/* ============================================================
-   ID CARD — MALE (NAVY BLUE)
-   ============================================================ */
 body.theme-male .dashboard-content .id-card .member-name,
 body.theme-male .dashboard-content .id-card .info-line .val,
 body.theme-male .dashboard-content .id-card .instr-header h4,
@@ -2599,9 +2539,6 @@ body.theme-male .dashboard-content .id-card .member-photo {
   -webkit-text-fill-color: #1e3a5f !important;
 }
 
-/* ============================================================
-   ID CARD — FEMALE (MAROON)
-   ============================================================ */
 body.theme-female .dashboard-content .id-card .member-name,
 body.theme-female .dashboard-content .id-card .info-line .val,
 body.theme-female .dashboard-content .id-card .instr-header h4,
@@ -2622,9 +2559,6 @@ body.theme-female .dashboard-content .id-card .member-photo {
   -webkit-text-fill-color: #991b1b !important;
 }
 
-/* ============================================================
-   ID CARD — MUTED / SECONDARY TEXT (both genders)
-   ============================================================ */
 body .dashboard-content .id-card .info-line .lbl,
 body .dashboard-content .id-card .date-row .lbl,
 body .dashboard-content .id-card .member-dept,
@@ -2635,9 +2569,6 @@ body .dashboard-content .id-card .sig-lbl {
   -webkit-text-fill-color: #6b7280 !important;
 }
 
-/* ============================================================
-   ID CARD — ROLE BADGE (gender + member type preserved)
-   ============================================================ */
 body.theme-male .dashboard-content .id-card .member-role {
   background: linear-gradient(
     135deg,
@@ -2690,12 +2621,10 @@ body .dashboard-content .id-card .member-role.coordinator {
   color: #fb923c !important;
   -webkit-text-fill-color: #fb923c !important;
 }
+
 /* ============================================================
    🗺️ DISTRICT / TEHSIL PAGES — THEME FIX
-   Applies to: districts.html, district-detail.html, tehsil-detail.html
    ============================================================ */
-
-/* --- LIGHT MODE CARD BACKGROUNDS (Solid white glass) --- */
 html:not([data-theme="dark"]) .district-header-card,
 html:not([data-theme="dark"]) .tehsil-header-card,
 html:not([data-theme="dark"]) .section-card,
@@ -2709,8 +2638,6 @@ html:not([data-theme="dark"]) .cta-card {
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
-
-/* --- DARK MODE CARD BACKGROUNDS --- */
 html[data-theme="dark"] .district-header-card,
 html[data-theme="dark"] .tehsil-header-card,
 html[data-theme="dark"] .section-card,
@@ -2720,8 +2647,6 @@ html[data-theme="dark"] .info-row {
   background: rgba(12, 24, 42, 0.55) !important;
   border: 1px solid rgba(140, 200, 220, 0.15) !important;
 }
-
-/* --- LIGHT MODE: FORCE MAROON ON HEADINGS/BODY --- */
 html:not([data-theme="dark"]) .district-header-card h1,
 html:not([data-theme="dark"]) .tehsil-header-card h1,
 html:not([data-theme="dark"]) .tehsil-card h4,
@@ -2733,8 +2658,6 @@ html:not([data-theme="dark"]) .loading-wrap h2 {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
-
-/* --- LIGHT MODE: MUTED MAROON ON SECONDARY TEXT --- */
 html:not([data-theme="dark"]) .stat-lbl,
 html:not([data-theme="dark"]) .tehsil-card p,
 html:not([data-theme="dark"]) .district-footer p,
@@ -2745,34 +2668,26 @@ html:not([data-theme="dark"]) .breadcrumb {
   color: var(--text-secondary) !important;
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
-
-/* --- DISTRICTS.HTML CLICKABLE CARD (LIGHT) --- */
 html:not([data-theme="dark"]) .district-card {
   background: rgba(255, 255, 255, 0.75) !important;
   border: 1px solid rgba(225, 29, 72, 0.15) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
 }
-
-/* --- DISTRICTS.HTML CLICKABLE CARD (DARK) --- */
 html[data-theme="dark"] .district-card {
   background: rgba(12, 24, 42, 0.55) !important;
   border: 1px solid rgba(140, 200, 220, 0.15) !important;
 }
-
 html:not([data-theme="dark"]) .district-card .district-header h3,
 html:not([data-theme="dark"]) .district-card .district-footer p {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
 }
-
 html:not([data-theme="dark"]) .district-card .district-info,
 html:not([data-theme="dark"]) .district-card .tehsil-list span {
   color: var(--text-secondary) !important;
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
-
-/* --- "TBA" COORDINATOR — Darker amber in light mode for readability --- */
 html:not([data-theme="dark"]) .district-card .district-footer em {
   color: #b45309 !important;
   -webkit-text-fill-color: #b45309 !important;
@@ -2780,41 +2695,24 @@ html:not([data-theme="dark"]) .district-card .district-footer em {
 html[data-theme="dark"] .district-card .district-footer em {
   color: #fbbf24 !important;
 }
-
-/* --- COORDINATOR ROLE PILL — Darker blue in light mode --- */
 html:not([data-theme="dark"]) .coord-info p {
   color: #1d4ed8 !important;
   -webkit-text-fill-color: #1d4ed8 !important;
 }
+html:not([data-theme="dark"]) .coord-empty {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+html[data-theme="dark"] .coord-empty {
+  color: #fbbf24 !important;
+  -webkit-text-fill-color: #fbbf24 !important;
+}
 
-/* --- "NOT ASSIGNED" WARNING — Darker amber in light mode --- */
-html:not([data-theme="dark"]) .coord-empty {
-  color: #b45309 !important;
-  -webkit-text-fill-color: #b45309 !important;
-  background: rgba(245, 158, 11, 0.12) !important;
-  border-color: rgba(245, 158, 11, 0.5) !important;
-}
-html[data-theme="dark"] .coord-empty {
-  color: #fbbf24 !important;
-  -webkit-text-fill-color: #fbbf24 !important;
-}
-/* --- "NOT ASSIGNED" WARNING — Darker amber in light mode --- */
-html:not([data-theme="dark"]) .coord-empty {
-  color: #b45309 !important;
-  -webkit-text-fill-color: #b45309 !important;
-  background: rgba(245, 158, 11, 0.12) !important;
-  border-color: rgba(245, 158, 11, 0.5) !important;
-}
-html[data-theme="dark"] .coord-empty {
-  color: #fbbf24 !important;
-  -webkit-text-fill-color: #fbbf24 !important;
-}
-/* ============================================================
 /* ============================================================
    ✅ ULTIMATE WATERMARK & SOLID FIX
    ============================================================ */
-
-/* 1. SOLID BACKGROUNDS (Pink background ko block karo) */
 html:not([data-theme="dark"]) .dashboard-content .cert-container {
   background: #fefbf3 !important;
   background-image: none !important;
@@ -2823,13 +2721,11 @@ html:not([data-theme="dark"]) .dashboard-content .certificate {
   background: #fdf6e3 !important;
   background-image: none !important;
 }
-
-/* 2. WATERMARK KO ZABARDASTI VISIBLE KARO */
 html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo {
   display: block !important;
   visibility: visible !important;
-  opacity: 0.15 !important; /* 15% opacity - saaf nazar aayega */
-  z-index: 0 !important; /* Background aur text ke darmiyan */
+  opacity: 0.15 !important;
+  z-index: 0 !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
@@ -2837,20 +2733,21 @@ html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo {
   width: 60% !important;
   height: 60% !important;
   pointer-events: none !important;
-  mix-blend-mode: normal !important; /* Multiply hata diya taake ghayab na ho */
+  mix-blend-mode: normal !important;
 }
-
-html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo img {
+html:not([data-theme="dark"])
+  .dashboard-content
+  .certificate
+  .watermark-logo
+  img {
   display: block !important;
   visibility: visible !important;
-  opacity: 1 !important; /* Parent (watermark-logo) opacity control kar raha hai */
+  opacity: 1 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
   mix-blend-mode: normal !important;
 }
-
-/* 3. TEXT KO WATERMARK KE UPAR RAKHO */
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-header,
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-title,
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-top-meta,
@@ -2859,8 +2756,6 @@ html:not([data-theme="dark"]) .dashboard-content .certificate .cert-footer {
   z-index: 10 !important;
   position: relative !important;
 }
-
-/* 4. TEXT COLORS FIX */
 html:not([data-theme="dark"]) .dashboard-content .certificate .cert-title h1 {
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
@@ -2870,16 +2765,21 @@ html:not([data-theme="dark"]) .dashboard-content .certificate .cert-name {
   color: #0f2027 !important;
   -webkit-text-fill-color: #0f2027 !important;
 }
-html:not([data-theme="dark"]) .dashboard-content .certificate .cert-description {
+html:not([data-theme="dark"])
+  .dashboard-content
+  .certificate
+  .cert-description {
   color: #4a4a52 !important;
   -webkit-text-fill-color: #4a4a52 !important;
 }
-html:not([data-theme="dark"]) .dashboard-content .certificate .cert-description strong {
+html:not([data-theme="dark"])
+  .dashboard-content
+  .certificate
+  .cert-description
+  strong {
   color: #1abc9c !important;
   -webkit-text-fill-color: #1abc9c !important;
 }
-
-/* 5. BOXES FIX (Date/ID/QR) */
 html:not([data-theme="dark"]) .dashboard-content .cert-meta-inside,
 html:not([data-theme="dark"]) .dashboard-content .cert-qr-wrap,
 html:not([data-theme="dark"]) .dashboard-content .cert-uid,
@@ -2887,25 +2787,21 @@ html:not([data-theme="dark"]) .dashboard-content .cert-role {
   background: #ffffff !important;
   border: 1px solid rgba(184, 148, 74, 0.3) !important;
 }
+
 /* ============================================================
    🪟 GLOBAL GLASSMORPHISM (LAG-FREE & SIDEBAR FIX)
    ============================================================ */
-
-/* 1. Variable Setup for Glass */
 :root {
   --glass-bg: rgba(255, 255, 255, 0.65);
   --glass-border: 1px solid rgba(255, 255, 255, 0.9);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
   --glass-blur: blur(16px) saturate(150%);
 }
-
 html[data-theme="dark"] {
   --glass-bg: rgba(15, 32, 39, 0.65);
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
-
-/* 2. Apply Glass ONLY to Cards and Boxes (Not Sidebar) */
 .glass-card,
 .content-card,
 .dash-stat-card,
@@ -2923,14 +2819,10 @@ html[data-theme="dark"] {
   -webkit-backdrop-filter: var(--glass-blur) !important;
   border: var(--glass-border) !important;
   box-shadow: var(--glass-shadow) !important;
-  
-  /* GPU Acceleration for Mobile (No Lag) */
   transform: translateZ(0) !important;
   -webkit-transform: translateZ(0) !important;
   will-change: backdrop-filter;
 }
-
-/* 3. Apply Glass to Sidebar & Topbar (Bina transform lagaye taake hide ho sake) */
 .dashboard-sidebar,
 .dashboard-topbar {
   background: var(--glass-bg) !important;
@@ -2939,21 +2831,6 @@ html[data-theme="dark"] {
   border: var(--glass-border) !important;
   box-shadow: var(--glass-shadow) !important;
 }
-
-/* 4. ZABARDASTI SIDEBAR HIDE ON MOBILE (Fixing the stuck sidebar) */
-@media (max-width: 1024px) {
-  .dashboard-sidebar {
-    transform: translateX(-100%) !important; /* Default: Chupa hua */
-    -webkit-transform: translateX(-100%) !important;
-    transition: transform 0.3s ease !important;
-  }
-  .dashboard-sidebar.active {
-    transform: translateX(0) !important; /* Open: Khula hua */
-    -webkit-transform: translateX(0) !important;
-  }
-}
-
-/* 5. Mobile Optimization (Reduce blur to prevent lag) */
 @media (max-width: 768px) {
   .glass-card,
   .content-card,
@@ -2978,8 +2855,6 @@ html[data-theme="dark"] {
     background: rgba(15, 32, 39, 0.8) !important;
   }
 }
-
-/* 6. Fix inner elements that should NOT be glass */
 .table-card .data-table tbody tr,
 .admin-list-item .admin-item-avatar,
 .cert-container,
@@ -2987,102 +2862,29 @@ html[data-theme="dark"] {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-
-/* 7. Make inner table headers solid */
 .data-table thead {
   background: rgba(255, 255, 255, 0.9) !important;
 }
 html[data-theme="dark"] .data-table thead {
   background: rgba(15, 32, 39, 0.9) !important;
 }
+
 /* ============================================================
-   🪟 /* ============================================================
-   🪟 FINAL ULTIMATE FIX: MOBILE MENU (SOLID GLASS & PERFECT)
+   🪪 FINAL PERMANENT FIX (Watermark & Mobile Stacking)
    ============================================================ */
-
-@media (max-width: 1024px) {
-  /* 1. Header ko sabse upar rakho taake Close (X) button kaam kare */
-  .glass-header {
-    z-index: 100000 !important;
-    position: relative !important;
-  }
-
-  /* 2. Mobile Menu Container: Poori screen cover karega */
-  .glass-header nav.active {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 99999 !important;
-    
-    /* Header se overlap na ho, isliye upar se 100px ki jagah chhodi hai */
-    padding-top: 90px !important; 
-    padding-bottom: 40px !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important; 
-    
-    /* Glassmorphism with 95% Opacity (Peechay ka text nahi dikhega) */
-    backdrop-filter: blur(25px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-
-  /* 3. Dark Mode Glass Background (95% Solid) */
-  html[data-theme="dark"] .glass-header nav.active {
-    background-color: rgba(11, 27, 42, 0.96) !important; 
-  }
-
-  /* 4. Light Mode Glass Background (95% Solid) */
-  html:not([data-theme="dark"]) .glass-header nav.active {
-    background-color: rgba(253, 251, 247, 0.96) !important; 
-  }
-
-  /* 5. Links Container */
-  .glass-header nav.active ul {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    margin: 0 !important;
-    padding: 0 20px !important; /* Links ko screen ke kinaron se bachaya */
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  /* 6. Links Styling */
-  .glass-header nav ul li a {
-    display: block !important;
-    text-align: center !important;
-    padding: 16px 20px !important;
-    border-radius: 12px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    transition: 0.3s !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Dark Mode Links */
-  html[data-theme="dark"] .glass-header nav ul li a {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-  }
-
-  /* Light Mode Links */
-  html:not([data-theme="dark"]) .glass-header nav ul li a {
-    background: rgba(0, 0, 0, 0.03) !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    color: #4c0519 !important; /* Dark Maroon Text */
-  }
-
-  /* Hover / Active State */
-  .glass-header nav ul li a:hover,
-  .glass-header nav ul li a.active {
-    background: var(--accent) !important;
-    color: #ffffff !important;
-    border-color: var(--accent) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--accent-glow);
-  }
+.dashboard-content .certificate .watermark-logo,
+.dashboard-content .certificate .watermark-logo img {
+  opacity: 0.09 !important;
+  z-index: -1 !important;
+  mix-blend-mode: multiply !important;
+  display: block !important;
+  pointer-events: none !important;
+}
+.dashboard-content .certificate .cert-header,
+.dashboard-content .certificate .cert-title,
+.dashboard-content .certificate .cert-top-meta,
+.dashboard-content .certificate .cert-body,
+.dashboard-content .certificate .cert-footer {
+  z-index: 10 !important;
+  position: relative !important;
 }
