@@ -1,5 +1,5 @@
 // ==========================================
-// SYDF - MAIN JAVASCRIPT (v22 - GLOBAL ANIMATIONS)
+// SYDF - MAIN JAVASCRIPT (v23 - MOBILE FIX)
 // ==========================================
 
 console.log("SYDF Website Loaded Successfully!");
@@ -12,7 +12,6 @@ console.log("SYDF Website Loaded Successfully!");
     link.href = "css/theme-overrides.css";
     document.head.appendChild(link);
   }
-  // Auto-load animations.css globally
   if (!document.querySelector('link[href*="animations.css"]')) {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -21,36 +20,28 @@ console.log("SYDF Website Loaded Successfully!");
   }
 })();
 
-// ==========================================
-// GLOBAL ANIMATION SYSTEM (Professional Fade-In)
-// ==========================================
-// We use GPU-accelerated transforms to ensure zero lag on mobile devices.
+// GLOBAL ANIMATION SYSTEM
 const observerOptions = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
 const observer = new IntersectionObserver(function (entries) {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
       entry.target.classList.add("visible");
-      // Stop observing once animated to save mobile battery/CPU
       observer.unobserve(entry.target);
     }
   });
 }, observerOptions);
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Elements to animate on load/scroll
   const elementsToAnimate = document.querySelectorAll(
     ".glass-card, .content-card, .dash-stat-card, .activity-card, .admin-list-item, .profile-form-card, .data-table, .page-header-block",
   );
-
   elementsToAnimate.forEach((el) => {
     el.classList.add("syf-animate-in");
     observer.observe(el);
   });
 });
 
-// ==========================================
 // NAVBAR SCROLL EFFECT
-// ==========================================
 window.addEventListener("scroll", function () {
   const header = document.querySelector(".glass-header");
   if (!header) return;
@@ -63,9 +54,7 @@ window.addEventListener("scroll", function () {
   }
 });
 
-// ==========================================
 // SMOOTH SCROLL
-// ==========================================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     const href = this.getAttribute("href");
@@ -76,9 +65,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// ==========================================
 // BACK TO TOP BUTTON
-// ==========================================
 const backToTopBtn = document.createElement("button");
 backToTopBtn.innerHTML = "↑";
 backToTopBtn.className = "back-to-top";
@@ -92,9 +79,7 @@ backToTopBtn.addEventListener("click", function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-// ==========================================
 // AUTO-LOAD SUPABASE
-// ==========================================
 (function () {
   if (typeof supabase === "undefined") {
     const script1 = document.createElement("script");
@@ -109,9 +94,7 @@ backToTopBtn.addEventListener("click", function () {
   }
 })();
 
-// ==========================================
 // AUTHENTICATION & LOGOUT
-// ==========================================
 async function getCurrentUser() {
   let attempts = 0;
   while (
@@ -271,7 +254,7 @@ function updateUserInfo(user) {
 }
 
 // ==========================================
-// SIDEBAR TOGGLE (For Admin & Dashboard)
+// SIDEBAR TOGGLE (UPDATED FOR MOBILE FIX)
 // ==========================================
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("dashboardSidebar");
@@ -279,33 +262,36 @@ const sidebarClose = document.getElementById("sidebarClose");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 
 if (menuToggle && sidebar) {
-  menuToggle.addEventListener("click", function () {
+  menuToggle.addEventListener("click", function (e) {
+    e.preventDefault();
     sidebar.classList.add("active");
     if (sidebarOverlay) sidebarOverlay.classList.add("active");
+    document.body.style.overflow = "hidden"; // Scroll lock
   });
 }
 if (sidebarClose && sidebar) {
-  sidebarClose.addEventListener("click", function () {
+  sidebarClose.addEventListener("click", function (e) {
+    e.preventDefault();
     sidebar.classList.remove("active");
     if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+    document.body.style.overflow = "";
   });
 }
 if (sidebarOverlay) {
   sidebarOverlay.addEventListener("click", function () {
     if (sidebar) sidebar.classList.remove("active");
     sidebarOverlay.classList.remove("active");
+    document.body.style.overflow = "";
   });
 }
 
-// ==========================================
-// DYNAMIC HEADER (LOADED IMMEDIATELY) & FOOTER
-// ==========================================
+// DYNAMIC HEADER & FOOTER
 document.addEventListener("DOMContentLoaded", function () {
   const isAdminPage =
     window.location.pathname.includes("admin") &&
     !window.location.pathname.includes("admin-login");
 
-  // 1. HEADER & MOBILE BUTTON (Synchronous - No DB needed)
+  // HEADER
   if (!isAdminPage) {
     const existingNav = document.querySelector(".glass-header nav");
     const headerDiv = document.querySelector(".glass-header");
@@ -325,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function () {
         { href: "donate.html", label: "Donate" },
         { href: "contact.html", label: "Contact" },
       ];
-
       let navHTML = "<ul>";
       defaultLinks.forEach((link) => {
         const active = currentPath === link.href ? ' class="active"' : "";
@@ -335,7 +320,6 @@ document.addEventListener("DOMContentLoaded", function () {
         currentPath === "public-report.html" ? ' class="active"' : "";
       navHTML += `<li><a href="public-report.html"${isGrievance} style="color: var(--warm-text); font-weight: 600;">🛡️ Grievance</a></li>`;
       navHTML += `<li><a href="login.html" class="btn-login" id="navAuthBtn">Login</a></li></ul>`;
-
       existingNav.innerHTML = navHTML;
     }
 
@@ -363,7 +347,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Logo Setup
     const logoDiv = document.querySelector(".glass-header .logo");
     if (logoDiv && !logoDiv.querySelector("img")) {
       const img = document.createElement("img");
@@ -388,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // 2. ASYNC FOOTER & SIDEBAR INJECTIONS (Runs after DB ready)
+  // FOOTER & SIDEBAR
   (async function loadDynamicParts() {
     let attempts = 0;
     while (
@@ -400,7 +383,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (typeof supabaseClient === "undefined" || !supabaseClient) return;
 
-    // Dynamic Footer
     if (!isAdminPage) {
       try {
         const { data: settingsData } = await supabaseClient
@@ -418,7 +400,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const sysSettings = {};
         if (settingsData)
           settingsData.forEach((s) => (sysSettings[s.key] = s.value));
-
         const fbLink = sysSettings.facebook || "#";
         const igLink = sysSettings.instagram || "#";
         const ytLink = sysSettings.youtube || "#";
@@ -431,36 +412,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (existingFooter) {
           existingFooter.innerHTML = `
             <div class="footer-content">
-                <div class="footer-col">
-                    <h3>SYDF</h3><p>Swat Youth Development Forum</p><p>Empowering Youth, Building Future</p>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        ${fbLink !== "#" ? `<a href="${fbLink}" target="_blank" title="Facebook" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📘</a>` : ""}
-                        ${igLink !== "#" ? `<a href="${igLink}" target="_blank" title="Instagram" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📷</a>` : ""}
-                        ${ytLink !== "#" ? `<a href="${ytLink}" target="_blank" title="YouTube" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">▶️</a>` : ""}
-                        ${waLink !== "#" ? `<a href="${waLink}" target="_blank" title="WhatsApp" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">💬</a>` : ""}
-                    </div>
-                </div>
+                <div class="footer-col"><h3>SYDF</h3><p>Swat Youth Development Forum</p><p>Empowering Youth, Building Future</p><div style="margin-top: 15px; display: flex; gap: 10px;">${fbLink !== "#" ? `<a href="${fbLink}" target="_blank" title="Facebook" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📘</a>` : ""}${igLink !== "#" ? `<a href="${igLink}" target="_blank" title="Instagram" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">📷</a>` : ""}${ytLink !== "#" ? `<a href="${ytLink}" target="_blank" title="YouTube" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">▶️</a>` : ""}${waLink !== "#" ? `<a href="${waLink}" target="_blank" title="WhatsApp" style="display: inline-flex; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--card-border); align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">💬</a>` : ""}</div></div>
                 <div class="footer-col"><h4>Explore</h4><ul><li><a href="about.html">About Us</a></li><li><a href="leadership.html">Leadership</a></li><li><a href="districts.html">Districts</a></li><li><a href="activities.html">Activities</a></li><li><a href="events.html">Events</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="news.html">News & Blog</a></li><li><a href="members.html">Members Directory</a></li></ul></div>
                 <div class="footer-col"><h4>Get Involved</h4><ul><li><a href="membership.html">Membership</a></li><li><a href="donate.html">Donate</a></li><li><a href="sponsor.html">Sponsor an Activity</a></li><li><a href="volunteer.html">Volunteer</a></li><li><a href="partners.html">Our Partners</a></li><li><a href="stories.html">Success Stories</a></li></ul></div>
                 <div class="footer-col"><h4>Support & Legal</h4><ul><li><a href="contact.html">Contact Us</a></li><li><a href="public-report.html" style="color: var(--warm-text); font-weight: 600;">🛡️ Public Grievances</a></li><li><a href="faq.html">FAQ</a></li><li><a href="feedback.html">Send Feedback</a></li><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="login.html">Member Login</a></li></ul></div>
-                <div class="footer-col">
-                    <h4>Contact</h4>
-                    <p>${contactAddress}</p>
-                    <p>${contactEmail}</p>
-                    <p>${contactPhone}</p>
-                </div>
+                <div class="footer-col"><h4>Contact</h4><p>${contactAddress}</p><p>${contactEmail}</p><p>${contactPhone}</p></div>
             </div>
-            <div class="footer-bottom"><p>&copy; ${new Date().getFullYear()} Swat Youth Development Forum. All Rights Reserved.</p></div>
-           `;
+            <div class="footer-bottom"><p>&copy; ${new Date().getFullYear()} Swat Youth Development Forum. All Rights Reserved.</p></div>`;
         }
       } catch (err) {
         console.log("Footer error:", err);
       }
     }
 
-    // ==========================================
-    // SIDEBAR INJECTIONS (FIXED & UNIFORM)
-    // ==========================================
+    // SIDEBAR INJECTIONS
     const sidebarNav = document.querySelector(
       ".dashboard-sidebar .sidebar-nav",
     );
@@ -469,12 +434,9 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.pathname.split("/").pop() || "dashboard.html";
 
       if (isAdminPage) {
-        // FORCE REBUILD ADMIN SIDEBAR
         sidebarNav.innerHTML = `
           <div class="nav-section-title">Main</div>
-          <ul>
-            <li><a href="admin.html" class="${currentPage === "admin.html" ? "active" : ""}"><span class="nav-icon">📊</span><span>Dashboard</span></a></li>
-          </ul>
+          <ul><li><a href="admin.html" class="${currentPage === "admin.html" ? "active" : ""}"><span class="nav-icon">📊</span><span>Dashboard</span></a></li></ul>
           <div class="nav-section-title">Members</div>
           <ul>
             <li><a href="admin-members.html" class="${currentPage === "admin-members.html" ? "active" : ""}"><span class="nav-icon">👥</span><span>All Members</span></a></li>
@@ -520,16 +482,13 @@ document.addEventListener("DOMContentLoaded", function () {
           <ul>
             <li><a href="index.html" class="back-to-site-btn" style="color: var(--accent);"><span class="nav-icon">🌐</span><span>Back to Website</span></a></li>
             <li><a href="#" class="logout-btn" style="color: #ef4444;"><span class="nav-icon">🚪</span><span>Logout</span></a></li>
-          </ul>
-        `;
+          </ul>`;
       } else {
-        // MEMBER PANEL SIDEBAR LOGIC
         sidebarNav.querySelectorAll("a").forEach((link) => {
           link.classList.remove("active");
           const href = link.getAttribute("href");
           if (href && href === currentPage) link.classList.add("active");
         });
-
         if (
           !Array.from(sidebarNav.querySelectorAll("a")).some((a) =>
             a.href.includes("member-reports.html"),
@@ -561,7 +520,6 @@ document.addEventListener("DOMContentLoaded", function () {
         addBottomButtons(sidebarNav);
       }
     }
-
     if (
       isAdminPage &&
       !document.querySelector('script[src*="activity-logger.js"]')
@@ -580,19 +538,16 @@ function addBottomButtons(sidebarNav) {
   const hasLogoutBtn = Array.from(sidebarNav.querySelectorAll("a")).some((a) =>
     a.classList.contains("logout-btn"),
   );
-
   if (!hasBackBtn || !hasLogoutBtn) {
     const divider = document.createElement("div");
     divider.style.cssText =
       "height: 1px; background: var(--card-border); margin: 15px 10px;";
     sidebarNav.appendChild(divider);
-
     if (!hasBackBtn) {
       const backLi = document.createElement("li");
       backLi.innerHTML = `<a href="index.html" class="back-to-site-btn" style="color: var(--accent);"><span class="nav-icon">🌐</span><span>Back to Website</span></a>`;
       sidebarNav.appendChild(backLi);
     }
-
     if (!hasLogoutBtn) {
       const logoutLi = document.createElement("li");
       logoutLi.innerHTML = `<a href="#" class="logout-btn" style="color: #ef4444;"><span class="nav-icon">🚪</span><span>Logout</span></a>`;
@@ -611,7 +566,6 @@ async function applySectionControls() {
     attempts++;
   }
   if (!supabaseClient) return;
-
   const currentPage = window.location.pathname
     .split("/")
     .pop()
@@ -629,7 +583,6 @@ async function applySectionControls() {
     "sponsor",
     "partners",
   ];
-
   try {
     const { data } = await supabaseClient
       .from("settings")
@@ -640,7 +593,6 @@ async function applySectionControls() {
       data.forEach((d) => {
         settingsMap[d.key] = d.value === "true";
       });
-
     document.querySelectorAll(".glass-header nav ul li a").forEach((a) => {
       const href = a.getAttribute("href");
       if (href && href.endsWith(".html")) {
@@ -649,19 +601,13 @@ async function applySectionControls() {
         if (settingsMap[key] === false) a.parentElement.style.display = "none";
       }
     });
-
     if (protectedPages.includes(currentPage)) {
       const key = `section_${currentPage}`;
       if (settingsMap[key] === false) {
         const overlay = document.createElement("div");
         overlay.style.cssText =
           "position:fixed; inset:0; z-index:99999; background: var(--sky-top); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;";
-        overlay.innerHTML = `
-          <div style="font-size:80px; margin-bottom:20px;">🚧</div>
-          <h2 style="color:var(--text-primary); font-size:32px; margin-bottom:15px; font-family:'Poppins', sans-serif;">Section Temporarily Closed</h2>
-          <p style="color:var(--text-secondary); max-width:500px; margin-bottom:30px; font-size:16px; font-family:'Poppins', sans-serif;">This section is currently closed by the administration. Please check back later.</p>
-          <a href="index.html" class="btn-primary" style="text-decoration:none; padding:12px 30px; border-radius:10px; font-family:'Poppins', sans-serif; background:var(--accent); color:var(--accent-contrast); font-weight:600;">Return to Homepage</a>
-        `;
+        overlay.innerHTML = `<div style="font-size:80px; margin-bottom:20px;">🚧</div><h2 style="color:var(--text-primary); font-size:32px; margin-bottom:15px; font-family:'Poppins', sans-serif;">Section Temporarily Closed</h2><p style="color:var(--text-secondary); max-width:500px; margin-bottom:30px; font-size:16px; font-family:'Poppins', sans-serif;">This section is currently closed by the administration. Please check back later.</p><a href="index.html" class="btn-primary" style="text-decoration:none; padding:12px 30px; border-radius:10px; font-family:'Poppins', sans-serif; background:var(--accent); color:var(--accent-contrast); font-weight:600;">Return to Homepage</a>`;
         document.body.appendChild(overlay);
       }
     }
@@ -673,10 +619,8 @@ async function applySectionControls() {
 async function enforceAdminPermissions() {
   const path = window.location.pathname;
   const currentPage = path.substring(path.lastIndexOf("/") + 1);
-
   if (!currentPage.includes("admin") || currentPage === "admin-login.html")
     return;
-
   let attempts = 0;
   while (
     (typeof supabaseClient === "undefined" || !supabaseClient) &&
@@ -686,7 +630,6 @@ async function enforceAdminPermissions() {
     attempts++;
   }
   if (!supabaseClient) return;
-
   const {
     data: { session },
   } = await supabaseClient.auth.getSession();
@@ -694,7 +637,6 @@ async function enforceAdminPermissions() {
     window.location.replace("admin-login.html");
     return;
   }
-
   const { data: admin } = await supabaseClient
     .from("members")
     .select("role, district")
@@ -709,17 +651,14 @@ async function enforceAdminPermissions() {
     "Secretary General",
     "District Admin",
   ];
-
   if (!admin || !allowedRoles.includes(admin.role)) {
     await supabaseClient.auth.signOut();
     alert("⛔ Access Denied: You do not have Admin privileges.");
     window.location.replace("login.html");
     return;
   }
-
   window.currentAdminRole = admin.role;
   window.currentAdminDistrict = admin.district;
-
   if (admin.role === "District Admin") {
     const restrictedHrefs = [
       "admin-settings.html",
@@ -743,7 +682,6 @@ async function enforceAdminPermissions() {
       el.textContent = `District Admin (${admin.district || "Unassigned"})`;
     });
   }
-
   if (admin.role !== "Super Admin") {
     try {
       const { data: settings } = await supabaseClient
@@ -752,7 +690,6 @@ async function enforceAdminPermissions() {
         .like("key", "admin_acc_%");
       const map = {};
       if (settings) settings.forEach((s) => (map[s.key] = s.value === "true"));
-
       const pageMap = {
         "admin-members.html": "admin_acc_members",
         "admin-applications.html": "admin_acc_applications",
@@ -783,7 +720,6 @@ async function enforceAdminPermissions() {
         "admin-volunteers.html": "admin_acc_members",
         "admin-messages.html": "admin_acc_reports",
       };
-
       document.querySelectorAll(".sidebar-nav a").forEach((a) => {
         const href = a.getAttribute("href");
         if (href && pageMap[href]) {
@@ -791,7 +727,6 @@ async function enforceAdminPermissions() {
           if (map[key] === false) a.parentElement.style.display = "none";
         }
       });
-
       document.querySelectorAll(".nav-section-title").forEach((title) => {
         let nextEl = title.nextElementSibling;
         if (nextEl && nextEl.tagName === "UL") {
@@ -801,19 +736,10 @@ async function enforceAdminPermissions() {
           if (visibleLinks.length === 0) title.style.display = "none";
         }
       });
-
       if (pageMap[currentPage] && map[pageMap[currentPage]] === false) {
-        document.body.innerHTML = `<div style="display:flex; height:100vh; align-items:center; justify-content:center; background:#0f2027; color:white; font-family:Poppins; text-align:center; padding:20px;">
-          <div>
-            <h1 style="font-size:60px; margin-bottom:10px;">⛔</h1>
-            <h2 style="color:#ef4444; margin-bottom:15px;">Access Denied</h2>
-            <p style="opacity:0.8;">Super Admin has disabled access to this section for you.</p>
-            <a href="admin.html" style="display:inline-block; margin-top:20px; padding:10px 20px; background:#1abc9c; color:white; text-decoration:none; border-radius:8px;">Go Back to Dashboard</a>
-          </div>
-        </div>`;
+        document.body.innerHTML = `<div style="display:flex; height:100vh; align-items:center; justify-content:center; background:#0f2027; color:white; font-family:Poppins; text-align:center; padding:20px;"><div><h1 style="font-size:60px; margin-bottom:10px;">⛔</h1><h2 style="color:#ef4444; margin-bottom:15px;">Access Denied</h2><p style="opacity:0.8;">Super Admin has disabled access to this section for you.</p><a href="admin.html" style="display:inline-block; margin-top:20px; padding:10px 20px; background:#1abc9c; color:white; text-decoration:none; border-radius:8px;">Go Back to Dashboard</a></div></div>`;
         return;
       }
-
       if (currentPage === "admin-settings.html") {
         window.location.replace("admin.html");
         return;
@@ -831,7 +757,6 @@ async function initFloatingContactButton() {
     document.body.classList.contains("dashboard-body");
   if (isDashboard) return;
   if (document.querySelector(".whatsapp-fab")) return;
-
   let attempts = 0;
   while (
     (typeof supabaseClient === "undefined" || !supabaseClient) &&
@@ -841,7 +766,6 @@ async function initFloatingContactButton() {
     attempts++;
   }
   if (!supabaseClient) return;
-
   try {
     const { data } = await supabaseClient
       .from("settings")
@@ -855,7 +779,6 @@ async function initFloatingContactButton() {
     }
     if (!whatsappNumber) return;
     whatsappNumber = whatsappNumber.replace(/[^0-9]/g, "");
-
     const waBtn = document.createElement("a");
     waBtn.href = `https://wa.me/${whatsappNumber}?text=Assalam%20o%20Alaikum%20SYDF%2C%20I%20have%20a%20query.`;
     waBtn.className = "whatsapp-fab";
@@ -880,7 +803,6 @@ window.addEventListener("load", async function () {
 window.getCurrentUser = getCurrentUser;
 window.logoutUser = logoutUser;
 
-// AUTO-LOAD SERVICES & THEME FIXER
 (function () {
   if (typeof window.sendEmail === "undefined") {
     const script = document.createElement("script");
@@ -910,7 +832,6 @@ window.logoutUser = logoutUser;
   }
 })();
 
-// SERVICE WORKER KILLER
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then(function (registrations) {
     for (let registration of registrations) {
@@ -920,7 +841,6 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-// THEME AUTO-FIXER (Cleans up inline styles)
 window.addEventListener("DOMContentLoaded", () => {
   const allElements = document.querySelectorAll("[style]");
   allElements.forEach((el) => {
