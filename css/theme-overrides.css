@@ -1121,3 +1121,70 @@ body::after {
     margin-bottom: 50px !important;
   }
 }
+/* ============================================================
+   🚨 EMERGENCY PATCH: COMPLETE LIGHT THEME TEXT RESCUE
+   (Covers Dashboard, Public Pages, AND Login/Register Pages)
+   ============================================================ */
+
+/* 1. DASHBOARD TEXT RESCUE (Maroon) */
+html:not([data-theme="dark"]) .dashboard-content h1,
+html:not([data-theme="dark"]) .dashboard-content h2,
+html:not([data-theme="dark"]) .dashboard-content h3,
+html:not([data-theme="dark"]) .dashboard-content h4,
+html:not([data-theme="dark"]) .dashboard-content h5,
+html:not([data-theme="dark"]) .dashboard-content h6,
+html:not([data-theme="dark"]) .dashboard-content p,
+html:not([data-theme="dark"]) .dashboard-content label,
+html:not([data-theme="dark"]) .dashboard-content td,
+html:not([data-theme="dark"]) .dashboard-content th,
+html:not([data-theme="dark"]) .dashboard-content small,
+html:not([data-theme="dark"]) .dashboard-content strong,
+html:not([data-theme="dark"]) .dashboard-content .card-header h3,
+html:not([data-theme="dark"]) .dashboard-content .dash-stat-info h3,
+html:not([data-theme="dark"]) .dashboard-content .welcome-text h1,
+html:not([data-theme="dark"]) .dashboard-content .welcome-text p,
+html:not([data-theme="dark"]) .dashboard-content span:not(.badge):not([class*="status-badge"]):not(.role-badge):not(.uid-badge):not(.nav-icon):not(.user-avatar):not(.member-avatar):not(.app-avatar):not(.score-value):not(.stat-value):not(.summary-value):not(.overview-value):not(.fin-stat-value):not(.btn-primary):not(.btn-login) {
+    color: var(--text-primary) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* 2. PUBLIC CARDS TEXT RESCUE (Maroon) */
+html:not([data-theme="dark"]) .glass-card h1,
+html:not([data-theme="dark"]) .glass-card h2,
+html:not([data-theme="dark"]) .glass-card h3,
+html:not([data-theme="dark"]) .glass-card h4,
+html:not([data-theme="dark"]) .glass-card p,
+html:not([data-theme="dark"]) .glass-card span:not(.badge):not(.icon) {
+    color: var(--text-primary) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* 3. LOGIN / REGISTER / AUTH PAGES RESCUE (Maroon) */
+html:not([data-theme="dark"]) .auth-section h1,
+html:not([data-theme="dark"]) .auth-section h2,
+html:not([data-theme="dark"]) .auth-section h3,
+html:not([data-theme="dark"]) .auth-section h4,
+html:not([data-theme="dark"]) .auth-section p,
+html:not([data-theme="dark"]) .auth-section label,
+html:not([data-theme="dark"]) .auth-section span,
+html:not([data-theme="dark"]) .auth-section strong,
+html:not([data-theme="dark"]) .auth-section small,
+html:not([data-theme="dark"]) .auth-section .form-subtitle,
+html:not([data-theme="dark"]) .auth-section .welcome-note,
+html:not([data-theme="dark"]) .auth-section .form-note,
+html:not([data-theme="dark"]) .auth-section .admin-note,
+html:not([data-theme="dark"]) .auth-section .register-note,
+html:not([data-theme="dark"]) .auth-section .info-text {
+    color: var(--text-primary) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* Auth Pages ke Links aur Accents ko unka color wapas do */
+html:not([data-theme="dark"]) .auth-section a,
+html:not([data-theme="dark"]) .auth-section .forgot-link,
+html:not([data-theme="dark"]) .auth-section .register-note a,
+html:not([data-theme="dark"]) .auth-section .admin-note a,
+html:not([data-theme="dark"]) .auth-section .info-title {
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+}
