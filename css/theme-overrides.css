@@ -1077,3 +1077,47 @@ body::after {
       floatStarsUpGPU 180s linear infinite !important;
   }
 }
+/* ============================================================
+   🚨 EMERGENCY PATCH: WEBVIEW & SCROLLING FIXES
+   (Add this at the very bottom of theme-overrides.css)
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  /* 1. WEBVIEW SIDEBAR FIX (Admin & Member) */
+  .dashboard-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: visible !important; 
+    z-index: 999999 !important; /* Highest priority */
+  }
+  
+  /* 2. SIDEBAR SCROLL FIX (Logout Button Hide Hona) */
+  .dashboard-sidebar .sidebar-nav {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* Smooth scroll on mobile */
+    padding-bottom: 120px !important; /* Logout button ke liye extra jagah */
+  }
+  .dashboard-sidebar.active {
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+  }
+
+  /* 3. PUBLIC MENU SCROLL FIX (Login Button Stuck) */
+  .glass-header nav.active {
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .glass-header nav.active ul {
+    padding-bottom: 150px !important; /* Login button screen ke andar fit hoga */
+    padding-top: 10px !important;
+  }
+  
+  /* Login button ko force visible karein */
+  .glass-header nav ul li a.btn-login {
+    display: block !important;
+    margin-top: 15px !important;
+    margin-bottom: 50px !important;
+  }
+}
