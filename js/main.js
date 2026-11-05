@@ -172,9 +172,19 @@ document.addEventListener("click", function (e) {
   const logoutBtn = e.target.closest(".logout-btn");
   if (logoutBtn) {
     e.preventDefault();
+    
+    // 1. Pehle Sidebar ko close karo (taake confirmation box saaf nazar aaye)
+    const sidebar = document.getElementById("dashboardSidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    if (sidebar) sidebar.classList.remove("active");
+    if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+    document.body.style.overflow = ""; 
+
+    
     logoutUser();
   }
 });
+  
 
 async function protectDashboard() {
   const path = window.location.pathname;
