@@ -11,59 +11,29 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <style>
-      .modal-overlay {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 999999;
-        justify-content: center; align-items: center; padding: 20px; overflow-y: auto;
-      }
+      .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
       .modal-overlay.active { display: flex; }
-      .modal-box {
-        background: var(--bg-base); border: 1px solid var(--card-border); border-radius: 20px;
-        padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
-        position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-      }
-      .modal-close {
-        position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.15);
-        border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; width: 35px; height: 35px;
-        border-radius: 50%; cursor: pointer; font-size: 18px;
-      }
+      .modal-box { background: var(--bg-base); border: 1px solid var(--card-border); border-radius: 20px; padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); }
+      .modal-close { position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 18px; }
       .modal-box h2 { color: var(--accent); margin-bottom: 20px; font-size: 22px; }
-      .election-card {
-        background: var(--card-bg); border: 1px solid var(--card-border);
-        border-radius: var(--r-md); padding: 20px; margin-bottom: 15px;
-        display: flex; justify-content: space-between; align-items: center;
-        flex-wrap: wrap; gap: 15px;
-      }
+      .election-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--r-md); padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
       .election-info h3 { color: var(--text-primary); font-size: 18px; margin-bottom: 5px; }
       .election-info p { color: var(--text-secondary); font-size: 13px; }
-      .status-badge {
-        padding: 4px 12px; border-radius: 20px; font-size: 11px;
-        font-weight: 700; text-transform: uppercase;
-      }
+      .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
       .status-upcoming { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid #3b82f6; }
       .status-active { background: rgba(26, 188, 156, 0.15); color: #1abc9c; border: 1px solid #1abc9c; }
       .status-completed { background: rgba(107, 114, 128, 0.15); color: #6b7280; border: 1px solid #6b7280; }
       .vote-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
       .vote-table th, .vote-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--card-border); }
       .vote-table th { background: var(--input-bg); color: var(--text-primary); font-weight: 600; }
-      .vote-table td { color: var(--text-secondary); }
-      .candidate-stat {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 10px 15px; background: var(--input-bg); border-radius: 8px; margin-bottom: 8px;
-      }
+      .candidate-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--input-bg); border-radius: 8px; margin-bottom: 8px; }
       .seat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-      .seat-checkbox {
-        display: flex; align-items: center; gap: 8px; font-size: 13px;
-        color: var(--text-primary); cursor: pointer; padding: 8px 12px;
-        background: var(--input-bg); border: 1px solid var(--card-border);
-        border-radius: 8px; transition: 0.2s;
-      }
+      .seat-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); cursor: pointer; padding: 8px 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; transition: 0.2s; }
       .seat-checkbox:hover { border-color: var(--accent); }
       .seat-checkbox input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
-      .candidate-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 12px; border-bottom: 1px solid var(--card-border);
-      }
+      .candidate-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--card-border); }
+      .bar-chart-container { background: var(--input-bg); height: 20px; border-radius: 10px; overflow: hidden; margin-top: 5px; display: flex; }
+      .bar-fill { height: 100%; background: var(--accent); transition: width 0.5s ease; }
     </style>
   </head>
   <body class="dashboard-body admin-body">
@@ -74,9 +44,7 @@
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-title">Main</div>
-        <ul>
-          <li><a href="admin.html"><span class="nav-icon">📊</span><span>Dashboard</span></a></li>
-        </ul>
+        <ul><li><a href="admin.html"><span class="nav-icon">📊</span><span>Dashboard</span></a></li></ul>
         <div class="nav-section-title">Members</div>
         <ul>
           <li><a href="admin-members.html"><span class="nav-icon">👥</span><span>All Members</span></a></li>
@@ -97,16 +65,11 @@
     <main class="dashboard-main">
       <div class="dashboard-topbar">
         <button class="menu-toggle" id="menuToggle">☰</button>
-        <div class="topbar-title">
-          <h2>Election Management</h2>
-          <p>Manage SYDF Cabinet Elections</p>
-        </div>
+        <div class="topbar-title"><h2>Election Management</h2><p>Manage SYDF Cabinet Elections</p></div>
         <div class="topbar-actions">
           <div class="topbar-user">
             <div class="user-avatar admin-avatar" id="topAvatar">A</div>
-            <div class="user-info">
-              <span class="user-name">Admin</span><span class="user-uid" id="topRole">Super Admin</span>
-            </div>
+            <div class="user-info"><span class="user-name">Admin</span><span class="user-uid" id="topRole">Super Admin</span></div>
           </div>
         </div>
       </div>
@@ -128,20 +91,57 @@
         <button class="modal-close" onclick="document.getElementById('createModal').classList.remove('active')">✕</button>
         <h2>Create New Election</h2>
         <form id="createElectionForm">
-          <div class="form-group" style="margin-bottom: 20px">
+          <div class="form-group" style="margin-bottom: 15px">
             <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Election Title</label>
             <input type="text" id="elTitle" placeholder="e.g. Cabinet Election 2026" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
           </div>
-          <div class="form-group" style="margin-bottom: 20px">
+          <div class="form-group" style="margin-bottom: 15px">
             <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Nomination Fee (Rs.)</label>
-            <input type="number" id="elFee" placeholder="Enter amount, 0 for free" value="0" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
-            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;">Set to 0 if nominations are free.</p>
+            <input type="number" id="elFee" placeholder="0 for free" value="0" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
           </div>
-          <div class="form-group" style="margin-bottom: 20px">
-            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats for Election</label>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div class="form-group">
+              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination Start</label>
+              <input type="datetime-local" id="nomStart" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
+            </div>
+            <div class="form-group">
+              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination End</label>
+              <input type="datetime-local" id="nomEnd" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
+            </div>
+            <div class="form-group">
+              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting Start</label>
+              <input type="datetime-local" id="voteStart" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
+            </div>
+            <div class="form-group">
+              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting End</label>
+              <input type="datetime-local" id="voteEnd" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px">
+            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats</label>
             <div class="seat-grid" id="dynamicSeatsContainer"></div>
           </div>
           <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px">Create Election</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- EDIT SCHEDULE MODAL -->
+    <div class="modal-overlay" id="editScheduleModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="document.getElementById('editScheduleModal').classList.remove('active')">✕</button>
+        <h2>Extend / Edit Schedule</h2>
+        <form id="editScheduleForm">
+          <input type="hidden" id="editElId" />
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div><label style="font-size: 12px; color: var(--warm);">Nomination Start</label><input type="datetime-local" id="editNomStart" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px;" /></div>
+            <div><label style="font-size: 12px; color: var(--warm);">Nomination End</label><input type="datetime-local" id="editNomEnd" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px;" /></div>
+            <div><label style="font-size: 12px; color: #1abc9c;">Voting Start</label><input type="datetime-local" id="editVoteStart" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px;" /></div>
+            <div><label style="font-size: 12px; color: #1abc9c;">Voting End</label><input type="datetime-local" id="editVoteEnd" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px;" /></div>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px; background: var(--warm); color: #000;">Update Schedule</button>
         </form>
       </div>
     </div>
@@ -160,12 +160,23 @@
       <div class="modal-box">
         <button class="modal-close" onclick="document.getElementById('resultsModal').classList.remove('active')">✕</button>
         <h2 id="resultsTitle">Election Results</h2>
+        
+        <div id="turnoutContainer" style="background: rgba(26,188,156,0.1); border: 1px solid #1abc9c; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;">
+          <div><span style="color: var(--text-secondary); font-size: 13px;">Total Active Members:</span> <strong id="totalMembers" style="color: white;">0</strong></div>
+          <div><span style="color: var(--text-secondary); font-size: 13px;">Votes Cast:</span> <strong id="totalVotes" style="color: var(--accent);">0</strong></div>
+          <div><span style="color: var(--text-secondary); font-size: 13px;">Turnout:</span> <strong id="turnoutPercent" style="color: var(--warm);">0%</strong></div>
+        </div>
+
         <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">Current Standings</h3>
         <div id="statsContainer" style="margin-bottom: 25px"></div>
-        <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">Voting Log</h3>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="color: var(--text-primary); font-size: 16px;">Voting Log (Secret Ballot)</h3>
+          <button id="exportCsvBtn" class="btn-secondary" style="padding: 6px 12px; font-size: 12px;">⬇️ Export CSV</button>
+        </div>
         <div style="overflow-x: auto">
           <table class="vote-table">
-            <thead><tr><th>Voter</th><th>Voted For</th><th>Position</th><th>Time</th></tr></thead>
+            <thead><tr><th>Receipt Code</th><th>Voted For</th><th>Position</th><th>Time</th></tr></thead>
             <tbody id="votesLogBody"></tbody>
           </table>
         </div>
@@ -180,6 +191,7 @@
       let currentElectionId = null;
 let currentElectionTitle = "";
 let cabinetPositionsList = [];
+let currentVotesData = []; // For CSV Export
 
 // ============ HELPERS ============
 function escapeHtml(str) {
@@ -190,6 +202,13 @@ function parsePositions(p) {
   if (Array.isArray(p)) return p;
   try { return JSON.parse(p); }
   catch (e) { return String(p).replace(/[{}"]/g, "").split(",").map(s => s.trim()).filter(Boolean); }
+}
+// Convert ISO string to datetime-local value (YYYY-MM-DDThh:mm)
+function toLocalDatetime(isoStr) {
+  if (!isoStr) return "";
+  const d = new Date(isoStr);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 // ============ INIT ============
@@ -203,8 +222,9 @@ window.addEventListener("load", async function () {
 
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) return (window.location.href = "admin-login.html");
+  const adminEmail = session.user.email;
 
-  const { data: admin } = await supabaseClient.from("members").select("name, role").eq("email", session.user.email).maybeSingle();
+  const { data: admin } = await supabaseClient.from("members").select("name, role").eq("email", adminEmail).maybeSingle();
   if (!admin) return (window.location.href = "index.html");
 
   document.getElementById("topAvatar").textContent = (admin.name || "A").charAt(0).toUpperCase();
@@ -221,7 +241,7 @@ window.addEventListener("load", async function () {
     });
     document.getElementById("dynamicSeatsContainer").innerHTML = seatsHTML;
   } else {
-    document.getElementById("dynamicSeatsContainer").innerHTML = `<p style="color:#fca5a5; font-size: 12px; grid-column: 1/-1;">No positions found. Please add positions in Cabinet Management first.</p>`;
+    document.getElementById("dynamicSeatsContainer").innerHTML = `<p style="color:#fca5a5; font-size: 12px; grid-column: 1/-1;">No positions found. Add in Cabinet Management first.</p>`;
   }
 
   loadElections();
@@ -231,20 +251,70 @@ window.addEventListener("load", async function () {
     document.getElementById("createModal").classList.add("active");
   });
 
-  // Create Election Submit
+  // ============ CREATE ELECTION SUBMIT ============
   document.getElementById("createElectionForm").addEventListener("submit", async function (e) {
     e.preventDefault();
     const title = document.getElementById("elTitle").value.trim();
     const fee = Number(document.getElementById("elFee").value) || 0;
     const selectedSeats = Array.from(document.querySelectorAll('input[name="seats"]:checked')).map(cb => cb.value);
-    if (selectedSeats.length === 0) return window.syfError("Please select at least one seat.");
+    
+    const nomStart = document.getElementById("nomStart").value;
+    const nomEnd = document.getElementById("nomEnd").value;
+    const voteStart = document.getElementById("voteStart").value;
+    const voteEnd = document.getElementById("voteEnd").value;
 
-    const { error } = await supabaseClient.from("elections").insert([{ title, status: "Upcoming", positions: selectedSeats, fee: fee }]);
+    if (selectedSeats.length === 0) return window.syfError("Please select at least one seat.");
+    if (new Date(nomStart) >= new Date(nomEnd)) return window.syfError("Nomination End time must be after Start time.");
+    if (new Date(nomEnd) >= new Date(voteStart)) return window.syfError("Voting Start time must be after Nomination End.");
+    if (new Date(voteStart) >= new Date(voteEnd)) return window.syfError("Voting End time must be after Voting Start.");
+
+    const { error } = await supabaseClient.from("elections").insert([{ 
+      title, 
+      status: "Upcoming", 
+      positions: selectedSeats, 
+      fee: fee,
+      nomination_start: new Date(nomStart).toISOString(),
+      nomination_end: new Date(nomEnd).toISOString(),
+      voting_start: new Date(voteStart).toISOString(),
+      voting_end: new Date(voteEnd).toISOString()
+    }]);
+    
     if (error) return window.syfError(error.message);
 
-    window.syfSuccess("Election created successfully!");
+    await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "CREATE_ELECTION", details: `Created election: ${title}` }]);
+
+    window.syfSuccess("Election created with schedule!");
     this.reset();
     document.getElementById("createModal").classList.remove("active");
+    loadElections();
+  });
+
+  // ============ EDIT SCHEDULE SUBMIT ============
+  document.getElementById("editScheduleForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const id = document.getElementById("editElId").value;
+    const nomStart = document.getElementById("editNomStart").value;
+    const nomEnd = document.getElementById("editNomEnd").value;
+    const voteStart = document.getElementById("editVoteStart").value;
+    const voteEnd = document.getElementById("editVoteEnd").value;
+
+    if (new Date(nomStart) >= new Date(nomEnd)) return window.syfError("Nomination End must be after Start.");
+    if (new Date(nomEnd) > new Date(voteStart)) return window.syfError("Voting Start must be after Nomination End.");
+    if (new Date(voteStart) >= new Date(voteEnd)) return window.syfError("Voting End must be after Start.");
+
+    const { error } = await supabaseClient.from("elections").update({ 
+      nomination_start: new Date(nomStart).toISOString(),
+      nomination_end: new Date(nomEnd).toISOString(),
+      voting_start: new Date(voteStart).toISOString(),
+      voting_end: new Date(voteEnd).toISOString()
+    }).eq("id", id);
+
+    if (error) return window.syfError(error.message);
+
+    await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "EXTEND_SCHEDULE", details: `Extended schedule for Election ID: ${id}` }]);
+
+    window.syfSuccess("Schedule updated successfully!");
+    document.getElementById("editScheduleModal").classList.remove("active");
     loadElections();
   });
 
@@ -260,7 +330,7 @@ window.addEventListener("load", async function () {
       btn.disabled = true;
       btn.textContent = "Finalizing...";
       try {
-        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId).eq("status", "Approved");
+        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId).eq("status", "Approved").eq("is_withdrawn", false);
         const { data: votes } = await supabaseClient.from("election_votes").select("*").eq("election_id", currentElectionId);
         const { data: electionRow } = await supabaseClient.from("elections").select("positions").eq("id", currentElectionId).single();
 
@@ -284,7 +354,6 @@ window.addEventListener("load", async function () {
           winners.push({ email: top[0].candidate.member_email, role: pos });
         });
 
-        // Dynamic roles — only reset positions contested in THIS election
         const rolesToReset = contestedPositions.filter(p => p !== "Chairman & President");
         if (rolesToReset.length > 0) {
           await supabaseClient.from("members").update({ role: "Member" }).in("role", rolesToReset);
@@ -295,13 +364,13 @@ window.addEventListener("load", async function () {
         }
 
         await supabaseClient.from("elections").update({ status: "Completed" }).eq("id", currentElectionId);
-
-        // Auto publish results
         await supabaseClient.from("settings").upsert({ key: "publish_results", value: "true" }, { onConflict: "key" });
+        
+        await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "FINALIZE_ELECTION", details: `Finalized Election ID: ${currentElectionId}. Winners: ${winners.length}, Ties: ${ties.length}` }]);
 
         let msg = "Election finalized! ";
         if (winners.length > 0) msg += `${winners.length} role(s) assigned. `;
-        if (ties.length > 0) msg += `⚠️ Tie in: ${ties.join(", ")} (no role assigned). `;
+        if (ties.length > 0) msg += `⚠️ Tie in: ${ties.join(", ")}. `;
         if (skipped.length > 0) msg += `⚠️ No votes for: ${skipped.join(", ")}.`;
         window.syfSuccess(msg);
 
@@ -315,180 +384,222 @@ window.addEventListener("load", async function () {
       }
     });
   });
+  
+  // Export CSV Listener
+  document.getElementById("exportCsvBtn").addEventListener("click", exportVotesToCSV);
 });
-      // ============ LOAD ELECTIONS ============
-      async function loadElections() {
-        const list = document.getElementById("electionsList");
-        const { data: elections } = await supabaseClient.from("elections").select("*").order("created_at", { ascending: false });
+      
+// ============ LOAD ELECTIONS ============
+async function loadElections() {
+  const list = document.getElementById("electionsList");
+  const { data: elections } = await supabaseClient.from("elections").select("*").order("created_at", { ascending: false });
 
-        if (!elections || elections.length === 0) {
-          list.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--input-bg); border-radius: 12px;">No elections created yet.</div>`;
-          return;
-        }
+  if (!elections || elections.length === 0) {
+    list.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--input-bg); border-radius: 12px;">No elections created yet.</div>`;
+    return;
+  }
 
-        const { data: pendingCounts } = await supabaseClient.from("election_candidates").select("election_id").eq("status", "Pending");
-        const pendingMap = {};
-        if (pendingCounts) pendingCounts.forEach(p => { pendingMap[p.election_id] = (pendingMap[p.election_id] || 0) + 1; });
+  const { data: pendingCounts } = await supabaseClient.from("election_candidates").select("election_id").eq("status", "Pending");
+  const pendingMap = {};
+  if (pendingCounts) pendingCounts.forEach(p => { pendingMap[p.election_id] = (pendingMap[p.election_id] || 0) + 1; });
 
-        list.innerHTML = elections.map(el => {
-          const statusClass = el.status === "Active" ? "status-active" : el.status === "Completed" ? "status-completed" : "status-upcoming";
-          const pendingCount = pendingMap[el.id] || 0;
-          const badge = pendingCount > 0 ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${pendingCount}</span>` : "";
+  list.innerHTML = elections.map(el => {
+    const statusClass = el.status === "Active" ? "status-active" : el.status === "Completed" ? "status-completed" : "status-upcoming";
+    const pendingCount = pendingMap[el.id] || 0;
+    const badge = pendingCount > 0 ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${pendingCount}</span>` : "";
 
-          let actionBtns = "";
-          if (el.status === "Upcoming") {
-            actionBtns = `<button class="btn-primary start-election-btn" data-eid="${el.id}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #1abc9c;">▶ Start Election</button>`;
-          } else if (el.status === "Active") {
-            actionBtns = `<button class="btn-primary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #3b82f6;">📊 Live Results</button>`;
-          } else {
-            actionBtns = `<button class="btn-secondary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px;">📄 Final Results</button>`;
-          }
+    // Format Dates safely
+    const fmtDate = (d) => d ? new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "N/A";
 
-          const manageBtn = `<button class="btn-secondary manage-cand-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px;">📋 Candidates ${badge}</button>`;
-          const feeText = el.fee > 0 ? `<span style="color: #f59e0b; font-weight: 600;">Fee: Rs. ${el.fee}</span>` : `<span style="color: #1abc9c; font-weight: 600;">Free Nomination</span>`;
-          const seatsText = parsePositions(el.positions).map(escapeHtml).join(", ") || "All";
+    let actionBtns = "";
+    if (el.status === "Upcoming") {
+      actionBtns = `<button class="btn-primary start-election-btn" data-eid="${el.id}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #1abc9c;">▶ Start Now</button>`;
+    } else if (el.status === "Active") {
+      actionBtns = `<button class="btn-primary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #3b82f6;">📊 Live Results</button>`;
+    } else {
+      actionBtns = `<button class="btn-secondary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px;">📄 Final Results</button>`;
+    }
 
-          return `
-            <div class="election-card">
-              <div class="election-info">
-                <h3>${escapeHtml(el.title)}</h3>
-                <p>Created: ${new Date(el.created_at).toLocaleDateString()} | ${feeText}</p>
-                <p style="margin-top: 5px; color: var(--text-secondary); font-size: 11px;">Seats: ${seatsText}</p>
-              </div>
-              <div style="display:flex; align-items:center; gap: 10px; flex-wrap:wrap;">
-                <span class="status-badge ${statusClass}">${el.status}</span>
-                ${manageBtn}
-                ${actionBtns}
-              </div>
+    const manageBtn = `<button class="btn-secondary manage-cand-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px;">📋 Candidates ${badge}</button>`;
+    const editBtn = `<button class="btn-secondary edit-schedule-btn" data-id="${el.id}" data-ns="${el.nomination_start}" data-ne="${el.nomination_end}" data-vs="${el.voting_start}" data-ve="${el.voting_end}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px; background: rgba(255,255,255,0.1);">📅 Schedule</button>`;
+    
+    const feeText = el.fee > 0 ? `<span style="color: #f59e0b; font-weight: 600;">Fee: Rs. ${el.fee}</span>` : `<span style="color: #1abc9c; font-weight: 600;">Free</span>`;
+    const seatsText = parsePositions(el.positions).map(escapeHtml).join(", ") || "All";
+
+    return `
+      <div class="election-card">
+        <div class="election-info" style="flex: 1;">
+          <h3 style="display:flex; align-items:center; gap:10px;">${escapeHtml(el.title)} <span class="status-badge ${statusClass}" style="font-size:10px;">${el.status}</span></h3>
+          <p>Created: ${new Date(el.created_at).toLocaleDateString()} | ${feeText}</p>
+          <p style="margin-top: 5px; color: var(--text-secondary); font-size: 11px;">Seats: ${seatsText}</p>
+          <div style="margin-top: 10px; font-size: 11px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <div><span style="color:var(--warm)">Nom:</span> ${fmtDate(el.nomination_start)} - ${fmtDate(el.nomination_end)}</div>
+            <div><span style="color:#1abc9c">Vote:</span> ${fmtDate(el.voting_start)} - ${fmtDate(el.voting_end)}</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap: 10px; flex-wrap:wrap; justify-content: flex-end; max-width: 300px;">
+          ${editBtn}
+          ${manageBtn}
+          ${actionBtns}
+        </div>
+      </div>`;
+  }).join("");
+
+  // Attach Event Listeners
+  list.querySelectorAll(".start-election-btn").forEach(b => b.addEventListener("click", () => window.changeStatus(parseInt(b.dataset.eid), "Active")));
+  list.querySelectorAll(".view-results-btn").forEach(b => b.addEventListener("click", () => window.viewResults(parseInt(b.dataset.eid), b.dataset.title)));
+  list.querySelectorAll(".manage-cand-btn").forEach(b => b.addEventListener("click", () => window.manageCandidates(parseInt(b.dataset.eid), b.dataset.title)));
+  
+  // Edit Schedule Listener
+  list.querySelectorAll(".edit-schedule-btn").forEach(b => b.addEventListener("click", () => {
+    document.getElementById("editElId").value = b.dataset.id;
+    document.getElementById("editNomStart").value = toLocalDatetime(b.dataset.ns);
+    document.getElementById("editNomEnd").value = toLocalDatetime(b.dataset.ne);
+    document.getElementById("editVoteStart").value = toLocalDatetime(b.dataset.vs);
+    document.getElementById("editVoteEnd").value = toLocalDatetime(b.dataset.ve);
+    document.getElementById("editScheduleModal").classList.add("active");
+  }));
+}
+
+// ============ CHANGE STATUS ============
+window.changeStatus = async function (id, status) {
+  if (status === "Active") {
+    const { data: activeOnes } = await supabaseClient.from("elections").select("id, title").eq("status", "Active");
+    if (activeOnes && activeOnes.length > 0) {
+      return window.syfError(`"${activeOnes[0].title}" is already Active.`);
+    }
+  }
+  window.syfConfirm(`Force change status to ${status}?`, async (confirmed) => {
+    if (!confirmed) return;
+    await supabaseClient.from("elections").update({ status }).eq("id", id);
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "FORCE_STATUS", details: `Election ID ${id} changed to ${status}` }]);
+    
+    window.syfSuccess(`Election is now ${status}!`);
+    loadElections();
+  });
+};
+
+// ============ MANAGE CANDIDATES ============
+window.manageCandidates = async function (electionId, title) {
+  currentElectionId = electionId;
+  currentElectionTitle = title;
+  document.getElementById("candidatesTitle").textContent = `Candidates: ${title}`;
+  document.getElementById("candidatesModal").classList.add("active");
+  renderCandidatesList();
+};
+
+async function renderCandidatesList() {
+  const list = document.getElementById("candidatesList");
+  list.innerHTML = "<div style='text-align:center; padding:20px;'>Loading candidates...</div>";
+
+  const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId);
+
+  if (!candidates || candidates.length === 0) {
+    list.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No candidates registered yet.</p>";
+    return;
+  }
+
+  const positions = [...new Set(candidates.map(c => c.position))];
+  let html = "";
+
+  positions.forEach(pos => {
+    html += `<h4 style="color:var(--warm); margin: 15px 0 10px; border-bottom:1px solid var(--card-border); padding-bottom:5px;">${escapeHtml(pos)}</h4>`;
+
+    candidates.filter(c => c.position === pos).forEach(c => {
+      const statusColor = c.status === "Approved" ? "#1abc9c" : c.status === "Rejected" ? "#ef4444" : "#f59e0b";
+      const feeIsFree = ["N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
+      
+      // Profile Picture Logic (Fallback to initial if no pic)
+      const avatarUrl = c.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.member_name)}&background=random&color=fff&size=64`;
+      const withdrawnBadge = c.is_withdrawn ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:4px; font-size:10px; margin-left:5px;">WITHDRAWN</span>` : "";
+
+      let feeHTML = "";
+      let verifyBtn = "";
+
+      if (c.transaction_id || (c.fee_status && !feeIsFree)) {
+        const feeColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
+        feeHTML = `
+          <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 11px; border-left: 2px solid ${feeColor};">
+            <strong>Fee:</strong> <span style="color: ${feeColor};">${escapeHtml(c.fee_status || "-")}</span> | 
+            <strong>Trx:</strong> ${escapeHtml(c.transaction_id || "-")} (${escapeHtml(c.payment_method || "-")})
+          </div>`;
+        
+        if (c.fee_status === "Pending Verification" && !c.is_withdrawn) {
+          verifyBtn = `
+            <div style="margin-top: 5px; display: flex; gap: 5px;">
+              <button onclick="verifyFee('${c.id}', 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
+              <button onclick="verifyFee('${c.id}', 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
             </div>`;
-        }).join("");
-
-        list.querySelectorAll(".start-election-btn").forEach(b => b.addEventListener("click", () => window.changeStatus(parseInt(b.dataset.eid), "Active")));
-        list.querySelectorAll(".view-results-btn").forEach(b => b.addEventListener("click", () => window.viewResults(parseInt(b.dataset.eid), b.dataset.title)));
-        list.querySelectorAll(".manage-cand-btn").forEach(b => b.addEventListener("click", () => window.manageCandidates(parseInt(b.dataset.eid), b.dataset.title)));
+        }
       }
 
-      // ============ CHANGE STATUS ============
-      window.changeStatus = async function (id, status) {
-        if (status === "Active") {
-          const { data: activeOnes } = await supabaseClient.from("elections").select("id, title").eq("status", "Active");
-          if (activeOnes && activeOnes.length > 0) {
-            return window.syfError(`"${activeOnes[0].title}" is already Active. Please finalize it first.`);
-          }
+      let actionBtns = "";
+      if ((c.status === "Pending" || !c.status) && !c.is_withdrawn) {
+        const feeOk = ["Verified", "N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
+        if (feeOk) {
+          actionBtns = `
+            <button onclick="updateCandidateStatus('${c.id}', 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
+            <button onclick="updateCandidateStatus('${c.id}', 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
+        } else {
+          actionBtns = `<span style="font-size:11px; color:#f59e0b; margin-left:5px;">⚠️ Verify payment first.</span>`;
         }
-        window.syfConfirm(`Change election status to ${status}?`, async (confirmed) => {
-          if (!confirmed) return;
-          const { error } = await supabaseClient.from("elections").update({ status }).eq("id", id);
-          if (error) return window.syfError("Error: " + error.message);
-          window.syfSuccess(`Election is now ${status}!`);
-          loadElections();
-        });
-      };
-
-      // ============ MANAGE CANDIDATES ============
-      window.manageCandidates = async function (electionId, title) {
-        currentElectionId = electionId;
-        currentElectionTitle = title;
-        document.getElementById("candidatesTitle").textContent = `Candidates: ${title}`;
-        document.getElementById("candidatesModal").classList.add("active");
-        renderCandidatesList();
-      };
-
-      async function renderCandidatesList() {
-        const list = document.getElementById("candidatesList");
-        list.innerHTML = "<div style='text-align:center; padding:20px;'>Loading...</div>";
-
-        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId);
-
-        if (!candidates || candidates.length === 0) {
-          list.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No candidates registered yet.</p>";
-          return;
-        }
-
-        const positions = [...new Set(candidates.map(c => c.position))];
-        let html = "";
-
-        positions.forEach(pos => {
-          html += `<h4 style="color:var(--warm); margin: 15px 0 10px; border-bottom:1px solid var(--card-border); padding-bottom:5px;">${escapeHtml(pos)}</h4>`;
-
-          candidates.filter(c => c.position === pos).forEach(c => {
-            const statusColor = c.status === "Approved" ? "#1abc9c" : c.status === "Rejected" ? "#ef4444" : "#f59e0b";
-            const feeIsFree = ["N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
-
-            let feeHTML = "";
-            let verifyBtn = "";
-
-            if (c.transaction_id || (c.fee_status && !feeIsFree)) {
-              const feeColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
-              feeHTML = `
-                <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-top: 5px; font-size: 11px; border-left: 2px solid ${feeColor};">
-                  <strong>Fee Status:</strong> <span style="color: ${feeColor};">${escapeHtml(c.fee_status || "-")}</span><br>
-                  <strong>Method:</strong> ${escapeHtml(c.payment_method || "-")} | <strong>Trx ID:</strong> ${escapeHtml(c.transaction_id || "-")}
-                </div>`;
-              
-              // ✅ YAHAN FIX HAI: c.id ke aage ' ' (single quotes) lagaye hain
-              if (c.fee_status === "Pending Verification") {
-                verifyBtn = `
-                  <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="verifyFee('${c.id}', 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
-                    <button onclick="verifyFee('${c.id}', 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
-                  </div>`;
-              }
-            }
-
-            let actionBtns = "";
-            if (c.status === "Pending" || !c.status) {
-              const feeOk = ["Verified", "N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
-              if (feeOk) {
-                // ✅ YAHAN BHI FIX HAI: c.id ke aage ' ' (single quotes) lagaye hain
-                actionBtns = `
-                  <button onclick="updateCandidateStatus('${c.id}', 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
-                  <button onclick="updateCandidateStatus('${c.id}', 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
-              } else {
-                actionBtns = `<span style="font-size:11px; color:#f59e0b; margin-left:5px;">⚠️ Verify payment first to approve.</span>`;
-              }
-            }
-
-            html += `
-              <div class="candidate-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px 0; border-bottom: 1px solid var(--card-border);">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
-                  <div>
-                    <strong style="color:var(--text-primary); font-size: 14px;">${escapeHtml(c.member_name)}</strong>
-                    <span style="font-size:12px; color:var(--text-secondary);">(${escapeHtml(c.member_email)})</span>
-                    <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">"${escapeHtml(c.manifesto || "")}"</div>
-                    ${feeHTML}
-                  </div>
-                  <div style="text-align:right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-                    <span style="color:${statusColor}; font-weight:bold; font-size:12px; text-transform:uppercase;">${escapeHtml(c.status || "Pending")}</span>
-                    ${verifyBtn}
-                  </div>
-                </div>
-                <div style="width: 100%; text-align: right; margin-top: 5px;">${actionBtns}</div>
-              </div>`;
-          });
-        });
-        list.innerHTML = html;
       }
 
-      // ============ VERIFY FEE (Fixed RLS silent fail) ============
+      // Withdrawal logic
+      if (c.is_withdrawn) {
+        actionBtns = `<span style="font-size:12px; color:#ef4444; font-weight:bold;">Candidate Withdrew from Election</span>`;
+      } else if (c.status === "Approved" && !c.is_withdrawn) {
+         actionBtns = `<button onclick="updateCandidateStatus('${c.id}', 'Disqualified')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">🚫 Disqualify</button>`;
+      }
+
+      html += `
+        <div class="candidate-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px 0; border-bottom: 1px solid var(--card-border);">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="display: flex; gap: 12px;">
+              <img src="${avatarUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card-border);" alt="pic">
+              <div>
+                <strong style="color:var(--text-primary); font-size: 14px;">${escapeHtml(c.member_name)} ${withdrawnBadge}</strong> 
+                <span style="font-size:12px; color:var(--text-secondary); display:block;">${escapeHtml(c.member_email)}</span>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:2px; font-style: italic;">"${escapeHtml(c.manifesto || "")}"</div>
+              </div>
+            </div>
+            <div style="text-align:right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+              <span style="color:${statusColor}; font-weight:bold; font-size:12px; text-transform:uppercase;">${escapeHtml(c.status || "Pending")}</span>
+              ${verifyBtn}
+            </div>
+          </div>
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <div>${feeHTML}</div>
+            <div style="text-align: right;">${actionBtns}</div>
+          </div>
+        </div>`;
+    });
+  });
+  list.innerHTML = html;
+      }
+      
+      // ============ VERIFY FEE ============
       window.verifyFee = async function (id, status) {
         const updateData = { fee_status: status };
         if (status === "Rejected") updateData.status = "Rejected";
         
-        // .select() add kiya hai taake pata chale update hua ya RLS ne block kiya
         const { data: updated, error } = await supabaseClient.from("election_candidates").update(updateData).eq("id", id).select();
         
         if (error) return window.syfError("Error: " + error.message);
         if (!updated || updated.length === 0) {
-          return window.syfError("Update fail! Aapki Supabase RLS policy update block kar rahi hai.");
+          return window.syfError("Update fail! Supabase RLS policy blocking update.");
         }
 
-        window.syfSuccess(`Payment marked as ${status}${status === "Rejected" ? " (candidate rejected too)" : ""}`);
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "VERIFY_FEE", details: `Candidate ID ${id} fee marked ${status}` }]);
+
+        window.syfSuccess(`Payment marked as ${status}${status === "Rejected" ? " (Candidate rejected)" : ""}`);
         renderCandidatesList();
         loadElections();
       };
 
-      // ============ UPDATE CANDIDATE STATUS (Fixed RLS silent fail) ============
+      // ============ UPDATE CANDIDATE STATUS ============
       window.updateCandidateStatus = async function (id, status) {
         if (status === "Approved") {
           const { data: cand } = await supabaseClient.from("election_candidates").select("fee_status").eq("id", id).single();
@@ -500,8 +611,11 @@ window.addEventListener("load", async function () {
         
         if (error) return window.syfError("Error: " + error.message);
         if (!updated || updated.length === 0) {
-          return window.syfError("Update fail! Aapki Supabase RLS policy update block kar rahi hai.");
+          return window.syfError("Update fail! Supabase RLS policy blocking update.");
         }
+
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "UPDATE_CANDIDATE", details: `Candidate ID ${id} marked as ${status}` }]);
 
         window.syfSuccess(`Candidate marked as ${status}`);
         renderCandidatesList();
@@ -513,36 +627,120 @@ window.addEventListener("load", async function () {
         currentElectionId = electionId;
         document.getElementById("resultsTitle").textContent = `Results: ${title}`;
         document.getElementById("resultsModal").classList.add("active");
+        
+        document.getElementById("statsContainer").innerHTML = "<div style='text-align:center; padding:20px;'>Loading results...</div>";
+        document.getElementById("votesLogBody").innerHTML = "";
 
-        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", electionId).eq("status", "Approved");
+        // 1. Fetch Candidates (Approved & not withdrawn)
+        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", electionId).eq("status", "Approved").eq("is_withdrawn", false);
+        
+        // 2. Fetch Votes
         const { data: votes } = await supabaseClient.from("election_votes").select("*").eq("election_id", electionId);
+        
+        // 3. Fetch Total Active Members (for Turnout)
+        const { count: totalMembers } = await supabaseClient.from("members").select("*", { count: 'exact', head: true }).eq("status", "Active");
 
-        const voterEmails = [...new Set((votes || []).map(v => v.voter_email))];
-        const memberMap = {};
-        if (voterEmails.length > 0) {
-          const { data: members } = await supabaseClient.from("members").select("name, email").in("email", voterEmails);
-          if (members) members.forEach(m => memberMap[m.email] = m.name);
-        }
+        // 4. Calculate Turnout
+        const uniqueVoters = new Set((votes || []).map(v => v.voter_email)).size;
+        const totalVotesCast = votes ? votes.length : 0;
+        const turnoutPercent = totalMembers > 0 ? Math.round((uniqueVoters / totalMembers) * 100) : 0;
 
+        document.getElementById("totalMembers").textContent = totalMembers || 0;
+        document.getElementById("totalVotes").textContent = uniqueVoters || 0;
+        document.getElementById("turnoutPercent").textContent = `${turnoutPercent}%`;
+
+        // 5. Generate Stats with Bar Charts
         const positions = [...new Set((candidates || []).map(c => c.position))];
         let statsHTML = "";
+        
         positions.forEach(pos => {
-          statsHTML += `<div style="margin-bottom: 15px;"><h4 style="color: var(--warm); margin-bottom: 8px; font-size: 14px;">${escapeHtml(pos)}</h4>`;
-          (candidates || []).filter(c => c.position === pos).forEach(c => {
+          const posCands = (candidates || []).filter(c => c.position === pos);
+          const posVotes = posCands.map(c => (votes || []).filter(v => v.candidate_id === c.id).length);
+          const maxPosVotes = Math.max(...posVotes, 1); // Prevent division by zero
+
+          statsHTML += `<div style="margin-bottom: 20px;"><h4 style="color: var(--warm); margin-bottom: 10px; font-size: 14px;">${escapeHtml(pos)}</h4>`;
+          
+          posCands.sort((a, b) => (votes || []).filter(v => v.candidate_id === b.id).length - (votes || []).filter(v => v.candidate_id === a.id).length).forEach(c => {
             const vCount = (votes || []).filter(v => v.candidate_id === c.id).length;
-            statsHTML += `<div class="candidate-stat"><span style="color:var(--text-primary); font-weight:600;">${escapeHtml(c.member_name)}</span><span style="color:var(--accent); font-weight:700;">${vCount} Votes</span></div>`;
+            const percentWidth = (vCount / maxPosVotes) * 100;
+            
+            statsHTML += `
+              <div style="margin-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px;">
+                  <span style="color:var(--text-primary); font-weight:600;">${escapeHtml(c.member_name)}</span>
+                  <span style="color:var(--accent); font-weight:700;">${vCount} Votes</span>
+                </div>
+                <div class="bar-chart-container">
+                  <div class="bar-fill" style="width: ${percentWidth}%; background: ${vCount === maxPosVotes && vCount > 0 ? '#f59e0b' : 'var(--accent)'};"></div>
+                </div>
+              </div>`;
           });
           statsHTML += `</div>`;
         });
         document.getElementById("statsContainer").innerHTML = statsHTML || "<p>No approved candidates.</p>";
 
+        // 6. Generate Secret Ballot Voting Log (No voter names!)
+        currentVotesData = []; // Reset for CSV
         const tbody = document.getElementById("votesLogBody");
-        tbody.innerHTML = (votes || []).map(v => {
-          const candidate = (candidates || []).find(c => c.id === v.candidate_id);
-          return `<tr><td><strong>${escapeHtml(memberMap[v.voter_email] || v.voter_email)}</strong></td><td style="color:var(--accent);">${escapeHtml(candidate ? candidate.member_name : "Unknown")}</td><td>${escapeHtml(v.position)}</td><td>${new Date(v.created_at).toLocaleString()}</td></tr>`;
-        }).join("");
+        
+        if (!votes || votes.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No votes cast yet.</td></tr>";
+        } else {
+          tbody.innerHTML = votes.map(v => {
+            const candidate = (candidates || []).find(c => c.id === v.candidate_id);
+            const candName = candidate ? candidate.member_name : "Unknown/Withdrawn";
+            const receipt = v.receipt_code || "N/A";
+            const timeStr = new Date(v.created_at).toLocaleString();
+            
+            // Save for CSV
+            currentVotesData.push({
+              receipt: receipt,
+              candidate: candName,
+              position: v.position,
+              time: timeStr
+            });
+
+            return `<tr>
+              <td><code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">${receipt}</code></td>
+              <td style="color:var(--accent); font-weight:600;">${escapeHtml(candName)}</td>
+              <td>${escapeHtml(v.position)}</td>
+              <td style="font-size:12px; color:var(--text-muted);">${timeStr}</td>
+            </tr>`;
+          }).join("");
+        }
       };
+
+      // ============ EXPORT TO CSV ============
+      function exportVotesToCSV() {
+        if (!currentVotesData || currentVotesData.length === 0) {
+          return window.syfError("No data to export.");
+        }
+
+        const headers = ["Receipt Code", "Voted For", "Position", "Time"];
+        const csvRows = [headers.join(",")];
+
+        currentVotesData.forEach(row => {
+          const values = [
+            `"${row.receipt}"`,
+            `"${row.candidate.replace(/"/g, '""')}"`,
+            `"${row.position.replace(/"/g, '""')}"`,
+            `"${row.time}"`
+          ];
+          csvRows.push(values.join(","));
+        });
+
+        const csvString = csvRows.join("\n");
+        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Election_Results_${currentElectionId}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     </script>
   </body>
 </html>
-      
