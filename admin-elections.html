@@ -11,9 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <style>
-      .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+      .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; pointer-events: auto; }
       .modal-overlay.active { display: flex; }
-      .modal-box { background: var(--bg-base); border: 1px solid var(--card-border); border-radius: 20px; padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); }
+      .modal-box { background: var(--bg-base); border: 1px solid var(--card-border); border-radius: 20px; padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); z-index: 1000000; pointer-events: auto; }
       .modal-close { position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 18px; }
       .modal-box h2 { color: var(--accent); margin-bottom: 20px; font-size: 22px; }
       .election-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--r-md); padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
@@ -96,8 +96,8 @@
             <input type="text" id="elTitle" placeholder="e.g. Cabinet Election 2026" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
           </div>
           <div class="form-group" style="margin-bottom: 15px">
-            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Nomination Fee (Rs.)</label>
-            <input type="number" id="elFee" placeholder="0 for free" value="0" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
+        <label for="elTitle" style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block; cursor: pointer;">Election Title</label>
+        <input type="text" id="elTitle" name="elTitle" placeholder="e.g. Cabinet Election 2026" required autocomplete="off" style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none; position: relative; z-index: 10;" />
           </div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
