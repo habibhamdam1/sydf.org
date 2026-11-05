@@ -24,6 +24,9 @@
       .msg-win { background: rgba(26, 188, 156, 0.15); color: #1abc9c; border: 1px solid #1abc9c; }
       .msg-lose { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
       .msg-tie { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid #a855f7; }
+      .timer-badge { background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; font-family: monospace; font-weight: bold; border: 1px solid var(--card-border); display: inline-block; margin-top: 10px; }
+      .candidate-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card-border); }
+      .receipt-box { background: rgba(26,188,156,0.1); border: 2px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px; }
     </style>
   </head>
   <body class="dashboard-body">
@@ -79,6 +82,7 @@
     <script>
       let currentMember = null;
       let globalSettings = {};
+      let timerInterval = null;
 
       // ============ HELPERS ============
       function escapeHtml(str) {
@@ -89,6 +93,22 @@
         if (Array.isArray(p)) return p;
         try { return JSON.parse(p); }
         catch (e) { return String(p).replace(/[{}"]/g, "").split(",").map(s => s.trim()).filter(Boolean); }
+      }
+      
+      // Time formatter (e.g., "2d 5h 30m 10s")
+      function getTimeRemaining(endtime) {
+        if (!endtime) return "N/A";
+        const total = Date.parse(endtime) - Date.parse(new Date());
+        if (total <= 0) return "00:00:00";
+        const seconds = Math.floor((total / 1000) % 60);
+        const minutes = Math.floor((total / 1000 / 60) % 60);
+        const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+        const days = Math.floor(total / (1000 * 60 * 60 * 24));
+        
+        let str = "";
+        if (days > 0) str += `${days}d `;
+        str += `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+        return str;
       }
 
       // ============ INIT ============
@@ -103,23 +123,30 @@
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return (window.location.href = "login.html");
 
-        const { data: member } = await supabaseClient.from("members").select("name, email, status, uid").eq("email", session.user.email).single();
+        // Fetch full member details including profile picture
+        const { data: member } = await supabaseClient.from("members").select("*").eq("email", session.user.email).single();
 
         if (!member || member.status !== "Active") {
           document.getElementById("electionContainer").innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px;">⛔ Your account is not active. Elections are only for active members.</div>`;
           return;
         }
         currentMember = member;
-
-        document.getElementById("topAvatar").textContent = (member.name || "M").charAt(0).toUpperCase();
+        
+        // Setup topbar
+        const avatarUrl = member.profile_picture || member.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff`;
+        document.getElementById("topAvatar").style.backgroundImage = `url('${avatarUrl}')`;
+        document.getElementById("topAvatar").style.backgroundSize = "cover";
+        document.getElementById("topAvatar").textContent = ""; // Remove text
+        
         document.querySelectorAll(".user-name").forEach(el => el.textContent = member.name || "Member");
         document.querySelectorAll(".user-uid").forEach(el => el.textContent = member.uid || "-");
 
         const { data: setts } = await supabaseClient.from("settings").select("key, value");
         if (setts) setts.forEach(s => globalSettings[s.key] = s.value);
 
-        // Event delegation - attach once
         const container = document.getElementById("electionContainer");
+        
+        // Event Delegation for Forms
         container.addEventListener("submit", async function (e) {
           e.preventDefault();
           if (e.target.id === "nominateForm") await handleNomination(e.target);
@@ -127,6 +154,14 @@
         });
 
         await loadElectionsData();
+        
+        // Update timers every second
+        timerInterval = setInterval(() => {
+          document.querySelectorAll(".dynamic-timer").forEach(timerEl => {
+            const end = timerEl.getAttribute("data-end");
+            timerEl.textContent = getTimeRemaining(end);
+          });
+        }, 1000);
       });
 
       // ============ LOAD ELECTIONS ============
@@ -145,14 +180,16 @@
         }
 
         let html = "";
+        const now = new Date();
 
-        // Show ALL upcoming
-        const upcomingElections = elections.filter(e => e.status === "Upcoming");
-        for (const e of upcomingElections) html += await renderUpcomingElection(e);
-
-        // Show ALL active
-        const activeElections = elections.filter(e => e.status === "Active");
-        for (const e of activeElections) html += await renderActiveElection(e);
+        // Show ALL upcoming and active elections
+        for (const e of elections) {
+          if (e.status === "Upcoming") {
+            html += await renderUpcomingElection(e, now);
+          } else if (e.status === "Active") {
+            html += await renderActiveElection(e, now);
+          }
+        }
 
         // Show completed only if publish_results is true
         const publishVal = (globalSettings.publish_results || "").toString().toLowerCase();
@@ -162,261 +199,344 @@
         }
 
         if (!html) {
-          html = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px;">🗳️ No active, upcoming, or published elections right now. Check back later!</div>`;
+          html = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px;">🗳️ No active or upcoming elections right now.</div>`;
         }
 
         container.innerHTML = html;
       }
       
-      // ============ UPCOMING (Nomination) ============
-      async function renderUpcomingElection(election) {
-        const positions = parsePositions(election.positions);
-        const electionFee = Number(election.fee) || 0;
+// ============ UPCOMING (Nomination Phase) ============
+async function renderUpcomingElection(election, now) {
+  const positions = parsePositions(election.positions);
+  const electionFee = Number(election.fee) || 0;
 
-        const { data: existingCandidates } = await supabaseClient
-          .from("election_candidates").select("position, status, fee_status, transaction_id")
-          .eq("election_id", election.id).eq("member_email", currentMember.email);
+  // Time Logic
+  const nomStart = election.nomination_start ? new Date(election.nomination_start) : null;
+  const nomEnd = election.nomination_end ? new Date(election.nomination_end) : null;
+  const isBeforeNom = nomStart && now < nomStart;
+  const isNomOpen = (!nomStart || now >= nomStart) && (!nomEnd || now <= nomEnd);
+  const isNomClosed = nomEnd && now > nomEnd;
 
-        const existing = existingCandidates || [];
+  // Format Dates for Display
+  const fmt = (d) => d ? d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "N/A";
 
-        // Locked = Pending or Approved (can't re-apply)
-        const lockedPositions = existing.filter(c => c.status === "Pending" || c.status === "Approved").map(c => c.position);
-        const availablePositions = positions.filter(p => !lockedPositions.includes(p));
+  const { data: existingCandidates } = await supabaseClient
+    .from("election_candidates").select("position, status, fee_status, transaction_id")
+    .eq("election_id", election.id).eq("member_email", currentMember.email);
 
-        // Show status of existing applications
-        let appliedHTML = "";
-        if (existing.length > 0) {
-          appliedHTML = `<div style="background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; color: #93c5fd; padding: 15px; border-radius: 10px; margin-top: 15px;">
-            <h4 style="margin-bottom: 5px;">✅ Your Applications:</h4>
-            <ul style="margin-left: 20px; font-size: 14px;">
-              ${existing.map(c => {
-                const isRejected = c.status === "Rejected";
-                const payStatusColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
-                return `<li>
-                  ${escapeHtml(c.position)} - Status: <strong>${escapeHtml(c.status || "Pending")}</strong>
-                  ${electionFee > 0 ? `<br><span style="font-size: 12px; color: ${payStatusColor};">Payment: ${escapeHtml(c.fee_status || "Unpaid")} (Trx: ${escapeHtml(c.transaction_id || "N/A")})</span>` : ""}
-                  ${isRejected ? `<br><span style="font-size: 12px; color:#fbbf24;">⚠️ Rejected — you can re-apply from the form below.</span>` : ""}
-                </li>`;
-              }).join("")}
-            </ul>
-            <p style="font-size: 12px; margin-top: 10px; opacity: 0.8;">Admin will verify your payment and approve your application.</p>
-          </div>`;
-        }
+  const existing = existingCandidates || [];
+  const lockedPositions = existing.filter(c => c.status === "Pending" || c.status === "Approved").map(c => c.position);
+  const availablePositions = positions.filter(p => !lockedPositions.includes(p));
 
-        // Fee + payment details
-        let feeHTML = "";
-        let formDisabled = false;
-        if (electionFee > 0) {
-          const jc = (globalSettings.jazzcash || "").trim();
-          const ep = (globalSettings.easypaisa || "").trim();
-          const title = (globalSettings.account_title || "SYDF").trim();
-          const hasPaymentInfo = jc || ep;
+  // Show status of existing applications
+  let appliedHTML = "";
+  if (existing.length > 0) {
+    appliedHTML = `<div style="background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; color: #93c5fd; padding: 15px; border-radius: 10px; margin-top: 15px;">
+      <h4 style="margin-bottom: 5px;">✅ Your Applications:</h4>
+      <ul style="margin-left: 20px; font-size: 14px;">
+        ${existing.map(c => {
+          const isRejected = c.status === "Rejected";
+          const payStatusColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
+          return `<li>
+            ${escapeHtml(c.position)} - Status: <strong>${escapeHtml(c.status || "Pending")}</strong>
+            ${electionFee > 0 ? `<br><span style="font-size: 12px; color: ${payStatusColor};">Payment: ${escapeHtml(c.fee_status || "Unpaid")} (Trx: ${escapeHtml(c.transaction_id || "N/A")})</span>` : ""}
+            ${isRejected ? `<br><span style="font-size: 12px; color:#fbbf24;">⚠️ Rejected — you can re-apply (if time remains).</span>` : ""}
+          </li>`;
+        }).join("")}
+      </ul>
+    </div>`;
+  }
 
-          if (!hasPaymentInfo) {
-            // No fake numbers — warning + disable
-            feeHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 15px; border-radius: 10px; margin: 15px 0;">
-              <h4 style="color: #fca5a5; font-size: 14px; margin-bottom: 5px;">⚠️ Payment Info Not Configured</h4>
-              <p style="color: var(--text-secondary); font-size: 12px;">Nomination fee is Rs. ${electionFee}, but admin has not configured payment accounts yet. Please contact admin before applying.</p>
-            </div>`;
-            formDisabled = true;
-          } else {
-            feeHTML = `<div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 15px; border-radius: 10px; margin: 15px 0;">
-              <h4 style="color: #fbbf24; font-size: 14px; margin-bottom: 5px;">💰 Nomination Fee: Rs. ${electionFee}</h4>
-              <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 10px;">Transfer Rs. ${electionFee} to any account below, then enter the Transaction ID (TID).</p>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                ${jc ? `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; font-size: 12px;"><strong>JazzCash:</strong> ${escapeHtml(jc)}<br><small style="opacity:0.7">Title: ${escapeHtml(title)}</small></div>` : ""}
-                ${ep ? `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; font-size: 12px;"><strong>EasyPaisa:</strong> ${escapeHtml(ep)}<br><small style="opacity:0.7">Title: ${escapeHtml(title)}</small></div>` : ""}
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <select id="nomPaymentMethod" required style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;">
-                  <option value="">Payment Method</option>
-                  <option value="JazzCash">JazzCash</option>
-                  <option value="EasyPaisa">EasyPaisa</option>
-                  <option value="Bank">Bank Transfer</option>
-                </select>
-                <input type="text" id="nomTrxId" placeholder="Transaction ID (TID)" required style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
-              </div>
-            </div>`;
-          }
-        }
+  // Build the form or message based on timing
+  let formHTML = "";
+  let timerHTML = "";
+  
+  if (isBeforeNom) {
+     formHTML = `<div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #fbbf24; padding: 15px; border-radius: 10px; margin-top: 20px; text-align:center;">
+        <h3 style="font-size: 16px;">⏳ Nominations will start soon!</h3>
+        <p style="font-size: 13px;">Starts on: <strong>${fmt(nomStart)}</strong></p>
+     </div>`;
+  } else if (isNomClosed) {
+     formHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 10px; margin-top: 20px; text-align:center;">
+        <h3 style="font-size: 16px;">🛑 Nominations Closed</h3>
+        <p style="font-size: 13px;">The deadline to apply was <strong>${fmt(nomEnd)}</strong>.</p>
+     </div>`;
+  } else if (availablePositions.length === 0) {
+     formHTML = `<p style="color: var(--text-muted); font-size: 14px; margin-top: 15px;">You have already applied for all available positions.</p>`;
+  } else {
+     // Form is OPEN
+     if (nomEnd) {
+         timerHTML = `<div style="text-align:center; margin-top: 10px;">
+             <span style="font-size:12px; color:var(--text-secondary);">Time left to apply:</span><br>
+             <div class="timer-badge dynamic-timer" data-end="${nomEnd.toISOString()}">${getTimeRemaining(nomEnd.toISOString())}</div>
+         </div>`;
+     }
 
-        // Only available (not locked) positions in dropdown
-        const noPositionsLeft = availablePositions.length === 0;
+     // Fee / Payment Details
+     let feeHTML = "";
+     let formDisabled = false;
+     if (electionFee > 0) {
+       const jc = (globalSettings.jazzcash || "").trim();
+       const ep = (globalSettings.easypaisa || "").trim();
+       const title = (globalSettings.account_title || "SYDF").trim();
+       const hasPaymentInfo = jc || ep;
 
-        const formHTML = noPositionsLeft
-          ? `<p style="color: var(--text-muted); font-size: 14px; margin-top: 15px;">You have already applied for all available positions. Wait for admin approval.</p>`
-          : `<form id="nominateForm" data-election-id="${election.id}" data-election-fee="${electionFee}" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; max-width: 500px;">
-              <select id="nomPosition" required style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;">
-                <option value="">Select Position to Nominate</option>
-                ${availablePositions.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("")}
-              </select>
-              <input type="text" id="nomManifesto" placeholder="Why should people vote for you? (Manifesto)" required class="nominate-input" />
-              ${feeHTML}
-              <button type="submit" class="btn-primary" style="padding: 12px 25px; border-radius: 8px;" ${formDisabled ? "disabled style='opacity:0.5; cursor:not-allowed;'" : ""}>
-                ${formDisabled ? "Payment Not Configured" : "Apply for Nomination"}
-              </button>
-            </form>`;
+       if (!hasPaymentInfo) {
+         feeHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 15px; border-radius: 10px; margin: 15px 0;">
+           <h4 style="color: #fca5a5; font-size: 14px; margin-bottom: 5px;">⚠️ Payment Info Not Configured</h4>
+           <p style="color: var(--text-secondary); font-size: 12px;">Nomination fee is Rs. ${electionFee}, but admin has not set up accounts. Contact admin.</p>
+         </div>`;
+         formDisabled = true;
+       } else {
+         feeHTML = `<div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 15px; border-radius: 10px; margin: 15px 0;">
+           <h4 style="color: #fbbf24; font-size: 14px; margin-bottom: 5px;">💰 Nomination Fee: Rs. ${electionFee}</h4>
+           <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 10px;">Transfer to any account and enter the TRX ID below.</p>
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+             ${jc ? `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; font-size: 12px;"><strong>JazzCash:</strong> ${escapeHtml(jc)}<br><small>Title: ${escapeHtml(title)}</small></div>` : ""}
+             ${ep ? `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; font-size: 12px;"><strong>EasyPaisa:</strong> ${escapeHtml(ep)}<br><small>Title: ${escapeHtml(title)}</small></div>` : ""}
+           </div>
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+             <select id="nomPaymentMethod" required style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;">
+               <option value="">Payment Method *</option>
+               <option value="JazzCash">JazzCash</option>
+               <option value="EasyPaisa">EasyPaisa</option>
+               <option value="Bank">Bank Transfer</option>
+             </select>
+             <input type="text" id="nomTrxId" placeholder="Transaction ID *" required minlength="4" style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
+           </div>
+         </div>`;
+       }
+     }
 
-        return `
-          <div class="election-block" style="border: 1px solid #3b82f6;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap:wrap; gap:10px;">
-              <h2 style="color: var(--text-primary);">${escapeHtml(election.title)}</h2>
-              <span class="status-badge status-upcoming">Upcoming</span>
-            </div>
-            <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-              <h3 style="color: #93c5fd; font-size: 16px; margin-bottom: 5px;">⏳ Election Starting Soon!</h3>
-              <p style="color: var(--text-secondary); font-size: 13px;">Submit your nomination now. Once admin starts the election, you'll be able to cast your vote.</p>
-            </div>
-            <h3 style="color: var(--warm); font-size: 16px; margin-bottom: 10px;">Nominate Yourself</h3>
-            ${appliedHTML}
-            ${formHTML}
-          </div>`;
+     formHTML = `
+       <form id="nominateForm" data-election-id="${election.id}" data-election-fee="${electionFee}" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; max-width: 500px;">
+         <select id="nomPosition" required style="padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;">
+           <option value="">Select Position to Nominate *</option>
+           ${availablePositions.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("")}
+         </select>
+         <input type="text" id="nomManifesto" placeholder="Why should people vote for you? (Manifesto) *" required class="nominate-input" />
+         ${feeHTML}
+         <button type="submit" class="btn-primary" style="padding: 12px 25px; border-radius: 8px;" ${formDisabled ? "disabled style='opacity:0.5; cursor:not-allowed;'" : ""}>
+           ${formDisabled ? "Payment Not Configured" : "Apply for Nomination"}
+         </button>
+       </form>`;
+  }
+
+  return `
+    <div class="election-block" style="border: 1px solid #3b82f6;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="color: var(--text-primary); margin-bottom: 5px;">${escapeHtml(election.title)}</h2>
+          <span class="status-badge status-upcoming">Upcoming</span>
+        </div>
+        ${timerHTML}
+      </div>
+      
+      <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+         <div><span style="color:var(--text-secondary)">Nomination:</span><br><strong style="color:var(--warm)">${fmt(nomStart)} - ${fmt(nomEnd)}</strong></div>
+         <div><span style="color:var(--text-secondary)">Voting:</span><br><strong style="color:#1abc9c">${fmt(election.voting_start ? new Date(election.voting_start) : null)} - ${fmt(election.voting_end ? new Date(election.voting_end) : null)}</strong></div>
+      </div>
+
+      <h3 style="color: var(--warm); font-size: 16px; margin-top: 20px; margin-bottom: 10px;">Nominate Yourself</h3>
+      ${appliedHTML}
+      ${formHTML}
+    </div>`;
+}
+
+// ============ HANDLE NOMINATION SUBMIT ============
+async function handleNomination(form) {
+  const electionId = parseInt(form.dataset.electionId);
+  const electionFee = Number(form.dataset.electionFee) || 0;
+  const pos = form.querySelector("#nomPosition").value;
+  const manifesto = form.querySelector("#nomManifesto").value.trim();
+  const btn = form.querySelector('button[type="submit"]');
+
+  if (!pos) return window.syfError("Please select a position.");
+  if (!manifesto) return window.syfError("Please write your manifesto.");
+
+  let trxId = null, payMethod = null, feeStatus = "N/A";
+  if (electionFee > 0) {
+    trxId = form.querySelector("#nomTrxId").value.trim();
+    payMethod = form.querySelector("#nomPaymentMethod").value;
+    if (!payMethod) return window.syfError("Payment Method select karna lazmi hai.");
+    if (!trxId) return window.syfError("Transaction ID (TID) dalna lazmi hai.");
+    if (trxId.length < 4) return window.syfError("Valid Transaction ID dalen.");
+    feeStatus = "Pending Verification";
+  }
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Submitting...";
+
+  // Get Profile Picture Fallback
+  const avatarUrl = currentMember.profile_picture || currentMember.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentMember.name)}&background=random&color=fff`;
+
+  try {
+    // Check if already applied for this position (in case of rejected re-apply)
+    const { data: existingForPos } = await supabaseClient.from("election_candidates")
+      .select("id, status")
+      .eq("election_id", electionId)
+      .eq("member_email", currentMember.email)
+      .eq("position", pos)
+      .maybeSingle();
+
+    let error = null;
+
+    if (existingForPos) {
+      if (existingForPos.status === "Rejected") {
+        const { error: updErr } = await supabaseClient.from("election_candidates")
+          .update({ 
+            manifesto, 
+            status: "Pending", 
+            fee_status: feeStatus, 
+            transaction_id: trxId, 
+            payment_method: payMethod,
+            profile_picture: avatarUrl
+          }).eq("id", existingForPos.id);
+        error = updErr;
+      } else {
+        window.syfError(`You have already applied for ${pos}.`);
+        btn.disabled = false; btn.textContent = originalText;
+        return;
       }
+    } else {
+      // New application
+      const { error: insErr } = await supabaseClient.from("election_candidates").insert([{
+        election_id: electionId,
+        member_email: currentMember.email,
+        member_name: currentMember.name,
+        position: pos,
+        manifesto: manifesto,
+        status: "Pending",
+        fee_status: feeStatus,
+        transaction_id: trxId,
+        payment_method: payMethod,
+        profile_picture: avatarUrl
+      }]);
+      error = insErr;
+    }
 
-      // ============ HANDLE NOMINATION SUBMIT ============
-      async function handleNomination(form) {
-        const electionId = parseInt(form.dataset.electionId);
-        const electionFee = Number(form.dataset.electionFee) || 0;
-        const pos = form.querySelector("#nomPosition").value;
-        const manifesto = form.querySelector("#nomManifesto").value.trim();
-        const btn = form.querySelector('button[type="submit"]');
-
-        if (!pos) return window.syfError("Please select a position.");
-        if (!manifesto) return window.syfError("Please write your manifesto.");
-
-        let trxId = null, payMethod = null, feeStatus = "N/A";
-        if (electionFee > 0) {
-          trxId = form.querySelector("#nomTrxId").value.trim();
-          payMethod = form.querySelector("#nomPaymentMethod").value;
-          if (!trxId || !payMethod) return window.syfError("Please select payment method and enter the Transaction ID.");
-          feeStatus = "Pending Verification";
-        }
-
-        btn.disabled = true;
-        const originalText = btn.textContent;
-        btn.textContent = "Submitting...";
-
-        try {
-          // Check if already applied for this position
-          const { data: existingForPos } = await supabaseClient.from("election_candidates")
-            .select("id, status")
-            .eq("election_id", electionId)
-            .eq("member_email", currentMember.email)
-            .eq("position", pos)
-            .maybeSingle();
-
-          let error = null;
-
-          if (existingForPos) {
-            if (existingForPos.status === "Rejected") {
-              // Allow re-submission via UPDATE
-              const { error: updErr } = await supabaseClient.from("election_candidates")
-                .update({ manifesto, status: "Pending", fee_status: feeStatus, transaction_id: trxId, payment_method: payMethod })
-                .eq("id", existingForPos.id);
-              error = updErr;
-            } else {
-              window.syfError(`You have already applied for ${pos} (Status: ${existingForPos.status}).`);
-              btn.disabled = false;
-              btn.textContent = originalText;
-              return;
-            }
-          } else {
-            // New application - INSERT
-            const { error: insErr } = await supabaseClient.from("election_candidates").insert([{
-              election_id: electionId,
-              member_email: currentMember.email,
-              member_name: currentMember.name,
-              position: pos,
-              manifesto: manifesto,
-              status: "Pending",
-              fee_status: feeStatus,
-              transaction_id: trxId,
-              payment_method: payMethod,
-            }]);
-            error = insErr;
-          }
-
-          if (error) {
-            window.syfError("Error: " + error.message);
-            btn.disabled = false;
-            btn.textContent = originalText;
-          } else {
-            window.syfSuccess("Nomination submitted! Admin will verify and approve it soon.");
-            await loadElectionsData();
-          }
-        } catch (err) {
-          window.syfError("Error: " + err.message);
-          btn.disabled = false;
-          btn.textContent = originalText;
-        }
+    if (error) {
+      window.syfError("Error: " + error.message);
+      btn.disabled = false; btn.textContent = originalText;
+    } else {
+      window.syfSuccess("Nomination submitted! Admin will verify and approve.");
+      await loadElectionsData();
+    }
+  } catch (err) {
+    window.syfError("Error: " + err.message);
+    btn.disabled = false; btn.textContent = originalText;
+  }
       }
-
-      // ============ ACTIVE (Voting) ============
-      async function renderActiveElection(election) {
+      
+      // ============ ACTIVE (Voting Phase) ============
+      async function renderActiveElection(election, now) {
         const positions = parsePositions(election.positions);
+        
+        // Voting Time Logic
+        const vStart = election.voting_start ? new Date(election.voting_start) : null;
+        const vEnd = election.voting_end ? new Date(election.voting_end) : null;
+        const isBeforeVote = vStart && now < vStart;
+        const isVoteOpen = (!vStart || now >= vStart) && (!vEnd || now <= vEnd);
+        const isVoteClosed = vEnd && now > vEnd;
+
+        const fmt = (d) => d ? d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "N/A";
 
         const { data: myVotes } = await supabaseClient
-          .from("election_votes").select("position, candidate_id")
+          .from("election_votes").select("position, candidate_id, receipt_code")
           .eq("election_id", election.id).eq("voter_email", currentMember.email);
         const myVotesArr = myVotes || [];
         const votedPositions = myVotesArr.map(v => v.position);
 
+        // Fetch Candidates (Excluding Withdrawn)
         const { data: candidates } = await supabaseClient
           .from("election_candidates").select("*")
-          .eq("election_id", election.id).eq("status", "Approved");
+          .eq("election_id", election.id).eq("status", "Approved").eq("is_withdrawn", false);
         const cands = candidates || [];
+
+        let timerHTML = "";
+        if (isVoteOpen && vEnd) {
+            timerHTML = `<div style="text-align:center;">
+                <span style="font-size:12px; color:var(--text-secondary);">Voting ends in:</span><br>
+                <div class="timer-badge dynamic-timer" data-end="${vEnd.toISOString()}" style="border-color:#1abc9c; color:#1abc9c;">${getTimeRemaining(vEnd.toISOString())}</div>
+            </div>`;
+        }
 
         let html = `
           <div class="election-block" style="border: 2px solid #1abc9c; box-shadow: 0 0 20px rgba(26,188,156,0.2);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
               <div>
-                <h2 style="color: var(--text-primary);">${escapeHtml(election.title)}</h2>
-                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">Election is LIVE! Cast your votes below.</p>
+                <h2 style="color: var(--text-primary); margin-bottom:5px;">${escapeHtml(election.title)}</h2>
+                <span class="status-badge status-active">Voting Live</span>
               </div>
-              <span class="status-badge status-active">Voting Live</span>
+              ${timerHTML}
             </div>`;
 
-        let posIdx = 0;
-        positions.forEach(pos => {
-          const posCandidates = cands.filter(c => c.position === pos);
-          if (posCandidates.length === 0) return;
-
-          const hasVoted = votedPositions.includes(pos);
-          const radioGroupName = `cand_${election.id}_${posIdx}`;
-
-          html += `<div style="margin-bottom: 25px;">
-            <h4 style="color: var(--text-primary); margin-bottom: 15px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; font-size: 15px;">${escapeHtml(pos)}</h4>`;
-
-          if (hasVoted) {
-            // Show who they voted for
-            const myVote = myVotesArr.find(v => v.position === pos);
-            const votedCand = myVote ? posCandidates.find(c => c.id === myVote.candidate_id) : null;
-            html += `<div style="color: var(--accent); font-size: 14px; background: var(--accent-soft); padding: 12px; border-radius: 8px;">
-              ✅ You have voted${votedCand ? ` for <strong>${escapeHtml(votedCand.member_name)}</strong>` : ""}. Thank you!
+        if (isBeforeVote) {
+            html += `<div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #fbbf24; padding: 15px; border-radius: 10px; text-align:center; margin-bottom:20px;">
+                <h3 style="font-size: 16px;">⏳ Voting will start soon!</h3>
+                <p style="font-size: 13px;">Starts on: <strong>${fmt(vStart)}</strong></p>
             </div>`;
-          } else {
-            html += `<form class="voteForm" data-election-id="${election.id}" data-position="${escapeHtml(pos)}">
-                ${posCandidates.map(c => `
-                  <label class="candidate-card">
-                    <input type="radio" name="${radioGroupName}" value="${c.id}" class="candidate-radio" required>
-                    <div style="flex: 1;">
-                      <div style="color: var(--text-primary); font-weight: 600; font-size: 15px;">${escapeHtml(c.member_name)}</div>
-                      <div style="color: var(--text-muted); font-size: 12px;">Manifesto: ${escapeHtml(c.manifesto || "No manifesto provided")}</div>
-                    </div>
-                  </label>
-                `).join("")}
-                <button type="submit" class="btn-primary" style="padding: 10px 20px; border-radius: 8px; margin-top: 10px; font-size: 13px;">Submit Vote for ${escapeHtml(pos)}</button>
-              </form>`;
-          }
-          html += `</div>`;
-          posIdx++;
-        });
+        } else if (isVoteClosed) {
+            html += `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 10px; text-align:center; margin-bottom:20px;">
+                <h3 style="font-size: 16px;">🛑 Voting has Closed</h3>
+                <p style="font-size: 13px;">Wait for admin to announce the results.</p>
+            </div>`;
+        } else {
+            // Voting is OPEN - Render Ballot
+            let posIdx = 0;
+            positions.forEach(pos => {
+              const posCandidates = cands.filter(c => c.position === pos);
+              if (posCandidates.length === 0) return;
+
+              const hasVoted = votedPositions.includes(pos);
+              const radioGroupName = `cand_${election.id}_${posIdx}`;
+
+              html += `<div style="margin-bottom: 25px;">
+                <h4 style="color: var(--text-primary); margin-bottom: 15px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; font-size: 15px;">${escapeHtml(pos)}</h4>`;
+
+              if (hasVoted) {
+                const myVote = myVotesArr.find(v => v.position === pos);
+                const votedCand = myVote ? posCandidates.find(c => c.id === myVote.candidate_id) : null;
+                
+                html += `<div style="background: rgba(26,188,156,0.1); border: 1px solid #1abc9c; padding: 15px; border-radius: 8px;">
+                  <div style="color: #1abc9c; font-size: 14px; margin-bottom: 10px;">
+                    ✅ You have voted for <strong>${votedCand ? escapeHtml(votedCand.member_name) : "a candidate"}</strong>.
+                  </div>
+                  ${myVote && myVote.receipt_code ? `
+                  <div class="receipt-box">
+                    <span style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Your Vote Receipt Code</span>
+                    <h2 style="color: #1abc9c; margin: 5px 0; letter-spacing: 2px;">${escapeHtml(myVote.receipt_code)}</h2>
+                    <span style="font-size: 11px; color: var(--text-muted);">Keep this code safe. It proves your vote was counted.</span>
+                  </div>` : ""}
+                </div>`;
+              } else {
+                html += `<form class="voteForm" data-election-id="${election.id}" data-position="${escapeHtml(pos)}">
+                    ${posCandidates.map(c => {
+                      const pic = c.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.member_name)}&background=random&color=fff&size=64`;
+                      return `
+                      <label class="candidate-card">
+                        <input type="radio" name="${radioGroupName}" value="${c.id}" class="candidate-radio" required>
+                        <img src="${pic}" class="candidate-avatar" alt="pic">
+                        <div style="flex: 1;">
+                          <div style="color: var(--text-primary); font-weight: 600; font-size: 15px;">${escapeHtml(c.member_name)}</div>
+                          <div style="color: var(--text-muted); font-size: 12px; margin-top:2px;">Manifesto: ${escapeHtml(c.manifesto || "No manifesto provided")}</div>
+                        </div>
+                      </label>
+                    `}).join("")}
+                    <button type="submit" class="btn-primary" style="padding: 10px 20px; border-radius: 8px; margin-top: 10px; font-size: 13px; width:100%;">Cast Vote for ${escapeHtml(pos)}</button>
+                  </form>`;
+              }
+              html += `</div>`;
+              posIdx++;
+            });
+        }
 
         html += `</div>`;
         return html;
       }
 
-      // ============ HANDLE VOTE SUBMIT ============
+      // ============ HANDLE VOTE SUBMIT (Secret Ballot & Receipt) ============
       async function handleVote(form) {
         const electionId = parseInt(form.dataset.electionId);
         const pos = form.dataset.position;
@@ -435,39 +555,41 @@
 
           if (!cand || cand.election_id !== electionId || cand.position !== pos) {
             window.syfError("Invalid candidate for this election.");
-            btn.disabled = false;
-            btn.textContent = `Submit Vote for ${pos}`;
+            btn.disabled = false; btn.textContent = `Cast Vote for ${pos}`;
             return;
           }
+
+          // Generate Secret Receipt Code (e.g. SYDF-A1B2C3)
+          const randStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+          const receiptCode = `SYDF-${randStr}`;
 
           const { error } = await supabaseClient.from("election_votes").insert([{
             election_id: electionId,
             voter_email: currentMember.email,
             candidate_id: candidateId,
             position: pos,
+            receipt_code: receiptCode
           }]);
 
           if (error) {
             if (error.code === "23505") window.syfError("You have already voted for this position!");
             else window.syfError("Error: " + error.message);
-            btn.disabled = false;
-            btn.textContent = `Submit Vote for ${pos}`;
+            btn.disabled = false; btn.textContent = `Cast Vote for ${pos}`;
           } else {
-            window.syfSuccess(`Vote submitted for ${pos}!`);
-            await loadElectionsData();
+            window.syfSuccess(`Vote submitted successfully!`);
+            await loadElectionsData(); // Reload to show the receipt
           }
         } catch (err) {
           window.syfError("Error: " + err.message);
-          btn.disabled = false;
-          btn.textContent = `Submit Vote for ${pos}`;
+          btn.disabled = false; btn.textContent = `Cast Vote for ${pos}`;
         }
       }
 
-      // ============ COMPLETED (Results) ============
+      // ============ COMPLETED (Results Phase) ============
       async function renderCompletedElection(election) {
         const { data: candidates } = await supabaseClient
           .from("election_candidates").select("*")
-          .eq("election_id", election.id).eq("status", "Approved");
+          .eq("election_id", election.id).eq("status", "Approved").eq("is_withdrawn", false);
         const { data: votes } = await supabaseClient
           .from("election_votes").select("*")
           .eq("election_id", election.id);
@@ -491,7 +613,6 @@
           const iWasCandidate = posCandidates.find(c => c.member_email === currentMember.email);
 
           if (maxVotes === 0) {
-            // No votes case
             resultsHTML += `<div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
                 <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">${escapeHtml(pos)}</span>
@@ -504,51 +625,55 @@
           const topCandidates = counts.filter(x => x.votes === maxVotes);
 
           if (topCandidates.length > 1) {
-                      // Tie case
-          const tiedNames = topCandidates.map(x => escapeHtml(x.candidate.member_name)).join(" & ");
-          resultsHTML += `<div style="background: var(--input-bg); border: 1px solid #a855f7; border-radius: 10px; padding: 15px; margin-bottom: 10px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
-              <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">${escapeHtml(pos)}</span>
-              <span style="color: #a855f7; font-weight: 700; font-size: 15px;">🤝 Tie</span>
-            </div>
-            <div style="font-size: 13px; color: var(--text-primary); margin-bottom: 5px;">${tiedNames}</div>
-            <div style="font-size: 12px; color: var(--text-muted);">${maxVotes} votes each — recount needed</div>
-          </div>`;
-          return;
-        }
-
-        const winner = topCandidates[0].candidate;
-        let personalMsg = "";
-        if (iWasCandidate) {
-          if (iWasCandidate.id === winner.id) {
-            personalMsg = `<div class="result-personal-msg msg-win">🎉 Congratulations! You won this position!</div>`;
-          } else {
-            personalMsg = `<div class="result-personal-msg msg-lose">🤝 Thank you for participating! You didn't win this time, but your effort is appreciated.</div>`;
+            const tiedNames = topCandidates.map(x => escapeHtml(x.candidate.member_name)).join(" & ");
+            resultsHTML += `<div style="background: var(--input-bg); border: 1px solid #a855f7; border-radius: 10px; padding: 15px; margin-bottom: 10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+                <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">${escapeHtml(pos)}</span>
+                <span style="color: #a855f7; font-weight: 700; font-size: 15px;">🤝 Tie</span>
+              </div>
+              <div style="font-size: 13px; color: var(--text-primary); margin-bottom: 5px;">${tiedNames}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">${maxVotes} votes each — recount needed</div>
+            </div>`;
+            return;
           }
-        }
 
-        resultsHTML += `<div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-            <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">${escapeHtml(pos)}</span>
-            <span style="color: var(--accent); font-weight: 700; font-size: 15px;">🏆 ${escapeHtml(winner.member_name)}</span>
-          </div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Total Votes: ${maxVotes}</div>
-          ${personalMsg}
-        </div>`;
-      });
+          const winner = topCandidates[0].candidate;
+          let personalMsg = "";
+          if (iWasCandidate) {
+            if (iWasCandidate.id === winner.id) {
+              personalMsg = `<div class="result-personal-msg msg-win">🎉 Congratulations! You won this position!</div>`;
+            } else {
+              personalMsg = `<div class="result-personal-msg msg-lose">🤝 Thank you for participating! You didn't win this time.</div>`;
+            }
+          }
 
-      return `
-        <div class="election-block" style="border: 1px solid var(--warm);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
-            <div>
-              <h2 style="color: var(--warm);">🏆 Final Results</h2>
-              <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">${escapeHtml(election.title)}</p>
+          const winnerPic = winner.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(winner.member_name)}&background=random&color=fff&size=64`;
+
+          resultsHTML += `<div style="background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+              <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">${escapeHtml(pos)}</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <img src="${winnerPic}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:1px solid var(--accent);">
+                <span style="color: var(--accent); font-weight: 700; font-size: 15px;">🏆 ${escapeHtml(winner.member_name)}</span>
+              </div>
             </div>
-            <span class="status-badge status-completed">Completed</span>
-          </div>
-          ${resultsHTML || "<p style='color: var(--text-muted);'>No approved candidates found for this election.</p>"}
-        </div>`;
-    }
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Total Votes: ${maxVotes}</div>
+            ${personalMsg}
+          </div>`;
+        });
+
+        return `
+          <div class="election-block" style="border: 1px solid var(--warm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h2 style="color: var(--warm);">🏆 Final Results</h2>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">${escapeHtml(election.title)}</p>
+              </div>
+              <span class="status-badge status-completed">Completed</span>
+            </div>
+            ${resultsHTML || "<p style='color: var(--text-muted);'>No approved candidates found for this election.</p>"}
+          </div>`;
+      }
     </script>
   </body>
 </html>
