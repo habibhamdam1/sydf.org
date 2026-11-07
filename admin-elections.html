@@ -11,11 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <style>
+      /* Modals & Mobile Keyboard Fix */
       .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; pointer-events: auto; }
       .modal-overlay.active { display: flex; }
       .modal-box { background: var(--bg-base); border: 1px solid var(--card-border); border-radius: 20px; padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); z-index: 1000000; pointer-events: auto; }
       .modal-close { position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 18px; }
       .modal-box h2 { color: var(--accent); margin-bottom: 20px; font-size: 22px; }
+      
+      /* Election Cards */
       .election-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--r-md); padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
       .election-info h3 { color: var(--text-primary); font-size: 18px; margin-bottom: 5px; }
       .election-info p { color: var(--text-secondary); font-size: 13px; }
@@ -23,15 +26,18 @@
       .status-upcoming { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid #3b82f6; }
       .status-active { background: rgba(26, 188, 156, 0.15); color: #1abc9c; border: 1px solid #1abc9c; }
       .status-completed { background: rgba(107, 114, 128, 0.15); color: #6b7280; border: 1px solid #6b7280; }
+      
+      /* Tables & Stats */
       .vote-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
       .vote-table th, .vote-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--card-border); }
       .vote-table th { background: var(--input-bg); color: var(--text-primary); font-weight: 600; }
-      .candidate-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--input-bg); border-radius: 8px; margin-bottom: 8px; }
+      .candidate-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--card-border); }
+      
+      /* Seats & Charts */
       .seat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
       .seat-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); cursor: pointer; padding: 8px 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; transition: 0.2s; }
       .seat-checkbox:hover { border-color: var(--accent); }
       .seat-checkbox input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
-      .candidate-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--card-border); }
       .bar-chart-container { background: var(--input-bg); height: 20px; border-radius: 10px; overflow: hidden; margin-top: 5px; display: flex; }
       .bar-fill { height: 100%; background: var(--accent); transition: width 0.5s ease; }
     </style>
@@ -92,35 +98,35 @@
         <h2>Create New Election</h2>
         <form id="createElectionForm">
           <div class="form-group" style="margin-bottom: 15px">
-            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Election Title</label>
-            <input type="text" id="elTitle" placeholder="e.g. Cabinet Election 2026" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
+            <label for="elTitle" style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block; cursor: pointer;">Election Title *</label>
+            <input type="text" id="elTitle" name="elTitle" placeholder="e.g. Cabinet Election 2026" required autocomplete="off" style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none; position: relative; z-index: 10;" />
           </div>
           <div class="form-group" style="margin-bottom: 15px">
-        <label for="elTitle" style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block; cursor: pointer;">Election Title</label>
-        <input type="text" id="elTitle" name="elTitle" placeholder="e.g. Cabinet Election 2026" required autocomplete="off" style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none; position: relative; z-index: 10;" />
+            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Nomination Fee (Rs.)</label>
+            <input type="number" id="elFee" placeholder="0 for free" value="0" required style="width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); outline: none;" />
           </div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div class="form-group">
-              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination Start</label>
+              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination Start *</label>
               <input type="datetime-local" id="nomStart" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
             </div>
             <div class="form-group">
-              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination End</label>
+              <label style="color: var(--warm); font-size: 12px; margin-bottom: 5px; display: block;">Nomination End *</label>
               <input type="datetime-local" id="nomEnd" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
             </div>
             <div class="form-group">
-              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting Start</label>
+              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting Start *</label>
               <input type="datetime-local" id="voteStart" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
             </div>
             <div class="form-group">
-              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting End</label>
+              <label style="color: #1abc9c; font-size: 12px; margin-bottom: 5px; display: block;">Voting End *</label>
               <input type="datetime-local" id="voteEnd" required style="width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary);" />
             </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 15px">
-            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats</label>
+            <label style="color: var(--text-primary); font-size: 13px; margin-bottom: 5px; display: block;">Select Seats *</label>
             <div class="seat-grid" id="dynamicSeatsContainer"></div>
           </div>
           <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 10px">Create Election</button>
@@ -189,396 +195,402 @@
     <script src="js/main.js"></script>
     <script>
       let currentElectionId = null;
-let currentElectionTitle = "";
-let cabinetPositionsList = [];
-let currentVotesData = []; // For CSV Export
+      let currentElectionTitle = "";
+      let cabinetPositionsList = [];
+      let currentVotesData = [];
 
-// ============ HELPERS ============
-function escapeHtml(str) {
-  return String(str == null ? "" : str).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-function parsePositions(p) {
-  if (!p) return [];
-  if (Array.isArray(p)) return p;
-  try { return JSON.parse(p); }
-  catch (e) { return String(p).replace(/[{}"]/g, "").split(",").map(s => s.trim()).filter(Boolean); }
-}
-// Convert ISO string to datetime-local value (YYYY-MM-DDThh:mm)
-function toLocalDatetime(isoStr) {
-  if (!isoStr) return "";
-  const d = new Date(isoStr);
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+      // ============ HELPERS ============
+      function escapeHtml(str) {
+        return String(str == null ? "" : str).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+      function parsePositions(p) {
+        if (!p) return [];
+        if (Array.isArray(p)) return p;
+        try { return JSON.parse(p); }
+        catch (e) { return String(p).replace(/[{}"]/g, "").split(",").map(s => s.trim()).filter(Boolean); }
+      }
+      function toLocalDatetime(isoStr) {
+        if (!isoStr) return "";
+        const d = new Date(isoStr);
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      }
 
-// ============ INIT ============
-window.addEventListener("load", async function () {
-  let attempts = 0;
-  while ((typeof supabaseClient === "undefined" || !supabaseClient) && attempts < 30) {
-    await new Promise((r) => setTimeout(r, 100));
-    attempts++;
-  }
-  if (!supabaseClient) return;
+      // ============ INIT ============
+      window.addEventListener("load", async function () {
+        let attempts = 0;
+        while ((typeof supabaseClient === "undefined" || !supabaseClient) && attempts < 30) {
+          await new Promise((r) => setTimeout(r, 100));
+          attempts++;
+        }
+        if (!supabaseClient) return;
 
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (!session) return (window.location.href = "admin-login.html");
-  const adminEmail = session.user.email;
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return (window.location.href = "admin-login.html");
+        const adminEmail = session.user.email;
 
-  const { data: admin } = await supabaseClient.from("members").select("name, role").eq("email", adminEmail).maybeSingle();
-  if (!admin) return (window.location.href = "index.html");
+        const { data: admin } = await supabaseClient.from("members").select("name, role").eq("email", adminEmail).maybeSingle();
+        if (!admin) return (window.location.href = "index.html");
 
-  document.getElementById("topAvatar").textContent = (admin.name || "A").charAt(0).toUpperCase();
-  document.querySelectorAll(".user-name").forEach(el => el.textContent = admin.name);
-  document.querySelectorAll(".user-uid").forEach(el => el.textContent = admin.role || "Admin");
+        document.getElementById("topAvatar").textContent = (admin.name || "A").charAt(0).toUpperCase();
+        document.querySelectorAll(".user-name").forEach(el => el.textContent = admin.name);
+        document.querySelectorAll(".user-uid").forEach(el => el.textContent = admin.role || "Admin");
 
-  // Fetch cabinet positions
-  const { data: positions } = await supabaseClient.from("cabinet_positions").select("title").order("created_at", { ascending: true });
-  if (positions && positions.length > 0) {
-    cabinetPositionsList = positions.map(p => p.title).filter(t => t !== "Chairman & President");
-    let seatsHTML = "";
-    cabinetPositionsList.forEach(pos => {
-      seatsHTML += `<label class="seat-checkbox"><input type="checkbox" name="seats" value="${escapeHtml(pos)}"> ${escapeHtml(pos)}</label>`;
-    });
-    document.getElementById("dynamicSeatsContainer").innerHTML = seatsHTML;
-  } else {
-    document.getElementById("dynamicSeatsContainer").innerHTML = `<p style="color:#fca5a5; font-size: 12px; grid-column: 1/-1;">No positions found. Add in Cabinet Management first.</p>`;
-  }
+        // Fetch cabinet positions
+        const { data: positions } = await supabaseClient.from("cabinet_positions").select("title").order("created_at", { ascending: true });
+        if (positions && positions.length > 0) {
+          cabinetPositionsList = positions.map(p => p.title).filter(t => t !== "Chairman & President");
+          let seatsHTML = "";
+          cabinetPositionsList.forEach(pos => {
+            seatsHTML += `<label class="seat-checkbox"><input type="checkbox" name="seats" value="${escapeHtml(pos)}"> ${escapeHtml(pos)}</label>`;
+          });
+          document.getElementById("dynamicSeatsContainer").innerHTML = seatsHTML;
+        } else {
+          document.getElementById("dynamicSeatsContainer").innerHTML = `<p style="color:#fca5a5; font-size: 12px; grid-column: 1/-1;">No positions found. Add in Cabinet Management first.</p>`;
+        }
 
-  loadElections();
+        loadElections();
 
-  // Open Create Modal
-  document.getElementById("createElectionBtn").addEventListener("click", function () {
-    document.getElementById("createModal").classList.add("active");
-  });
-
-  // ============ CREATE ELECTION SUBMIT ============
-  document.getElementById("createElectionForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const title = document.getElementById("elTitle").value.trim();
-    const fee = Number(document.getElementById("elFee").value) || 0;
-    const selectedSeats = Array.from(document.querySelectorAll('input[name="seats"]:checked')).map(cb => cb.value);
-    
-    const nomStart = document.getElementById("nomStart").value;
-    const nomEnd = document.getElementById("nomEnd").value;
-    const voteStart = document.getElementById("voteStart").value;
-    const voteEnd = document.getElementById("voteEnd").value;
-
-    if (selectedSeats.length === 0) return window.syfError("Please select at least one seat.");
-    if (new Date(nomStart) >= new Date(nomEnd)) return window.syfError("Nomination End time must be after Start time.");
-    if (new Date(nomEnd) >= new Date(voteStart)) return window.syfError("Voting Start time must be after Nomination End.");
-    if (new Date(voteStart) >= new Date(voteEnd)) return window.syfError("Voting End time must be after Voting Start.");
-
-    const { error } = await supabaseClient.from("elections").insert([{ 
-      title, 
-      status: "Upcoming", 
-      positions: selectedSeats, 
-      fee: fee,
-      nomination_start: new Date(nomStart).toISOString(),
-      nomination_end: new Date(nomEnd).toISOString(),
-      voting_start: new Date(voteStart).toISOString(),
-      voting_end: new Date(voteEnd).toISOString()
-    }]);
-    
-    if (error) return window.syfError(error.message);
-
-    await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "CREATE_ELECTION", details: `Created election: ${title}` }]);
-
-    window.syfSuccess("Election created with schedule!");
-    this.reset();
-    document.getElementById("createModal").classList.remove("active");
-    loadElections();
-  });
-
-  // ============ EDIT SCHEDULE SUBMIT ============
-  document.getElementById("editScheduleForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const id = document.getElementById("editElId").value;
-    const nomStart = document.getElementById("editNomStart").value;
-    const nomEnd = document.getElementById("editNomEnd").value;
-    const voteStart = document.getElementById("editVoteStart").value;
-    const voteEnd = document.getElementById("editVoteEnd").value;
-
-    if (new Date(nomStart) >= new Date(nomEnd)) return window.syfError("Nomination End must be after Start.");
-    if (new Date(nomEnd) > new Date(voteStart)) return window.syfError("Voting Start must be after Nomination End.");
-    if (new Date(voteStart) >= new Date(voteEnd)) return window.syfError("Voting End must be after Start.");
-
-    const { error } = await supabaseClient.from("elections").update({ 
-      nomination_start: new Date(nomStart).toISOString(),
-      nomination_end: new Date(nomEnd).toISOString(),
-      voting_start: new Date(voteStart).toISOString(),
-      voting_end: new Date(voteEnd).toISOString()
-    }).eq("id", id);
-
-    if (error) return window.syfError(error.message);
-
-    await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "EXTEND_SCHEDULE", details: `Extended schedule for Election ID: ${id}` }]);
-
-    window.syfSuccess("Schedule updated successfully!");
-    document.getElementById("editScheduleModal").classList.remove("active");
-    loadElections();
-  });
-
-  // ============ FINALIZE BUTTON ============
-  document.getElementById("finalizeBtn").addEventListener("click", async function () {
-    if (!currentElectionId) return;
-    const btn = document.getElementById("finalizeBtn");
-    if (btn.disabled) return;
-    const originalText = btn.textContent;
-
-    window.syfConfirm("Announce winners and update roles? (President will not be changed)", async (confirmed) => {
-      if (!confirmed) return;
-      btn.disabled = true;
-      btn.textContent = "Finalizing...";
-      try {
-        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId).eq("status", "Approved").eq("is_withdrawn", false);
-        const { data: votes } = await supabaseClient.from("election_votes").select("*").eq("election_id", currentElectionId);
-        const { data: electionRow } = await supabaseClient.from("elections").select("positions").eq("id", currentElectionId).single();
-
-        const contestedPositions = parsePositions(electionRow?.positions);
-        const positions = [...new Set((candidates || []).map(c => c.position))];
-        const winners = [];
-        const ties = [];
-        const skipped = [];
-
-        positions.forEach(pos => {
-          if (pos === "Chairman & President") return;
-          const posCandidates = (candidates || []).filter(c => c.position === pos);
-          if (posCandidates.length === 0) return;
-
-          const counts = posCandidates.map(c => ({ candidate: c, votes: (votes || []).filter(v => v.candidate_id === c.id).length }));
-          const maxVotes = Math.max(...counts.map(x => x.votes), 0);
-
-          if (maxVotes === 0) { skipped.push(pos); return; }
-          const top = counts.filter(x => x.votes === maxVotes);
-          if (top.length > 1) { ties.push(pos); return; }
-          winners.push({ email: top[0].candidate.member_email, role: pos });
+        // Open Create Modal
+        document.getElementById("createElectionBtn").addEventListener("click", function () {
+          document.getElementById("createModal").classList.add("active");
         });
 
-        const rolesToReset = contestedPositions.filter(p => p !== "Chairman & President");
-        if (rolesToReset.length > 0) {
-          await supabaseClient.from("members").update({ role: "Member" }).in("role", rolesToReset);
-        }
+        // ============ CREATE ELECTION SUBMIT (UPDATED) ============
+        document.getElementById("createElectionForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+          
+          const title = document.getElementById("elTitle").value.trim();
+          const fee = Number(document.getElementById("elFee").value) || 0;
+          const selectedSeats = Array.from(document.querySelectorAll('input[name="seats"]:checked')).map(cb => cb.value);
+          
+          const nomStart = document.getElementById("nomStart").value;
+          const nomEnd = document.getElementById("nomEnd").value;
+          const voteStart = document.getElementById("voteStart").value;
+          const voteEnd = document.getElementById("voteEnd").value;
 
-        for (const w of winners) {
-          await supabaseClient.from("members").update({ role: w.role }).eq("email", w.email);
-        }
+          if (!title) return window.syfError("Election Title likhna lazmi hai.");
+          if (selectedSeats.length === 0) return window.syfError("Kam az kam ek seat select karein.");
+          if (!nomStart || !nomEnd || !voteStart || !voteEnd) return window.syfError("Saari dates fill karein.");
+          
+          const ns = new Date(nomStart).getTime();
+          const ne = new Date(nomEnd).getTime();
+          const vs = new Date(voteStart).getTime();
+          const ve = new Date(voteEnd).getTime();
 
-        await supabaseClient.from("elections").update({ status: "Completed" }).eq("id", currentElectionId);
-        await supabaseClient.from("settings").upsert({ key: "publish_results", value: "true" }, { onConflict: "key" });
+          if (ns >= ne) return window.syfError("Nomination End, Start ke baad hona chahiye.");
+          if (ne >= vs) return window.syfError("Voting Start, Nomination End ke baad hona chahiye.");
+          if (vs >= ve) return window.syfError("Voting End, Voting Start ke baad hona chahiye.");
+
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Creating...";
+
+          try {
+            const { data, error } = await supabaseClient.from("elections").insert([{ 
+              title: title, status: "Upcoming", positions: selectedSeats, fee: fee,
+              nomination_start: new Date(nomStart).toISOString(), nomination_end: new Date(nomEnd).toISOString(),
+              voting_start: new Date(voteStart).toISOString(), voting_end: new Date(voteEnd).toISOString()
+            }]).select();
+            
+            if (error) {
+              window.syfError("Database Error: " + error.message);
+              submitBtn.disabled = false; submitBtn.textContent = originalText;
+              return;
+            }
+
+            await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "CREATE_ELECTION", details: `Created election: ${title}` }]);
+
+            window.syfSuccess("Election created successfully!");
+            this.reset();
+            document.getElementById("createModal").classList.remove("active");
+            loadElections();
+
+          } catch (err) {
+            window.syfError("System Error: " + err.message);
+          } finally {
+            submitBtn.disabled = false; submitBtn.textContent = originalText;
+          }
+        });
+
+        // ============ EDIT SCHEDULE SUBMIT ============
+        document.getElementById("editScheduleForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const id = document.getElementById("editElId").value;
+          const nomStart = document.getElementById("editNomStart").value;
+          const nomEnd = document.getElementById("editNomEnd").value;
+          const voteStart = document.getElementById("editVoteStart").value;
+          const voteEnd = document.getElementById("editVoteEnd").value;
+
+          if (new Date(nomStart) >= new Date(nomEnd)) return window.syfError("Nomination End must be after Start.");
+          if (new Date(nomEnd) > new Date(voteStart)) return window.syfError("Voting Start must be after Nomination End.");
+          if (new Date(voteStart) >= new Date(voteEnd)) return window.syfError("Voting End must be after Start.");
+
+          const { error } = await supabaseClient.from("elections").update({ 
+            nomination_start: new Date(nomStart).toISOString(),
+            nomination_end: new Date(nomEnd).toISOString(),
+            voting_start: new Date(voteStart).toISOString(),
+            voting_end: new Date(voteEnd).toISOString()
+          }).eq("id", id);
+
+          if (error) return window.syfError(error.message);
+
+          await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "EXTEND_SCHEDULE", details: `Extended schedule for ID: ${id}` }]);
+
+          window.syfSuccess("Schedule updated successfully!");
+          document.getElementById("editScheduleModal").classList.remove("active");
+          loadElections();
+        });
+
+        // ============ FINALIZE BUTTON ============
+        document.getElementById("finalizeBtn").addEventListener("click", async function () {
+          if (!currentElectionId) return;
+          const btn = document.getElementById("finalizeBtn");
+          if (btn.disabled) return;
+          const originalText = btn.textContent;
+
+          window.syfConfirm("Announce winners and update roles?", async (confirmed) => {
+            if (!confirmed) return;
+            btn.disabled = true;
+            btn.textContent = "Finalizing...";
+            try {
+              const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId).eq("status", "Approved").eq("is_withdrawn", false);
+              const { data: votes } = await supabaseClient.from("election_votes").select("*").eq("election_id", currentElectionId);
+              const { data: electionRow } = await supabaseClient.from("elections").select("positions").eq("id", currentElectionId).single();
+
+              const contestedPositions = parsePositions(electionRow?.positions);
+              const positions = [...new Set((candidates || []).map(c => c.position))];
+              const winners = []; const ties = []; const skipped = [];
+
+              positions.forEach(pos => {
+                if (pos === "Chairman & President") return;
+                const posCandidates = (candidates || []).filter(c => c.position === pos);
+                if (posCandidates.length === 0) return;
+
+                const counts = posCandidates.map(c => ({ candidate: c, votes: (votes || []).filter(v => v.candidate_id === c.id).length }));
+                const maxVotes = Math.max(...counts.map(x => x.votes), 0);
+
+                if (maxVotes === 0) { skipped.push(pos); return; }
+                const top = counts.filter(x => x.votes === maxVotes);
+                if (top.length > 1) { ties.push(pos); return; }
+                winners.push({ email: top[0].candidate.member_email, role: pos });
+              });
+
+              const rolesToReset = contestedPositions.filter(p => p !== "Chairman & President");
+              if (rolesToReset.length > 0) {
+                await supabaseClient.from("members").update({ role: "Member" }).in("role", rolesToReset);
+              }
+
+              for (const w of winners) {
+                await supabaseClient.from("members").update({ role: w.role }).eq("email", w.email);
+              }
+
+              await supabaseClient.from("elections").update({ status: "Completed" }).eq("id", currentElectionId);
+              await supabaseClient.from("settings").upsert({ key: "publish_results", value: "true" }, { onConflict: "key" });
+              await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "FINALIZE_ELECTION", details: `Finalized ID: ${currentElectionId}` }]);
+
+              let msg = "Election finalized! ";
+              if (winners.length > 0) msg += `${winners.length} role(s) assigned. `;
+              if (ties.length > 0) msg += `⚠️ Tie in: ${ties.join(", ")}. `;
+              if (skipped.length > 0) msg += `⚠️ No votes for: ${skipped.join(", ")}.`;
+              window.syfSuccess(msg);
+
+              document.getElementById("resultsModal").classList.remove("active");
+              loadElections();
+            } catch (err) {
+              window.syfError("Error: " + err.message);
+            } finally {
+              btn.disabled = false; btn.textContent = originalText;
+            }
+          });
+        });
         
-        await supabaseClient.from("audit_logs").insert([{ admin_email: adminEmail, action: "FINALIZE_ELECTION", details: `Finalized Election ID: ${currentElectionId}. Winners: ${winners.length}, Ties: ${ties.length}` }]);
+        document.getElementById("exportCsvBtn").addEventListener("click", exportVotesToCSV);
+      });
 
-        let msg = "Election finalized! ";
-        if (winners.length > 0) msg += `${winners.length} role(s) assigned. `;
-        if (ties.length > 0) msg += `⚠️ Tie in: ${ties.join(", ")}. `;
-        if (skipped.length > 0) msg += `⚠️ No votes for: ${skipped.join(", ")}.`;
-        window.syfSuccess(msg);
+      // ============ LOAD ELECTIONS ============
+      async function loadElections() {
+        const list = document.getElementById("electionsList");
+        const { data: elections } = await supabaseClient.from("elections").select("*").order("created_at", { ascending: false });
 
-        document.getElementById("resultsModal").classList.remove("active");
-        loadElections();
-      } catch (err) {
-        window.syfError("Error: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-      }
-    });
-  });
-  
-  // Export CSV Listener
-  document.getElementById("exportCsvBtn").addEventListener("click", exportVotesToCSV);
-});
-      
-// ============ LOAD ELECTIONS ============
-async function loadElections() {
-  const list = document.getElementById("electionsList");
-  const { data: elections } = await supabaseClient.from("elections").select("*").order("created_at", { ascending: false });
-
-  if (!elections || elections.length === 0) {
-    list.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--input-bg); border-radius: 12px;">No elections created yet.</div>`;
-    return;
-  }
-
-  const { data: pendingCounts } = await supabaseClient.from("election_candidates").select("election_id").eq("status", "Pending");
-  const pendingMap = {};
-  if (pendingCounts) pendingCounts.forEach(p => { pendingMap[p.election_id] = (pendingMap[p.election_id] || 0) + 1; });
-
-  list.innerHTML = elections.map(el => {
-    const statusClass = el.status === "Active" ? "status-active" : el.status === "Completed" ? "status-completed" : "status-upcoming";
-    const pendingCount = pendingMap[el.id] || 0;
-    const badge = pendingCount > 0 ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${pendingCount}</span>` : "";
-
-    // Format Dates safely
-    const fmtDate = (d) => d ? new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "N/A";
-
-    let actionBtns = "";
-    if (el.status === "Upcoming") {
-      actionBtns = `<button class="btn-primary start-election-btn" data-eid="${el.id}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #1abc9c;">▶ Start Now</button>`;
-    } else if (el.status === "Active") {
-      actionBtns = `<button class="btn-primary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #3b82f6;">📊 Live Results</button>`;
-    } else {
-      actionBtns = `<button class="btn-secondary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px;">📄 Final Results</button>`;
-    }
-
-    const manageBtn = `<button class="btn-secondary manage-cand-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px;">📋 Candidates ${badge}</button>`;
-    const editBtn = `<button class="btn-secondary edit-schedule-btn" data-id="${el.id}" data-ns="${el.nomination_start}" data-ne="${el.nomination_end}" data-vs="${el.voting_start}" data-ve="${el.voting_end}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px; background: rgba(255,255,255,0.1);">📅 Schedule</button>`;
-    
-    const feeText = el.fee > 0 ? `<span style="color: #f59e0b; font-weight: 600;">Fee: Rs. ${el.fee}</span>` : `<span style="color: #1abc9c; font-weight: 600;">Free</span>`;
-    const seatsText = parsePositions(el.positions).map(escapeHtml).join(", ") || "All";
-
-    return `
-      <div class="election-card">
-        <div class="election-info" style="flex: 1;">
-          <h3 style="display:flex; align-items:center; gap:10px;">${escapeHtml(el.title)} <span class="status-badge ${statusClass}" style="font-size:10px;">${el.status}</span></h3>
-          <p>Created: ${new Date(el.created_at).toLocaleDateString()} | ${feeText}</p>
-          <p style="margin-top: 5px; color: var(--text-secondary); font-size: 11px;">Seats: ${seatsText}</p>
-          <div style="margin-top: 10px; font-size: 11px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-            <div><span style="color:var(--warm)">Nom:</span> ${fmtDate(el.nomination_start)} - ${fmtDate(el.nomination_end)}</div>
-            <div><span style="color:#1abc9c">Vote:</span> ${fmtDate(el.voting_start)} - ${fmtDate(el.voting_end)}</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap: 10px; flex-wrap:wrap; justify-content: flex-end; max-width: 300px;">
-          ${editBtn}
-          ${manageBtn}
-          ${actionBtns}
-        </div>
-      </div>`;
-  }).join("");
-
-  // Attach Event Listeners
-  list.querySelectorAll(".start-election-btn").forEach(b => b.addEventListener("click", () => window.changeStatus(parseInt(b.dataset.eid), "Active")));
-  list.querySelectorAll(".view-results-btn").forEach(b => b.addEventListener("click", () => window.viewResults(parseInt(b.dataset.eid), b.dataset.title)));
-  list.querySelectorAll(".manage-cand-btn").forEach(b => b.addEventListener("click", () => window.manageCandidates(parseInt(b.dataset.eid), b.dataset.title)));
-  
-  // Edit Schedule Listener
-  list.querySelectorAll(".edit-schedule-btn").forEach(b => b.addEventListener("click", () => {
-    document.getElementById("editElId").value = b.dataset.id;
-    document.getElementById("editNomStart").value = toLocalDatetime(b.dataset.ns);
-    document.getElementById("editNomEnd").value = toLocalDatetime(b.dataset.ne);
-    document.getElementById("editVoteStart").value = toLocalDatetime(b.dataset.vs);
-    document.getElementById("editVoteEnd").value = toLocalDatetime(b.dataset.ve);
-    document.getElementById("editScheduleModal").classList.add("active");
-  }));
-}
-
-// ============ CHANGE STATUS ============
-window.changeStatus = async function (id, status) {
-  if (status === "Active") {
-    const { data: activeOnes } = await supabaseClient.from("elections").select("id, title").eq("status", "Active");
-    if (activeOnes && activeOnes.length > 0) {
-      return window.syfError(`"${activeOnes[0].title}" is already Active.`);
-    }
-  }
-  window.syfConfirm(`Force change status to ${status}?`, async (confirmed) => {
-    if (!confirmed) return;
-    await supabaseClient.from("elections").update({ status }).eq("id", id);
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "FORCE_STATUS", details: `Election ID ${id} changed to ${status}` }]);
-    
-    window.syfSuccess(`Election is now ${status}!`);
-    loadElections();
-  });
-};
-
-// ============ MANAGE CANDIDATES ============
-window.manageCandidates = async function (electionId, title) {
-  currentElectionId = electionId;
-  currentElectionTitle = title;
-  document.getElementById("candidatesTitle").textContent = `Candidates: ${title}`;
-  document.getElementById("candidatesModal").classList.add("active");
-  renderCandidatesList();
-};
-
-async function renderCandidatesList() {
-  const list = document.getElementById("candidatesList");
-  list.innerHTML = "<div style='text-align:center; padding:20px;'>Loading candidates...</div>";
-
-  const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId);
-
-  if (!candidates || candidates.length === 0) {
-    list.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No candidates registered yet.</p>";
-    return;
-  }
-
-  const positions = [...new Set(candidates.map(c => c.position))];
-  let html = "";
-
-  positions.forEach(pos => {
-    html += `<h4 style="color:var(--warm); margin: 15px 0 10px; border-bottom:1px solid var(--card-border); padding-bottom:5px;">${escapeHtml(pos)}</h4>`;
-
-    candidates.filter(c => c.position === pos).forEach(c => {
-      const statusColor = c.status === "Approved" ? "#1abc9c" : c.status === "Rejected" ? "#ef4444" : "#f59e0b";
-      const feeIsFree = ["N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
-      
-      // Profile Picture Logic (Fallback to initial if no pic)
-      const avatarUrl = c.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.member_name)}&background=random&color=fff&size=64`;
-      const withdrawnBadge = c.is_withdrawn ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:4px; font-size:10px; margin-left:5px;">WITHDRAWN</span>` : "";
-
-      let feeHTML = "";
-      let verifyBtn = "";
-
-      if (c.transaction_id || (c.fee_status && !feeIsFree)) {
-        const feeColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
-        feeHTML = `
-          <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 11px; border-left: 2px solid ${feeColor};">
-            <strong>Fee:</strong> <span style="color: ${feeColor};">${escapeHtml(c.fee_status || "-")}</span> | 
-            <strong>Trx:</strong> ${escapeHtml(c.transaction_id || "-")} (${escapeHtml(c.payment_method || "-")})
-          </div>`;
-        
-        if (c.fee_status === "Pending Verification" && !c.is_withdrawn) {
-          verifyBtn = `
-            <div style="margin-top: 5px; display: flex; gap: 5px;">
-              <button onclick="verifyFee('${c.id}', 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
-              <button onclick="verifyFee('${c.id}', 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
-            </div>`;
+        if (!elections || elections.length === 0) {
+          list.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted); background: var(--input-bg); border-radius: 12px;">No elections created yet.</div>`;
+          return;
         }
-      }
 
-      let actionBtns = "";
-      if ((c.status === "Pending" || !c.status) && !c.is_withdrawn) {
-        const feeOk = ["Verified", "N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
-        if (feeOk) {
-          actionBtns = `
-            <button onclick="updateCandidateStatus('${c.id}', 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
-            <button onclick="updateCandidateStatus('${c.id}', 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
-        } else {
-          actionBtns = `<span style="font-size:11px; color:#f59e0b; margin-left:5px;">⚠️ Verify payment first.</span>`;
-        }
-      }
+        const { data: pendingCounts } = await supabaseClient.from("election_candidates").select("election_id").eq("status", "Pending");
+        const pendingMap = {};
+        if (pendingCounts) pendingCounts.forEach(p => { pendingMap[p.election_id] = (pendingMap[p.election_id] || 0) + 1; });
 
-      // Withdrawal logic
-      if (c.is_withdrawn) {
-        actionBtns = `<span style="font-size:12px; color:#ef4444; font-weight:bold;">Candidate Withdrew from Election</span>`;
-      } else if (c.status === "Approved" && !c.is_withdrawn) {
-         actionBtns = `<button onclick="updateCandidateStatus('${c.id}', 'Disqualified')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">🚫 Disqualify</button>`;
-      }
+        list.innerHTML = elections.map(el => {
+          const statusClass = el.status === "Active" ? "status-active" : el.status === "Completed" ? "status-completed" : "status-upcoming";
+          const pendingCount = pendingMap[el.id] || 0;
+          const badge = pendingCount > 0 ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${pendingCount}</span>` : "";
+          const fmtDate = (d) => d ? new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "N/A";
 
-      html += `
-        <div class="candidate-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px 0; border-bottom: 1px solid var(--card-border);">
-          <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
-            <div style="display: flex; gap: 12px;">
-              <img src="${avatarUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card-border);" alt="pic">
-              <div>
-                <strong style="color:var(--text-primary); font-size: 14px;">${escapeHtml(c.member_name)} ${withdrawnBadge}</strong> 
-                <span style="font-size:12px; color:var(--text-secondary); display:block;">${escapeHtml(c.member_email)}</span>
-                <div style="font-size:12px; color:var(--text-muted); margin-top:2px; font-style: italic;">"${escapeHtml(c.manifesto || "")}"</div>
+          let actionBtns = "";
+          if (el.status === "Upcoming") {
+            actionBtns = `<button class="btn-primary start-election-btn" data-eid="${el.id}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #1abc9c;">▶ Start Now</button>`;
+          } else if (el.status === "Active") {
+            actionBtns = `<button class="btn-primary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; background: #3b82f6;">📊 Live Results</button>`;
+          } else {
+            actionBtns = `<button class="btn-secondary view-results-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px;">📄 Final Results</button>`;
+          }
+
+          const manageBtn = `<button class="btn-secondary manage-cand-btn" data-eid="${el.id}" data-title="${escapeHtml(el.title)}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px;">📋 Candidates ${badge}</button>`;
+          const editBtn = `<button class="btn-secondary edit-schedule-btn" data-id="${el.id}" data-ns="${el.nomination_start}" data-ne="${el.nomination_end}" data-vs="${el.voting_start}" data-ve="${el.voting_end}" style="padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-right:5px; background: rgba(255,255,255,0.1);">📅 Schedule</button>`;
+          
+          const feeText = el.fee > 0 ? `<span style="color: #f59e0b; font-weight: 600;">Fee: Rs. ${el.fee}</span>` : `<span style="color: #1abc9c; font-weight: 600;">Free</span>`;
+          const seatsText = parsePositions(el.positions).map(escapeHtml).join(", ") || "All";
+
+          return `
+            <div class="election-card">
+              <div class="election-info" style="flex: 1;">
+                <h3 style="display:flex; align-items:center; gap:10px;">${escapeHtml(el.title)} <span class="status-badge ${statusClass}" style="font-size:10px;">${el.status}</span></h3>
+                <p>Created: ${new Date(el.created_at).toLocaleDateString()} | ${feeText}</p>
+                <p style="margin-top: 5px; color: var(--text-secondary); font-size: 11px;">Seats: ${seatsText}</p>
+                <div style="margin-top: 10px; font-size: 11px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                  <div><span style="color:var(--warm)">Nom:</span> ${fmtDate(el.nomination_start)} - ${fmtDate(el.nomination_end)}</div>
+                  <div><span style="color:#1abc9c">Vote:</span> ${fmtDate(el.voting_start)} - ${fmtDate(el.voting_end)}</div>
+                </div>
               </div>
-            </div>
-            <div style="text-align:right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-              <span style="color:${statusColor}; font-weight:bold; font-size:12px; text-transform:uppercase;">${escapeHtml(c.status || "Pending")}</span>
-              ${verifyBtn}
-            </div>
-          </div>
-          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-            <div>${feeHTML}</div>
-            <div style="text-align: right;">${actionBtns}</div>
-          </div>
-        </div>`;
-    });
-  });
-  list.innerHTML = html;
+              <div style="display:flex; align-items:center; gap: 10px; flex-wrap:wrap; justify-content: flex-end; max-width: 300px;">
+                ${editBtn}
+                ${manageBtn}
+                ${actionBtns}
+              </div>
+            </div>`;
+        }).join("");
+
+        list.querySelectorAll(".start-election-btn").forEach(b => b.addEventListener("click", () => window.changeStatus(parseInt(b.dataset.eid), "Active")));
+        list.querySelectorAll(".view-results-btn").forEach(b => b.addEventListener("click", () => window.viewResults(parseInt(b.dataset.eid), b.dataset.title)));
+        list.querySelectorAll(".manage-cand-btn").forEach(b => b.addEventListener("click", () => window.manageCandidates(parseInt(b.dataset.eid), b.dataset.title)));
+        
+        list.querySelectorAll(".edit-schedule-btn").forEach(b => b.addEventListener("click", () => {
+          document.getElementById("editElId").value = b.dataset.id;
+          document.getElementById("editNomStart").value = toLocalDatetime(b.dataset.ns);
+          document.getElementById("editNomEnd").value = toLocalDatetime(b.dataset.ne);
+          document.getElementById("editVoteStart").value = toLocalDatetime(b.dataset.vs);
+          document.getElementById("editVoteEnd").value = toLocalDatetime(b.dataset.ve);
+          document.getElementById("editScheduleModal").classList.add("active");
+        }));
       }
-      
+
+      // ============ CHANGE STATUS ============
+      window.changeStatus = async function (id, status) {
+        if (status === "Active") {
+          const { data: activeOnes } = await supabaseClient.from("elections").select("id, title").eq("status", "Active");
+          if (activeOnes && activeOnes.length > 0) {
+            return window.syfError(`"${activeOnes[0].title}" is already Active.`);
+          }
+        }
+        window.syfConfirm(`Force change status to ${status}?`, async (confirmed) => {
+          if (!confirmed) return;
+          await supabaseClient.from("elections").update({ status }).eq("id", id);
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "FORCE_STATUS", details: `Election ID ${id} changed to ${status}` }]);
+          window.syfSuccess(`Election is now ${status}!`);
+          loadElections();
+        });
+      };
+
+      // ============ MANAGE CANDIDATES ============
+      window.manageCandidates = async function (electionId, title) {
+        currentElectionId = electionId;
+        currentElectionTitle = title;
+        document.getElementById("candidatesTitle").textContent = `Candidates: ${title}`;
+        document.getElementById("candidatesModal").classList.add("active");
+        renderCandidatesList();
+      };
+
+      async function renderCandidatesList() {
+        const list = document.getElementById("candidatesList");
+        list.innerHTML = "<div style='text-align:center; padding:20px;'>Loading candidates...</div>";
+
+        const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", currentElectionId);
+
+        if (!candidates || candidates.length === 0) {
+          list.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No candidates registered yet.</p>";
+          return;
+        }
+
+        const positions = [...new Set(candidates.map(c => c.position))];
+        let html = "";
+
+        positions.forEach(pos => {
+          html += `<h4 style="color:var(--warm); margin: 15px 0 10px; border-bottom:1px solid var(--card-border); padding-bottom:5px;">${escapeHtml(pos)}</h4>`;
+
+          candidates.filter(c => c.position === pos).forEach(c => {
+            const statusColor = c.status === "Approved" ? "#1abc9c" : c.status === "Rejected" ? "#ef4444" : "#f59e0b";
+            const feeIsFree = ["N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
+            const avatarUrl = c.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.member_name)}&background=random&color=fff&size=64`;
+            const withdrawnBadge = c.is_withdrawn ? `<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:4px; font-size:10px; margin-left:5px;">WITHDRAWN</span>` : "";
+
+            let feeHTML = "";
+            let verifyBtn = "";
+
+            if (c.transaction_id || (c.fee_status && !feeIsFree)) {
+              const feeColor = c.fee_status === "Verified" ? "#1abc9c" : c.fee_status === "Rejected" ? "#ef4444" : "#f59e0b";
+              feeHTML = `
+                <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 11px; border-left: 2px solid ${feeColor};">
+                  <strong>Fee:</strong> <span style="color: ${feeColor};">${escapeHtml(c.fee_status || "-")}</span> | 
+                  <strong>Trx:</strong> ${escapeHtml(c.transaction_id || "-")} (${escapeHtml(c.payment_method || "-")})
+                </div>`;
+              
+              if (c.fee_status === "Pending Verification" && !c.is_withdrawn) {
+                verifyBtn = `
+                  <div style="margin-top: 5px; display: flex; gap: 5px;">
+                    <button onclick="verifyFee('${c.id}', 'Verified')" style="padding:4px 8px; background:#1abc9c; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Verify Payment</button>
+                    <button onclick="verifyFee('${c.id}', 'Rejected')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; font-size:10px;">Reject Payment</button>
+                  </div>`;
+              }
+            }
+
+            let actionBtns = "";
+            if ((c.status === "Pending" || !c.status) && !c.is_withdrawn) {
+              const feeOk = ["Verified", "N/A", "Free", "Unpaid"].includes(c.fee_status) || !c.fee_status;
+              if (feeOk) {
+                actionBtns = `
+                  <button onclick="updateCandidateStatus('${c.id}', 'Approved')" style="padding:6px 12px; background:#1abc9c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✓ Approve</button>
+                  <button onclick="updateCandidateStatus('${c.id}', 'Rejected')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; margin-left:5px;">✕ Reject</button>`;
+              } else {
+                actionBtns = `<span style="font-size:11px; color:#f59e0b; margin-left:5px;">⚠️ Verify payment first.</span>`;
+              }
+            }
+
+            if (c.is_withdrawn) {
+              actionBtns = `<span style="font-size:12px; color:#ef4444; font-weight:bold;">Candidate Withdrew</span>`;
+            } else if (c.status === "Approved" && !c.is_withdrawn) {
+               actionBtns = `<button onclick="updateCandidateStatus('${c.id}', 'Disqualified')" style="padding:6px 12px; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">🚫 Disqualify</button>`;
+            }
+
+            html += `
+              <div class="candidate-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px 0; border-bottom: 1px solid var(--card-border);">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="display: flex; gap: 12px;">
+                    <img src="${avatarUrl}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card-border);" alt="pic">
+                    <div>
+                      <strong style="color:var(--text-primary); font-size: 14px;">${escapeHtml(c.member_name)} ${withdrawnBadge}</strong> 
+                      <span style="font-size:12px; color:var(--text-secondary); display:block;">${escapeHtml(c.member_email)}</span>
+                      <div style="font-size:12px; color:var(--text-muted); margin-top:2px; font-style: italic;">"${escapeHtml(c.manifesto || "")}"</div>
+                    </div>
+                  </div>
+                  <div style="text-align:right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+                    <span style="color:${statusColor}; font-weight:bold; font-size:12px; text-transform:uppercase;">${escapeHtml(c.status || "Pending")}</span>
+                    ${verifyBtn}
+                  </div>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                  <div>${feeHTML}</div>
+                  <div style="text-align: right;">${actionBtns}</div>
+                </div>
+              </div>`;
+          });
+        });
+        list.innerHTML = html;
+      }
+
       // ============ VERIFY FEE ============
       window.verifyFee = async function (id, status) {
         const updateData = { fee_status: status };
@@ -587,14 +599,12 @@ async function renderCandidatesList() {
         const { data: updated, error } = await supabaseClient.from("election_candidates").update(updateData).eq("id", id).select();
         
         if (error) return window.syfError("Error: " + error.message);
-        if (!updated || updated.length === 0) {
-          return window.syfError("Update fail! Supabase RLS policy blocking update.");
-        }
+        if (!updated || updated.length === 0) return window.syfError("Update fail! Supabase RLS blocking update.");
 
         const { data: { session } } = await supabaseClient.auth.getSession();
         await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "VERIFY_FEE", details: `Candidate ID ${id} fee marked ${status}` }]);
 
-        window.syfSuccess(`Payment marked as ${status}${status === "Rejected" ? " (Candidate rejected)" : ""}`);
+        window.syfSuccess(`Payment marked as ${status}`);
         renderCandidatesList();
         loadElections();
       };
@@ -610,9 +620,7 @@ async function renderCandidatesList() {
         const { data: updated, error } = await supabaseClient.from("election_candidates").update({ status }).eq("id", id).select();
         
         if (error) return window.syfError("Error: " + error.message);
-        if (!updated || updated.length === 0) {
-          return window.syfError("Update fail! Supabase RLS policy blocking update.");
-        }
+        if (!updated || updated.length === 0) return window.syfError("Update fail! Supabase RLS blocking update.");
 
         const { data: { session } } = await supabaseClient.auth.getSession();
         await supabaseClient.from("audit_logs").insert([{ admin_email: session.user.email, action: "UPDATE_CANDIDATE", details: `Candidate ID ${id} marked as ${status}` }]);
@@ -631,32 +639,24 @@ async function renderCandidatesList() {
         document.getElementById("statsContainer").innerHTML = "<div style='text-align:center; padding:20px;'>Loading results...</div>";
         document.getElementById("votesLogBody").innerHTML = "";
 
-        // 1. Fetch Candidates (Approved & not withdrawn)
         const { data: candidates } = await supabaseClient.from("election_candidates").select("*").eq("election_id", electionId).eq("status", "Approved").eq("is_withdrawn", false);
-        
-        // 2. Fetch Votes
         const { data: votes } = await supabaseClient.from("election_votes").select("*").eq("election_id", electionId);
-        
-        // 3. Fetch Total Active Members (for Turnout)
         const { count: totalMembers } = await supabaseClient.from("members").select("*", { count: 'exact', head: true }).eq("status", "Active");
 
-        // 4. Calculate Turnout
         const uniqueVoters = new Set((votes || []).map(v => v.voter_email)).size;
-        const totalVotesCast = votes ? votes.length : 0;
         const turnoutPercent = totalMembers > 0 ? Math.round((uniqueVoters / totalMembers) * 100) : 0;
 
         document.getElementById("totalMembers").textContent = totalMembers || 0;
         document.getElementById("totalVotes").textContent = uniqueVoters || 0;
         document.getElementById("turnoutPercent").textContent = `${turnoutPercent}%`;
 
-        // 5. Generate Stats with Bar Charts
         const positions = [...new Set((candidates || []).map(c => c.position))];
         let statsHTML = "";
         
         positions.forEach(pos => {
           const posCands = (candidates || []).filter(c => c.position === pos);
           const posVotes = posCands.map(c => (votes || []).filter(v => v.candidate_id === c.id).length);
-          const maxPosVotes = Math.max(...posVotes, 1); // Prevent division by zero
+          const maxPosVotes = Math.max(...posVotes, 1);
 
           statsHTML += `<div style="margin-bottom: 20px;"><h4 style="color: var(--warm); margin-bottom: 10px; font-size: 14px;">${escapeHtml(pos)}</h4>`;
           
@@ -679,8 +679,7 @@ async function renderCandidatesList() {
         });
         document.getElementById("statsContainer").innerHTML = statsHTML || "<p>No approved candidates.</p>";
 
-        // 6. Generate Secret Ballot Voting Log (No voter names!)
-        currentVotesData = []; // Reset for CSV
+        currentVotesData = [];
         const tbody = document.getElementById("votesLogBody");
         
         if (!votes || votes.length === 0) {
@@ -692,13 +691,7 @@ async function renderCandidatesList() {
             const receipt = v.receipt_code || "N/A";
             const timeStr = new Date(v.created_at).toLocaleString();
             
-            // Save for CSV
-            currentVotesData.push({
-              receipt: receipt,
-              candidate: candName,
-              position: v.position,
-              time: timeStr
-            });
+            currentVotesData.push({ receipt, candidate: candName, position: v.position, time: timeStr });
 
             return `<tr>
               <td><code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">${receipt}</code></td>
@@ -715,31 +708,21 @@ async function renderCandidatesList() {
         if (!currentVotesData || currentVotesData.length === 0) {
           return window.syfError("No data to export.");
         }
-
         const headers = ["Receipt Code", "Voted For", "Position", "Time"];
         const csvRows = [headers.join(",")];
 
         currentVotesData.forEach(row => {
-          const values = [
-            `"${row.receipt}"`,
-            `"${row.candidate.replace(/"/g, '""')}"`,
-            `"${row.position.replace(/"/g, '""')}"`,
-            `"${row.time}"`
-          ];
+          const values = [`"${row.receipt}"`, `"${row.candidate.replace(/"/g, '""')}"`, `"${row.position.replace(/"/g, '""')}"`, `"${row.time}"`];
           csvRows.push(values.join(","));
         });
 
         const csvString = csvRows.join("\n");
         const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
-        
         const link = document.createElement("a");
         link.setAttribute("href", url);
         link.setAttribute("download", `Election_Results_${currentElectionId}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
       }
     </script>
   </body>
