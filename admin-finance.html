@@ -1290,7 +1290,7 @@
         doc.setFont("helvetica", "bold");
         doc.setFontSize(16);
         doc.setTextColor(15, 32, 39);
-        doc.text("SYDF — Society of Young Development Foundation", 44, 20);
+        doc.text("SWAT YOUTH DEVELOPMENT FORUM", 44, 20);
 
         doc.setFontSize(12);
         doc.setTextColor(22, 160, 133);
@@ -1460,7 +1460,7 @@
           doc.setFontSize(7.5);
           doc.setTextColor(130, 130, 130);
           doc.text(
-            `SYDF Finance Report  •  Generated ${new Date().toLocaleDateString("en-PK")}`,
+            `SWAT YOUTH DEVELOPMENT FORUM — Finance Report • Generated ${new Date().toLocaleDateString("en-PK")}`,
             marginX,
             pageH - 8,
           );
@@ -1475,8 +1475,8 @@
           filterFrom || filterTo
             ? `_${filterFrom || "start"}_to_${filterTo || "today"}`
             : "_all";
-        doc.setProperties({ title: "SYDF Finance Report" });
-        doc.save(`SYDF-Finance-Report${rangeTag}_${stamp}.pdf`);
+        doc.setProperties({ title: "SWAT YOUTH DEVELOPMENT FORUM - Finance Report" });
+        doc.save(`SWAT_YOUTH_Finance_Report${rangeTag}_${stamp}.pdf`);
       }
     </script>
   </body>
