@@ -218,6 +218,50 @@
         color: var(--accent);
         border-color: var(--accent);
       }
+      
+      /* Closed Message Box */
+      .closed-box {
+        max-width: 600px;
+        margin: 40px auto;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        display: none;
+      }
+      .closed-box .icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        display: block;
+      }
+      .closed-box h2 {
+        color: #fca5a5;
+        font-size: 24px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .closed-box p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .btn-return {
+        display: inline-block;
+        padding: 12px 24px;
+        background: var(--accent);
+        color: white;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      .btn-return:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px var(--accent-glow);
+      }
+
       @media (max-width: 900px) {
         .auth-section {
           grid-template-columns: 1fr;
@@ -251,7 +295,7 @@
       </nav>
     </header>
 
-    <section class="auth-section">
+    <section class="auth-section" id="mainAuthSection">
       <div class="auth-welcome glass-card">
         <div class="welcome-content">
           <div class="welcome-logo">SYDF</div>
@@ -468,10 +512,50 @@
       </div>
     </section>
 
+    <!-- CLOSED MESSAGE BOX (Jab registration band ho) -->
+    <div class="closed-box" id="closedMessageBox" style="margin: 150px auto;">
+      <span class="icon">🚫</span>
+      <h2>Registration Closed</h2>
+      <p>New registrations are currently closed by the administration. Please check back later or contact us for more details.</p>
+      <a href="index.html" class="btn-return">Return to Homepage</a>
+    </div>
+
     <script src="js/main.js?v=99"></script>
     <script src="js/toast.js?v=99"></script>
     <script>
-      window.addEventListener("load", function () {
+      window.addEventListener("load", async function () {
+        let attempts = 0;
+        while ((typeof supabaseClient === "undefined" || !supabaseClient) && attempts < 30) {
+          await new Promise((r) => setTimeout(r, 100));
+          attempts++;
+        }
+        if (!supabaseClient) return;
+
+        // ----------------------------------------------------
+        // CHECK REGISTRATION STATUS (Open / Closed)
+        // ----------------------------------------------------
+        try {
+          const { data, error } = await supabaseClient
+            .from("settings")
+            .select("value")
+            .eq("key", "registration_open")
+            .maybeSingle();
+
+          // Agar data nahi mila ya value "true" nahi hai, to form hide karo
+          const isOpen = data && data.value === "true";
+
+          if (!isOpen) {
+            document.getElementById("mainAuthSection").style.display = "none";
+            document.getElementById("closedMessageBox").style.display = "block";
+            return; // Form ka code aage load na ho
+          }
+        } catch (err) {
+          console.error("Error checking registration status:", err);
+        }
+
+        // ----------------------------------------------------
+        // REGISTRATION FORM LOGIC (Agar open hai to chalega)
+        // ----------------------------------------------------
         const registerForm = document.getElementById("registerForm");
         const messageBox = document.getElementById("messageBox");
         const registerBtn = document.getElementById("registerBtn");
@@ -528,11 +612,6 @@
           }
         });
 
-        if (typeof supabaseClient === "undefined" || !supabaseClient) {
-          showMessage("⚠️ System not ready.", "error");
-          return;
-        }
-
         registerForm.addEventListener("submit", async function (e) {
           e.preventDefault();
           hideMessage();
@@ -567,13 +646,13 @@
           registerBtn.disabled = true;
 
           try {
-            // 1. SIGN UP (Yahan humne Name bhi bhej diya hai taake Trigger ko pata chale)
+            // 1. SIGN UP
             const { data: authData, error: authError } =
               await supabaseClient.auth.signUp({
                 email,
                 password,
                 options: {
-                  data: { full_name: name }, // YEH ZAROORI THA TRIGGER KE LIYE
+                  data: { full_name: name },
                 },
               });
 
@@ -609,11 +688,11 @@
             if (!authData || !authData.user)
               throw new Error("Auth user creation failed.");
 
-            // 2. UPDATE DATA (Yahan Insert ki jagah Update lagaya hai kyunke Trigger ne pehle hi row bana di hai)
+            // 2. UPDATE DATA
             const { error: dbError } = await supabaseClient
               .from("members")
               .update({
-                uid: uid, // UID update karein
+                uid: uid,
                 father_name: fatherName,
                 phone: phone,
                 cnic: cnic,
@@ -626,7 +705,7 @@
                 is_active: false,
                 member_type: "Member",
               })
-              .eq("user_id", authData.user.id); // Trigger ne is ID se row banai hai
+              .eq("user_id", authData.user.id);
 
             if (dbError) {
               console.error("Database Update Error:", dbError);
