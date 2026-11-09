@@ -13,6 +13,11 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
+
+    <!-- ✅ PDF LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
     <style>
       .modal-overlay {
         display: none;
@@ -79,7 +84,8 @@
         font-weight: 500;
       }
       .form-group input,
-      .form-group select {
+      .form-group select,
+      .form-group textarea {
         width: 100%;
         padding: 11px 14px;
         background: rgba(255, 255, 255, 0.08);
@@ -89,9 +95,11 @@
         font-family: "Poppins", sans-serif;
         font-size: 13px;
         outline: none;
+        resize: vertical;
       }
       .form-group input:focus,
-      .form-group select:focus {
+      .form-group select:focus,
+      .form-group textarea:focus {
         border-color: #1abc9c;
         background: rgba(26, 188, 156, 0.08);
       }
@@ -120,6 +128,138 @@
       .btn-save-modal {
         background: linear-gradient(135deg, #1abc9c, #16a085);
         color: white;
+      }
+
+      /* ✅ FILTER BAR */
+      .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 14px;
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+      }
+      .filter-bar .fg {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .filter-bar .fg label {
+        font-size: 11px;
+        color: #1abc9c;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+      }
+      .filter-bar input[type="date"],
+      .filter-bar select {
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        color: white;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        outline: none;
+        color-scheme: dark;
+        min-width: 160px;
+      }
+      .filter-bar input[type="date"]:focus,
+      .filter-bar select:focus {
+        border-color: #1abc9c;
+      }
+      .filter-bar select option {
+        background: #203a43;
+      }
+      .fbtn {
+        padding: 11px 20px;
+        border-radius: 10px;
+        border: none;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: 0.2s;
+      }
+      .fbtn-apply {
+        background: linear-gradient(135deg, #1abc9c, #16a085);
+        color: #fff;
+      }
+      .fbtn-reset {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .fbtn-pdf {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: #fff;
+      }
+      .fbtn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.08);
+      }
+
+      /* ✅ PAGINATION */
+      .table-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 22px;
+        background: rgba(255, 255, 255, 0.03);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .page-btn {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .page-btn:hover:not(:disabled) {
+        background: rgba(26, 188, 156, 0.2);
+        border-color: #1abc9c;
+      }
+      .page-btn.active {
+        background: linear-gradient(135deg, #1abc9c, #16a085);
+        border-color: transparent;
+      }
+      .page-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .page-info {
+        font-size: 12px;
+        color: #fff;
+        opacity: 0.75;
+        padding: 0 6px;
+      }
+      .desc-cell {
+        max-width: 190px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        color: #e5e7eb;
       }
     </style>
   </head>
@@ -439,6 +579,24 @@
           </div>
         </div>
 
+        <!-- ✅ FILTER BAR -->
+        <div class="filter-bar">
+          <div class="fg">
+            <label>From Date</label>
+            <input type="date" id="filterFrom" />
+          </div>
+          <div class="fg">
+            <label>To Date</label>
+            <input type="date" id="filterTo" />
+          </div>
+          <button class="fbtn fbtn-apply" id="applyFilterBtn">🔍 Apply</button>
+          <button class="fbtn fbtn-reset" id="resetFilterBtn">↺ Reset</button>
+          <div style="flex: 1"></div>
+          <button class="fbtn fbtn-pdf" id="downloadPdfBtn">
+            📄 Download PDF
+          </button>
+        </div>
+
         <div
           class="glass-card table-card"
           style="padding: 0; overflow: hidden; border-radius: 16px"
@@ -447,7 +605,7 @@
             <table
               class="data-table"
               id="financeTable"
-              style="width: 100%; border-collapse: collapse; min-width: 900px"
+              style="width: 100%; border-collapse: collapse; min-width: 1100px"
             >
               <thead>
                 <tr>
@@ -509,6 +667,16 @@
                       color: #1abc9c;
                     "
                   >
+                    Description
+                  </th>
+                  <th
+                    style="
+                      text-align: left;
+                      padding: 18px 15px;
+                      font-size: 12px;
+                      color: #1abc9c;
+                    "
+                  >
                     Date
                   </th>
                   <th
@@ -536,7 +704,7 @@
               <tbody id="financeBody">
                 <tr>
                   <td
-                    colspan="8"
+                    colspan="9"
                     style="
                       text-align: center;
                       padding: 40px;
@@ -550,18 +718,28 @@
               </tbody>
             </table>
           </div>
-          <div
-            class="table-footer"
-            style="
-              padding: 18px 22px;
-              background: rgba(255, 255, 255, 0.03);
-              border-top: 1px solid rgba(255, 255, 255, 0.08);
-            "
-          >
+
+          <!-- ✅ PAGINATION FOOTER -->
+          <div class="table-footer">
             <div style="font-size: 13px; color: white; opacity: 0.8">
               Showing
+              <strong id="showingFrom" style="color: #1abc9c">0</strong>
+              –
+              <strong id="showingTo" style="color: #1abc9c">0</strong>
+              of
               <strong id="showingCount" style="color: #1abc9c">0</strong>
               payments
+            </div>
+            <div class="pagination">
+              <select id="pageSize" class="page-btn" style="padding: 0 10px">
+                <option value="10">10 / page</option>
+                <option value="25">25 / page</option>
+                <option value="50">50 / page</option>
+                <option value="100">100 / page</option>
+              </select>
+              <button class="page-btn" id="prevPage">‹ Prev</button>
+              <span class="page-info" id="pageInfo">Page 1 of 1</span>
+              <button class="page-btn" id="nextPage">Next ›</button>
             </div>
           </div>
         </div>
@@ -583,20 +761,7 @@
         <form id="paymentForm">
           <div class="form-group">
             <label>Member *</label>
-            <select
-              id="pmMember"
-              required
-              style="
-                width: 100%;
-                padding: 11px 14px;
-                background: rgba(255, 255, 255, 0.08);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 10px;
-                color: white;
-                font-family: Poppins;
-                font-size: 13px;
-              "
-            >
+            <select id="pmMember" required>
               <option value="">Select Member</option>
             </select>
           </div>
@@ -628,6 +793,14 @@
               </select>
             </div>
           </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea
+              id="pmDescription"
+              rows="2"
+              placeholder="e.g. Monthly membership fee for June 2025"
+            ></textarea>
+          </div>
           <div class="modal-actions">
             <button
               type="button"
@@ -650,11 +823,24 @@
 
     <script src="js/main.js"></script>
     <script>
-      let allPayments = [];
+      /* ============================================================
+         STATE
+      ============================================================ */
+      let allPayments = []; // raw from DB
+      let filteredPayments = []; // after date filter
       let allMembers = [];
       let currentAdminRole = "";
       let currentAdminDistrict = "";
+      let currentAdminName = "Admin";
 
+      let currentPage = 1;
+      let pageSize = 10;
+      let filterFrom = "";
+      let filterTo = "";
+
+      /* ============================================================
+         INIT
+      ============================================================ */
       window.addEventListener("load", async function () {
         let attempts = 0;
         while (
@@ -681,6 +867,7 @@
           if (admin) {
             currentAdminRole = admin.role;
             currentAdminDistrict = admin.district;
+            currentAdminName = admin.name || "Admin";
 
             document.getElementById("topAvatar").textContent = (
               admin.name || "A"
@@ -702,8 +889,11 @@
         }
       });
 
+      /* ============================================================
+         LOAD DATA
+      ============================================================ */
       async function loadAll() {
-        // 1. Fetch Members
+        // 1. Members
         let memberQuery = supabaseClient
           .from("members")
           .select("name, uid, email, district")
@@ -716,7 +906,7 @@
         const { data: membersData } = await memberQuery;
         allMembers = membersData || [];
 
-        // 2. Fetch Payments based on Role
+        // 2. Payments
         let paymentQuery = supabaseClient
           .from("payments")
           .select("*")
@@ -729,14 +919,14 @@
             const { data: paymentsData } = await paymentQuery;
             allPayments = paymentsData || [];
           } else {
-            allPayments = []; // If no members in district, no payments
+            allPayments = [];
           }
         } else {
           const { data: paymentsData } = await paymentQuery;
           allPayments = paymentsData || [];
         }
 
-        // Populate member dropdown
+        // Members dropdown
         const select = document.getElementById("pmMember");
         select.innerHTML =
           '<option value="">Select Member</option>' +
@@ -747,7 +937,7 @@
             )
             .join("");
 
-        // Populate months dropdown (next 12)
+        // Months dropdown
         const monthSelect = document.getElementById("pmMonth");
         const months = [];
         const now = new Date();
@@ -765,50 +955,89 @@
           year: "numeric",
         });
 
+        applyFilters(); // ✅ renders + stats
+      }
+
+      /* ============================================================
+         FILTER + PAGINATION
+      ============================================================ */
+      function applyFilters() {
+        filteredPayments = allPayments.filter((p) => {
+          const raw = p.payment_date ? String(p.payment_date).slice(0, 10) : "";
+          if (!raw) return !filterFrom && !filterTo;
+          if (filterFrom && raw < filterFrom) return false;
+          if (filterTo && raw > filterTo) return false;
+          return true;
+        });
+        currentPage = 1;
         renderPayments();
         updateStats();
       }
 
       function renderPayments() {
         const tbody = document.getElementById("financeBody");
-        if (allPayments.length === 0) {
+        const total = filteredPayments.length;
+
+        if (total === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="8" style="text-align:center;padding:40px;color:white;opacity:0.7;">No payments recorded yet</td></tr>';
+            '<tr><td colspan="9" style="text-align:center;padding:40px;color:white;opacity:0.7;">No payments found</td></tr>';
+          document.getElementById("showingFrom").textContent = "0";
+          document.getElementById("showingTo").textContent = "0";
           document.getElementById("showingCount").textContent = "0";
+          document.getElementById("pageInfo").textContent = "Page 1 of 1";
+          document.getElementById("prevPage").disabled = true;
+          document.getElementById("nextPage").disabled = true;
           return;
         }
-        tbody.innerHTML = allPayments
+
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const start = (currentPage - 1) * pageSize;
+        const end = Math.min(start + pageSize, total);
+        const pageItems = filteredPayments.slice(start, end);
+
+        tbody.innerHTML = pageItems
           .map((p) => {
-            const mc = (p.method || "").toLowerCase();
             const sc =
               p.status === "Paid"
                 ? "status-badge-active"
                 : "status-badge-pending";
+            const desc = p.description || "-";
             return `
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:15px;"><span style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:4px 10px;border-radius:8px;font-size:11px;font-family:monospace;">#${p.receipt_no}</span></td>
-                    <td style="padding:15px;"><div><h4 style="color:white;font-size:14px;margin-bottom:3px;">${p.member_name}</h4><p style="color:white;font-size:11px;opacity:0.65;">${p.uid || "-"}</p></div></td>
-                    <td style="padding:15px;color:#1abc9c;font-weight:700;">Rs. ${p.amount}</td>
-                    <td style="padding:15px;"><span style="padding:5px 12px;border-radius:8px;font-size:11px;background:rgba(59,130,246,0.12);color:#93c5fd;">${p.method}</span></td>
-                    <td style="padding:15px;color:white;">${p.month || "-"}</td>
-                    <td style="padding:15px;color:white;">${p.payment_date ? new Date(p.payment_date).toLocaleDateString("en-PK", { day: "numeric", month: "short", year: "numeric" }) : "-"}</td>
-                    <td style="padding:15px;"><span class="${sc}">${p.status}</span></td>
-                    <td style="padding:15px;text-align:right;"><button onclick="deletePayment(${p.id})" style="width:34px;height:34px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:white;cursor:pointer;">🗑️</button></td>
-                </tr>`;
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <td style="padding:15px;"><span style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:4px 10px;border-radius:8px;font-size:11px;font-family:monospace;">#${p.receipt_no || "-"}</span></td>
+                <td style="padding:15px;"><div><h4 style="color:white;font-size:14px;margin-bottom:3px;">${p.member_name || "-"}</h4><p style="color:white;font-size:11px;opacity:0.65;">${p.uid || "-"}</p></div></td>
+                <td style="padding:15px;color:#1abc9c;font-weight:700;">Rs. ${Number(p.amount || 0).toLocaleString()}</td>
+                <td style="padding:15px;"><span style="padding:5px 12px;border-radius:8px;font-size:11px;background:rgba(59,130,246,0.12);color:#93c5fd;">${p.method || "-"}</span></td>
+                <td style="padding:15px;color:white;">${p.month || "-"}</td>
+                <td style="padding:15px;"><div class="desc-cell" title="${escapeAttr(desc)}">${escapeHtml(desc)}</div></td>
+                <td style="padding:15px;color:white;">${formatDate(p.payment_date)}</td>
+                <td style="padding:15px;"><span class="${sc}">${p.status || "-"}</span></td>
+                <td style="padding:15px;text-align:right;"><button onclick="deletePayment(${p.id})" style="width:34px;height:34px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:white;cursor:pointer;">🗑️</button></td>
+              </tr>`;
           })
           .join("");
-        document.getElementById("showingCount").textContent =
-          allPayments.length;
+
+        document.getElementById("showingFrom").textContent = start + 1;
+        document.getElementById("showingTo").textContent = end;
+        document.getElementById("showingCount").textContent = total;
+        document.getElementById("pageInfo").textContent =
+          `Page ${currentPage} of ${totalPages}`;
+        document.getElementById("prevPage").disabled = currentPage === 1;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages;
       }
 
       function updateStats() {
-        const total = allPayments.reduce(
+        const total = filteredPayments.reduce(
           (s, p) => s + Number(p.amount || 0),
           0,
         );
         const now = new Date();
-        const thisMonth = allPayments
+        const thisMonth = filteredPayments
           .filter((p) => {
+            if (!p.payment_date) return false;
             const d = new Date(p.payment_date);
             return (
               d.getMonth() === now.getMonth() &&
@@ -816,19 +1045,23 @@
             );
           })
           .reduce((s, p) => s + Number(p.amount || 0), 0);
+
         document.getElementById("totalIncome").textContent =
           "Rs. " + total.toLocaleString();
         document.getElementById("thisMonth").textContent =
           "Rs. " + thisMonth.toLocaleString();
         document.getElementById("totalPayments").textContent =
-          allPayments.length;
+          filteredPayments.length;
         document.getElementById("avgPayment").textContent =
           "Rs. " +
-          (allPayments.length > 0
-            ? Math.round(total / allPayments.length).toLocaleString()
+          (filteredPayments.length > 0
+            ? Math.round(total / filteredPayments.length).toLocaleString()
             : "0");
       }
 
+      /* ============================================================
+         EVENTS
+      ============================================================ */
       function attachEvents() {
         document
           .getElementById("addPaymentBtn")
@@ -836,6 +1069,54 @@
             document.getElementById("paymentModal").classList.add("active"),
           );
 
+        // Filter
+        document.getElementById("applyFilterBtn").addEventListener("click", () => {
+          filterFrom = document.getElementById("filterFrom").value;
+          filterTo = document.getElementById("filterTo").value;
+          if (filterFrom && filterTo && filterFrom > filterTo) {
+            alert("⚠️ 'From Date' ko 'To Date' se pehle rakhna zaroori hai");
+            return;
+          }
+          applyFilters();
+        });
+
+        document.getElementById("resetFilterBtn").addEventListener("click", () => {
+          document.getElementById("filterFrom").value = "";
+          document.getElementById("filterTo").value = "";
+          filterFrom = "";
+          filterTo = "";
+          applyFilters();
+        });
+
+        // Pagination
+        document.getElementById("prevPage").addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderPayments();
+          }
+        });
+        document.getElementById("nextPage").addEventListener("click", () => {
+          const totalPages = Math.max(
+            1,
+            Math.ceil(filteredPayments.length / pageSize),
+          );
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderPayments();
+          }
+        });
+        document.getElementById("pageSize").addEventListener("change", (e) => {
+          pageSize = Number(e.target.value);
+          currentPage = 1;
+          renderPayments();
+        });
+
+        // PDF
+        document
+          .getElementById("downloadPdfBtn")
+          .addEventListener("click", downloadPDF);
+
+        // Save payment
         document
           .getElementById("paymentForm")
           .addEventListener("submit", async function (e) {
@@ -849,22 +1130,41 @@
             const method = document.getElementById("pmMethod").value;
             const month = document.getElementById("pmMonth").value;
             const status = document.getElementById("pmStatus").value;
+            const description =
+              document.getElementById("pmDescription").value.trim();
 
             const receiptNo = "RCP-" + Date.now().toString().slice(-6);
 
-            const { error } = await supabaseClient.from("payments").insert([
-              {
-                uid: uid,
-                member_name: name,
-                member_email: email,
-                amount: amount,
-                method: method,
-                month: month,
-                receipt_no: receiptNo,
-                status: status,
-                payment_date: new Date().toISOString().split("T")[0],
-              },
-            ]);
+            const payload = {
+              uid: uid,
+              member_name: name,
+              member_email: email,
+              amount: amount,
+              method: method,
+              month: month,
+              receipt_no: receiptNo,
+              status: status,
+              payment_date: new Date().toISOString().split("T")[0],
+              description: description,
+            };
+
+            let { error } = await supabaseClient
+              .from("payments")
+              .insert([payload]);
+
+            // ✅ Agar DB me description column nahi hai to bina description try karo
+            if (error && /description/i.test(error.message || "")) {
+              delete payload.description;
+              const retry = await supabaseClient
+                .from("payments")
+                .insert([payload]);
+              error = retry.error;
+              if (!error) {
+                console.warn(
+                  "⚠️ 'description' column payments table me nahi hai. Supabase me column add karein.",
+                );
+              }
+            }
 
             if (error) {
               alert("❌ " + error.message);
@@ -877,6 +1177,9 @@
           });
       }
 
+      /* ============================================================
+         DELETE
+      ============================================================ */
       window.deletePayment = async function (id) {
         if (!confirm("Delete this payment?")) return;
         const { error } = await supabaseClient
@@ -890,6 +1193,291 @@
         alert("🗑️ Deleted");
         await loadAll();
       };
+
+      /* ============================================================
+         HELPERS
+      ============================================================ */
+      function formatDate(v) {
+        if (!v) return "-";
+        const s = String(v).slice(0, 10);
+        const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (m) {
+          const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+          return d.toLocaleDateString("en-PK", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+        }
+        const d = new Date(v);
+        return isNaN(d)
+          ? String(v)
+          : d.toLocaleDateString("en-PK", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      function escapeAttr(s) {
+        return escapeHtml(s).replace(/'/g, "&#39;");
+      }
+
+      /* ============================================================
+         ✅ PDF LOGO (canvas se SYDF circular logo)
+      ============================================================ */
+      function makeLogoDataURL() {
+        const c = document.createElement("canvas");
+        c.width = 300;
+        c.height = 300;
+        const ctx = c.getContext("2d");
+
+        const g = ctx.createLinearGradient(0, 0, 300, 300);
+        g.addColorStop(0, "#1abc9c");
+        g.addColorStop(1, "#0f766e");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(150, 150, 140, 0, Math.PI * 2);
+        ctx.fill();
+
+        // inner ring
+        ctx.strokeStyle = "rgba(255,255,255,0.85)";
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.arc(150, 150, 122, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 88px Arial, Helvetica, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("SYDF", 150, 155);
+
+        return c.toDataURL("image/png");
+      }
+
+      /* ============================================================
+         ✅ PDF DOWNLOAD
+      ============================================================ */
+      async function downloadPDF() {
+        if (typeof window.jspdf === "undefined" || !window.jspdf.jsPDF) {
+          alert("❌ PDF library load nahi hui. Internet connection check karein.");
+          return;
+        }
+        if (filteredPayments.length === 0) {
+          alert("⚠️ PDF ke liye koi payment record available nahi hai.");
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("l", "mm", "a4"); // landscape
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const teal = [26, 188, 156];
+
+        /* ---------- HEADER ---------- */
+        const logo = makeLogoDataURL();
+        doc.addImage(logo, "PNG", 14, 11, 24, 24);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(15, 32, 39);
+        doc.text("SYDF — Society of Young Development Foundation", 44, 20);
+
+        doc.setFontSize(12);
+        doc.setTextColor(22, 160, 133);
+        doc.text("Finance Report — Payments", 44, 27);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(90, 90, 90);
+
+        const rangeText =
+          filterFrom || filterTo
+            ? `Date Range: ${filterFrom ? formatDate(filterFrom) : "Beginning"}  to  ${filterTo ? formatDate(filterTo) : "Today"}`
+            : "Date Range: All Records";
+
+        doc.text(rangeText, 44, 34);
+        doc.text(
+          `Generated: ${new Date().toLocaleString("en-PK")}`,
+          44,
+          39,
+        );
+        doc.text(
+          `Generated By: ${currentAdminName}  (${currentAdminRole || "Admin"}${currentAdminRole === "District Admin" && currentAdminDistrict ? " - " + currentAdminDistrict : ""})`,
+          44,
+          44,
+        );
+
+        // divider
+        doc.setDrawColor(26, 188, 156);
+        doc.setLineWidth(0.7);
+        doc.line(14, 52, pageW - 14, 52);
+
+        /* ---------- SUMMARY BOXES ---------- */
+        const total = filteredPayments.reduce(
+          (s, p) => s + Number(p.amount || 0),
+          0,
+        );
+        const paidCount = filteredPayments.filter(
+          (p) => p.status === "Paid",
+        ).length;
+        const pendingCount = filteredPayments.filter(
+          (p) => p.status === "Pending",
+        ).length;
+
+        const stats = [
+          ["Total Income", "Rs. " + total.toLocaleString()],
+          ["Total Payments", String(filteredPayments.length)],
+          [
+            "Average Payment",
+            "Rs. " +
+              (filteredPayments.length
+                ? Math.round(total / filteredPayments.length).toLocaleString()
+                : "0"),
+          ],
+          ["Paid / Pending", `${paidCount} / ${pendingCount}`],
+        ];
+
+        const marginX = 14;
+        const usableW = pageW - marginX * 2;
+        const gap = 6;
+        const boxW = (usableW - gap * 3) / 4;
+        const boxY = 58;
+        const boxH = 18;
+
+        stats.forEach((s, i) => {
+          const x = marginX + i * (boxW + gap);
+          doc.setFillColor(240, 250, 248);
+          doc.setDrawColor(200, 235, 228);
+          doc.setLineWidth(0.3);
+          doc.roundedRect(x, boxY, boxW, boxH, 2, 2, "FD");
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(7.5);
+          doc.setTextColor(120, 120, 120);
+          doc.text(s[0].toUpperCase(), x + 4, boxY + 6.5);
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11.5);
+          doc.setTextColor(22, 160, 133);
+          doc.text(s[1], x + 4, boxY + 14);
+        });
+
+        /* ---------- TABLE ---------- */
+        const body = filteredPayments.map((p) => [
+          "#" + (p.receipt_no || "-"),
+          p.member_name || "-",
+          p.uid || "-",
+          "Rs. " + Number(p.amount || 0).toLocaleString(),
+          p.method || "-",
+          p.month || "-",
+          formatDate(p.payment_date),
+          p.status || "-",
+          p.description || "-",
+        ]);
+
+        doc.autoTable({
+          startY: boxY + boxH + 8,
+          head: [
+            [
+              "Receipt #",
+              "Member",
+              "UID",
+              "Amount",
+              "Method",
+              "Month",
+              "Date",
+              "Status",
+              "Description",
+            ],
+          ],
+          body: body,
+          theme: "grid",
+          margin: { left: marginX, right: marginX, bottom: 18 },
+          styles: {
+            font: "helvetica",
+            fontSize: 7.6,
+            cellPadding: 2.2,
+            textColor: [45, 45, 45],
+            lineColor: [225, 235, 232],
+            lineWidth: 0.15,
+            overflow: "linebreak",
+          },
+          headStyles: {
+            fillColor: teal,
+            textColor: [255, 255, 255],
+            fontStyle: "bold",
+            fontSize: 8,
+            halign: "left",
+          },
+          alternateRowStyles: { fillColor: [245, 252, 250] },
+          columnStyles: {
+            0: { cellWidth: 24 },
+            1: { cellWidth: 40 },
+            2: { cellWidth: 24 },
+            3: { cellWidth: 24, halign: "right" },
+            4: { cellWidth: 24 },
+            5: { cellWidth: 30 },
+            6: { cellWidth: 26 },
+            7: { cellWidth: 20 },
+            8: { cellWidth: "auto" },
+          },
+          didParseCell: function (data) {
+            if (data.section === "body" && data.column.index === 7) {
+              if (data.cell.raw === "Paid") {
+                data.cell.styles.textColor = [22, 160, 133];
+                data.cell.styles.fontStyle = "bold";
+              } else if (data.cell.raw === "Pending") {
+                data.cell.styles.textColor = [217, 119, 6];
+                data.cell.styles.fontStyle = "bold";
+              }
+            }
+            if (data.section === "body" && data.column.index === 3) {
+              data.cell.styles.fontStyle = "bold";
+              data.cell.styles.textColor = [22, 160, 133];
+            }
+          },
+        });
+
+        /* ---------- FOOTERS (all pages) ---------- */
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.setDrawColor(220, 230, 228);
+          doc.setLineWidth(0.3);
+          doc.line(marginX, pageH - 13, pageW - marginX, pageH - 13);
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(7.5);
+          doc.setTextColor(130, 130, 130);
+          doc.text(
+            `SYDF Finance Report  •  Generated ${new Date().toLocaleDateString("en-PK")}`,
+            marginX,
+            pageH - 8,
+          );
+          doc.text(`Page ${i} of ${pageCount}`, pageW - marginX, pageH - 8, {
+            align: "right",
+          });
+        }
+
+        /* ---------- SAVE ---------- */
+        const stamp = new Date().toISOString().slice(0, 10);
+        const rangeTag =
+          filterFrom || filterTo
+            ? `_${filterFrom || "start"}_to_${filterTo || "today"}`
+            : "_all";
+        doc.setProperties({ title: "SYDF Finance Report" });
+        doc.save(`SYDF-Finance-Report${rangeTag}_${stamp}.pdf`);
+      }
     </script>
   </body>
 </html>
