@@ -87,19 +87,33 @@ backToTopBtn.addEventListener("click", function () {
 });
 
 // ==========================================
-// AUTO-LOAD SUPABASE
+// AUTO-LOAD SUPABASE (IMPROVED FOR RELIABILITY)
 // ==========================================
 (function () {
+  // Agar supabaseClient pehle se mojood hai (e.g. index.html se load ho chuka hai), toh kuch mat karo
+  if (typeof supabaseClient !== "undefined" && supabaseClient) return;
+
+  // Agar Supabase library nahi hai, toh pehle use load karo
   if (typeof supabase === "undefined") {
     const script1 = document.createElement("script");
     script1.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
     script1.async = false;
     document.head.appendChild(script1);
+    
     script1.onload = function () {
+      loadConfig();
+    };
+  } else {
+    // Agar library mojood hai lekin client nahi, toh seedha config load karo
+    loadConfig();
+  }
+
+  function loadConfig() {
+    if (typeof supabaseClient === "undefined" || !supabaseClient) {
       const script2 = document.createElement("script");
       script2.src = "js/supabase-config.js";
       document.head.appendChild(script2);
-    };
+    }
   }
 })();
 
@@ -180,7 +194,6 @@ document.addEventListener("click", function (e) {
     if (sidebarOverlay) sidebarOverlay.classList.remove("active");
     document.body.style.overflow = ""; 
 
-    
     logoutUser();
   }
 });
