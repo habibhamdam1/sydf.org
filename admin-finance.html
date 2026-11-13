@@ -14,11 +14,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
 
-    <!-- ✅ PDF LIBRARIES -->
+    <!-- PDF LIBRARIES -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
     <style>
+      /* Modal & Form CSS */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -130,7 +131,7 @@
         color: white;
       }
 
-      /* ✅ FILTER BAR */
+      /* Filter Bar */
       .filter-bar {
         display: flex;
         flex-wrap: wrap;
@@ -155,6 +156,7 @@
         font-weight: 600;
       }
       .filter-bar input[type="date"],
+      .filter-bar input[type="text"],
       .filter-bar select {
         padding: 10px 14px;
         background: rgba(255, 255, 255, 0.08);
@@ -167,7 +169,7 @@
         color-scheme: dark;
         min-width: 160px;
       }
-      .filter-bar input[type="date"]:focus,
+      .filter-bar input:focus,
       .filter-bar select:focus {
         border-color: #1abc9c;
       }
@@ -205,7 +207,7 @@
         filter: brightness(1.08);
       }
 
-      /* ✅ PAGINATION */
+      /* Pagination */
       .table-footer {
         display: flex;
         flex-wrap: wrap;
@@ -239,10 +241,6 @@
         background: rgba(26, 188, 156, 0.2);
         border-color: #1abc9c;
       }
-      .page-btn.active {
-        background: linear-gradient(135deg, #1abc9c, #16a085);
-        border-color: transparent;
-      }
       .page-btn:disabled {
         opacity: 0.35;
         cursor: not-allowed;
@@ -260,6 +258,76 @@
         white-space: nowrap;
         font-size: 12px;
         color: #e5e7eb;
+      }
+
+      /* Status Badges */
+      .status-badge-active {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        display: inline-block;
+      }
+      .status-badge-pending {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        display: inline-block;
+      }
+      .status-badge-rejected {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        display: inline-block;
+      }
+
+      /* Action Buttons */
+      .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        margin: 0 2px;
+        transition: 0.2s;
+      }
+      .action-btn:hover {
+        transform: scale(1.1);
+      }
+      .btn-approve {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .btn-reject {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .btn-edit {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      .btn-delete {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
       }
     </style>
   </head>
@@ -579,8 +647,17 @@
           </div>
         </div>
 
-        <!-- ✅ FILTER BAR -->
+        <!-- FILTER & SEARCH BAR -->
         <div class="filter-bar">
+          <div class="fg">
+            <label>Search</label>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Name, UID or Receipt..."
+              style="min-width: 200px"
+            />
+          </div>
           <div class="fg">
             <label>From Date</label>
             <input type="date" id="filterFrom" />
@@ -719,16 +796,13 @@
             </table>
           </div>
 
-          <!-- ✅ PAGINATION FOOTER -->
+          <!-- PAGINATION FOOTER -->
           <div class="table-footer">
             <div style="font-size: 13px; color: white; opacity: 0.8">
               Showing
-              <strong id="showingFrom" style="color: #1abc9c">0</strong>
-              –
-              <strong id="showingTo" style="color: #1abc9c">0</strong>
-              of
+              <strong id="showingFrom" style="color: #1abc9c">0</strong> –
+              <strong id="showingTo" style="color: #1abc9c">0</strong> of
               <strong id="showingCount" style="color: #1abc9c">0</strong>
-              payments
             </div>
             <div class="pagination">
               <select id="pageSize" class="page-btn" style="padding: 0 10px">
@@ -746,7 +820,7 @@
       </div>
     </main>
 
-    <!-- ADD PAYMENT MODAL -->
+    <!-- ADD / EDIT PAYMENT MODAL -->
     <div class="modal-overlay" id="paymentModal">
       <div class="modal-box">
         <button
@@ -757,8 +831,9 @@
         >
           ✕
         </button>
-        <h2>💰 Record Payment</h2>
+        <h2 id="modalTitle">💰 Record Payment</h2>
         <form id="paymentForm">
+          <input type="hidden" id="editPaymentId" value="" />
           <div class="form-group">
             <label>Member *</label>
             <select id="pmMember" required>
@@ -790,6 +865,7 @@
               <select id="pmStatus">
                 <option>Paid</option>
                 <option>Pending</option>
+                <option>Rejected</option>
               </select>
             </div>
           </div>
@@ -813,7 +889,11 @@
             >
               Cancel
             </button>
-            <button type="submit" class="btn-modal btn-save-modal">
+            <button
+              type="submit"
+              class="btn-modal btn-save-modal"
+              id="btnSavePayment"
+            >
               💾 Record Payment
             </button>
           </div>
@@ -823,11 +903,8 @@
 
     <script src="js/main.js"></script>
     <script>
-      /* ============================================================
-         STATE
-      ============================================================ */
-      let allPayments = []; // raw from DB
-      let filteredPayments = []; // after date filter
+      let allPayments = [];
+      let filteredPayments = [];
       let allMembers = [];
       let currentAdminRole = "";
       let currentAdminDistrict = "";
@@ -837,10 +914,8 @@
       let pageSize = 10;
       let filterFrom = "";
       let filterTo = "";
+      let searchQuery = "";
 
-      /* ============================================================
-         INIT
-      ============================================================ */
       window.addEventListener("load", async function () {
         let attempts = 0;
         while (
@@ -889,29 +964,21 @@
         }
       });
 
-      /* ============================================================
-         LOAD DATA
-      ============================================================ */
       async function loadAll() {
-        // 1. Members
         let memberQuery = supabaseClient
           .from("members")
           .select("name, uid, email, district")
           .eq("status", "Active");
-
         if (currentAdminRole === "District Admin" && currentAdminDistrict) {
           memberQuery = memberQuery.eq("district", currentAdminDistrict);
         }
-
         const { data: membersData } = await memberQuery;
         allMembers = membersData || [];
 
-        // 2. Payments
         let paymentQuery = supabaseClient
           .from("payments")
           .select("*")
           .order("payment_date", { ascending: false });
-
         if (currentAdminRole === "District Admin" && currentAdminDistrict) {
           const memberEmails = allMembers.map((m) => m.email);
           if (memberEmails.length > 0) {
@@ -926,7 +993,6 @@
           allPayments = paymentsData || [];
         }
 
-        // Members dropdown
         const select = document.getElementById("pmMember");
         select.innerHTML =
           '<option value="">Select Member</option>' +
@@ -937,7 +1003,6 @@
             )
             .join("");
 
-        // Months dropdown
         const monthSelect = document.getElementById("pmMonth");
         const months = [];
         const now = new Date();
@@ -950,25 +1015,35 @@
         monthSelect.innerHTML = months
           .map((m) => `<option>${m}</option>`)
           .join("");
-        monthSelect.value = now.toLocaleDateString("en-PK", {
-          month: "long",
-          year: "numeric",
-        });
 
-        applyFilters(); // ✅ renders + stats
+        // Populate default current month if not editing
+        if (!document.getElementById("editPaymentId").value) {
+          monthSelect.value = now.toLocaleDateString("en-PK", {
+            month: "long",
+            year: "numeric",
+          });
+        }
+
+        applyFilters();
       }
 
-      /* ============================================================
-         FILTER + PAGINATION
-      ============================================================ */
       function applyFilters() {
         filteredPayments = allPayments.filter((p) => {
           const raw = p.payment_date ? String(p.payment_date).slice(0, 10) : "";
-          if (!raw) return !filterFrom && !filterTo;
           if (filterFrom && raw < filterFrom) return false;
           if (filterTo && raw > filterTo) return false;
+
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            const name = (p.member_name || "").toLowerCase();
+            const uid = (p.uid || "").toLowerCase();
+            const rcp = (p.receipt_no || "").toLowerCase();
+            if (!name.includes(q) && !uid.includes(q) && !rcp.includes(q))
+              return false;
+          }
           return true;
         });
+
         currentPage = 1;
         renderPayments();
         updateStats();
@@ -1000,23 +1075,37 @@
 
         tbody.innerHTML = pageItems
           .map((p) => {
-            const sc =
-              p.status === "Paid"
-                ? "status-badge-active"
-                : "status-badge-pending";
+            let sc = "status-badge-pending";
+            if (p.status === "Paid") sc = "status-badge-active";
+            if (p.status === "Rejected") sc = "status-badge-rejected";
+
             const desc = p.description || "-";
+
+            let actionBtns = `
+            <button class="action-btn btn-edit" title="Edit" onclick="editPayment(${p.id})">✏️</button>
+            <button class="action-btn btn-delete" title="Delete" onclick="deletePayment(${p.id})">🗑️</button>
+          `;
+
+            if (p.status === "Pending") {
+              actionBtns =
+                `
+              <button class="action-btn btn-approve" title="Approve" onclick="updatePaymentStatus(${p.id}, 'Paid')">✅</button>
+              <button class="action-btn btn-reject" title="Reject" onclick="updatePaymentStatus(${p.id}, 'Rejected')">❌</button>
+            ` + actionBtns;
+            }
+
             return `
-              <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                <td style="padding:15px;"><span style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:4px 10px;border-radius:8px;font-size:11px;font-family:monospace;">#${p.receipt_no || "-"}</span></td>
-                <td style="padding:15px;"><div><h4 style="color:white;font-size:14px;margin-bottom:3px;">${p.member_name || "-"}</h4><p style="color:white;font-size:11px;opacity:0.65;">${p.uid || "-"}</p></div></td>
-                <td style="padding:15px;color:#1abc9c;font-weight:700;">Rs. ${Number(p.amount || 0).toLocaleString()}</td>
-                <td style="padding:15px;"><span style="padding:5px 12px;border-radius:8px;font-size:11px;background:rgba(59,130,246,0.12);color:#93c5fd;">${p.method || "-"}</span></td>
-                <td style="padding:15px;color:white;">${p.month || "-"}</td>
-                <td style="padding:15px;"><div class="desc-cell" title="${escapeAttr(desc)}">${escapeHtml(desc)}</div></td>
-                <td style="padding:15px;color:white;">${formatDate(p.payment_date)}</td>
-                <td style="padding:15px;"><span class="${sc}">${p.status || "-"}</span></td>
-                <td style="padding:15px;text-align:right;"><button onclick="deletePayment(${p.id})" style="width:34px;height:34px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:white;cursor:pointer;">🗑️</button></td>
-              </tr>`;
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <td style="padding:15px;"><span style="background:rgba(59,130,246,0.15);color:#93c5fd;padding:4px 10px;border-radius:8px;font-size:11px;font-family:monospace;">#${p.receipt_no || "-"}</span></td>
+              <td style="padding:15px;"><div><h4 style="color:white;font-size:14px;margin-bottom:3px;">${p.member_name || "-"}</h4><p style="color:white;font-size:11px;opacity:0.65;">${p.uid || "-"}</p></div></td>
+              <td style="padding:15px;color:#1abc9c;font-weight:700;">Rs. ${Number(p.amount || 0).toLocaleString()}</td>
+              <td style="padding:15px;"><span style="padding:5px 12px;border-radius:8px;font-size:11px;background:rgba(59,130,246,0.12);color:#93c5fd;">${p.method || "-"}</span></td>
+              <td style="padding:15px;color:white;">${p.month || "-"}</td>
+              <td style="padding:15px;"><div class="desc-cell" title="${escapeAttr(desc)}">${escapeHtml(desc)}</div></td>
+              <td style="padding:15px;color:white;">${formatDate(p.payment_date)}</td>
+              <td style="padding:15px;"><span class="${sc}">${p.status || "-"}</span></td>
+              <td style="padding:15px;text-align:right;min-width:150px;">${actionBtns}</td>
+            </tr>`;
           })
           .join("");
 
@@ -1026,18 +1115,18 @@
         document.getElementById("pageInfo").textContent =
           `Page ${currentPage} of ${totalPages}`;
         document.getElementById("prevPage").disabled = currentPage === 1;
-        document.getElementById("nextPage").disabled = currentPage >= totalPages;
+        document.getElementById("nextPage").disabled =
+          currentPage >= totalPages;
       }
 
       function updateStats() {
-        const total = filteredPayments.reduce(
-          (s, p) => s + Number(p.amount || 0),
-          0,
-        );
+        const total = filteredPayments
+          .filter((p) => p.status !== "Rejected")
+          .reduce((s, p) => s + Number(p.amount || 0), 0);
         const now = new Date();
         const thisMonth = filteredPayments
           .filter((p) => {
-            if (!p.payment_date) return false;
+            if (!p.payment_date || p.status === "Rejected") return false;
             const d = new Date(p.payment_date);
             return (
               d.getMonth() === now.getMonth() &&
@@ -1059,36 +1148,61 @@
             : "0");
       }
 
-      /* ============================================================
-         EVENTS
-      ============================================================ */
       function attachEvents() {
         document
           .getElementById("addPaymentBtn")
-          .addEventListener("click", () =>
-            document.getElementById("paymentModal").classList.add("active"),
-          );
+          .addEventListener("click", () => {
+            document.getElementById("modalTitle").textContent =
+              "💰 Record Payment";
+            document.getElementById("btnSavePayment").textContent =
+              "💾 Record Payment";
+            document.getElementById("editPaymentId").value = "";
+            document.getElementById("paymentForm").reset();
 
-        // Filter
-        document.getElementById("applyFilterBtn").addEventListener("click", () => {
-          filterFrom = document.getElementById("filterFrom").value;
-          filterTo = document.getElementById("filterTo").value;
-          if (filterFrom && filterTo && filterFrom > filterTo) {
-            alert("⚠️ 'From Date' ko 'To Date' se pehle rakhna zaroori hai");
-            return;
-          }
-          applyFilters();
-        });
+            // Set default month
+            const now = new Date();
+            document.getElementById("pmMonth").value = now.toLocaleDateString(
+              "en-PK",
+              { month: "long", year: "numeric" },
+            );
 
-        document.getElementById("resetFilterBtn").addEventListener("click", () => {
-          document.getElementById("filterFrom").value = "";
-          document.getElementById("filterTo").value = "";
-          filterFrom = "";
-          filterTo = "";
-          applyFilters();
-        });
+            document.getElementById("paymentModal").classList.add("active");
+          });
 
-        // Pagination
+        document
+          .getElementById("applyFilterBtn")
+          .addEventListener("click", () => {
+            filterFrom = document.getElementById("filterFrom").value;
+            filterTo = document.getElementById("filterTo").value;
+            searchQuery = document.getElementById("searchInput").value.trim();
+            if (filterFrom && filterTo && filterFrom > filterTo) {
+              alert("⚠️ 'From Date' ko 'To Date' se pehle rakhna zaroori hai");
+              return;
+            }
+            applyFilters();
+          });
+
+        // Search on typing (Enter key)
+        document
+          .getElementById("searchInput")
+          .addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              document.getElementById("applyFilterBtn").click();
+            }
+          });
+
+        document
+          .getElementById("resetFilterBtn")
+          .addEventListener("click", () => {
+            document.getElementById("filterFrom").value = "";
+            document.getElementById("filterTo").value = "";
+            document.getElementById("searchInput").value = "";
+            filterFrom = "";
+            filterTo = "";
+            searchQuery = "";
+            applyFilters();
+          });
+
         document.getElementById("prevPage").addEventListener("click", () => {
           if (currentPage > 1) {
             currentPage--;
@@ -1111,16 +1225,15 @@
           renderPayments();
         });
 
-        // PDF
         document
           .getElementById("downloadPdfBtn")
           .addEventListener("click", downloadPDF);
 
-        // Save payment
         document
           .getElementById("paymentForm")
           .addEventListener("submit", async function (e) {
             e.preventDefault();
+            const id = document.getElementById("editPaymentId").value;
             const email = document.getElementById("pmMember").value;
             const option =
               document.getElementById("pmMember").selectedOptions[0];
@@ -1130,10 +1243,9 @@
             const method = document.getElementById("pmMethod").value;
             const month = document.getElementById("pmMonth").value;
             const status = document.getElementById("pmStatus").value;
-            const description =
-              document.getElementById("pmDescription").value.trim();
-
-            const receiptNo = "RCP-" + Date.now().toString().slice(-6);
+            const description = document
+              .getElementById("pmDescription")
+              .value.trim();
 
             const payload = {
               uid: uid,
@@ -1142,61 +1254,94 @@
               amount: amount,
               method: method,
               month: month,
-              receipt_no: receiptNo,
               status: status,
-              payment_date: new Date().toISOString().split("T")[0],
               description: description,
             };
 
-            let { error } = await supabaseClient
-              .from("payments")
-              .insert([payload]);
-
-            // ✅ Agar DB me description column nahi hai to bina description try karo
-            if (error && /description/i.test(error.message || "")) {
-              delete payload.description;
-              const retry = await supabaseClient
+            let error;
+            if (id) {
+              // Update
+              const res = await supabaseClient
+                .from("payments")
+                .update(payload)
+                .eq("id", id);
+              error = res.error;
+            } else {
+              // Insert
+              payload.receipt_no = "RCP-" + Date.now().toString().slice(-6);
+              payload.payment_date = new Date().toISOString().split("T")[0];
+              const res = await supabaseClient
                 .from("payments")
                 .insert([payload]);
-              error = retry.error;
-              if (!error) {
-                console.warn(
-                  "⚠️ 'description' column payments table me nahi hai. Supabase me column add karein.",
-                );
-              }
+              error = res.error;
             }
 
-            if (error) {
-              alert("❌ " + error.message);
-              return;
+            if (error && /description/i.test(error.message || "")) {
+              delete payload.description;
+              if (id)
+                await supabaseClient
+                  .from("payments")
+                  .update(payload)
+                  .eq("id", id);
+              else await supabaseClient.from("payments").insert([payload]);
+              error = null;
             }
-            alert("✅ Payment recorded!");
+
+            if (error) return alert("❌ " + error.message);
+
+            alert(id ? "✅ Payment updated!" : "✅ Payment recorded!");
             document.getElementById("paymentModal").classList.remove("active");
-            this.reset();
             await loadAll();
           });
       }
 
-      /* ============================================================
-         DELETE
-      ============================================================ */
+      window.updatePaymentStatus = async function (id, newStatus) {
+        if (
+          !confirm(
+            `Are you sure you want to mark this payment as ${newStatus}?`,
+          )
+        )
+          return;
+        const { error } = await supabaseClient
+          .from("payments")
+          .update({ status: newStatus })
+          .eq("id", id);
+        if (error) return alert("❌ " + error.message);
+        await loadAll();
+      };
+
+      window.editPayment = function (id) {
+        const p = allPayments.find((x) => x.id === id);
+        if (!p) return;
+
+        document.getElementById("modalTitle").textContent = "✏️ Edit Payment";
+        document.getElementById("btnSavePayment").textContent =
+          "💾 Update Payment";
+        document.getElementById("editPaymentId").value = p.id;
+
+        const select = document.getElementById("pmMember");
+        select.value = p.member_email || "";
+
+        document.getElementById("pmAmount").value = p.amount || 0;
+        document.getElementById("pmMethod").value = p.method || "Cash";
+        document.getElementById("pmMonth").value = p.month || "";
+        document.getElementById("pmStatus").value = p.status || "Paid";
+        document.getElementById("pmDescription").value = p.description || "";
+
+        document.getElementById("paymentModal").classList.add("active");
+      };
+
       window.deletePayment = async function (id) {
-        if (!confirm("Delete this payment?")) return;
+        if (!confirm("Delete this payment permanently?")) return;
         const { error } = await supabaseClient
           .from("payments")
           .delete()
           .eq("id", id);
-        if (error) {
-          alert("❌ " + error.message);
-          return;
-        }
+        if (error) return alert("❌ " + error.message);
         alert("🗑️ Deleted");
         await loadAll();
       };
 
-      /* ============================================================
-         HELPERS
-      ============================================================ */
       function formatDate(v) {
         if (!v) return "-";
         const s = String(v).slice(0, 10);
@@ -1209,16 +1354,8 @@
             year: "numeric",
           });
         }
-        const d = new Date(v);
-        return isNaN(d)
-          ? String(v)
-          : d.toLocaleDateString("en-PK", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            });
+        return v;
       }
-
       function escapeHtml(s) {
         return String(s)
           .replace(/&/g, "&amp;")
@@ -1230,103 +1367,77 @@
         return escapeHtml(s).replace(/'/g, "&#39;");
       }
 
-      /* ============================================================
-         ✅ PDF LOGO (canvas se SYDF circular logo)
-      ============================================================ */
-      function makeLogoDataURL() {
-        const c = document.createElement("canvas");
-        c.width = 300;
-        c.height = 300;
-        const ctx = c.getContext("2d");
-
-        const g = ctx.createLinearGradient(0, 0, 300, 300);
-        g.addColorStop(0, "#1abc9c");
-        g.addColorStop(1, "#0f766e");
-
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(150, 150, 140, 0, Math.PI * 2);
-        ctx.fill();
-
-        // inner ring
-        ctx.strokeStyle = "rgba(255,255,255,0.85)";
-        ctx.lineWidth = 8;
-        ctx.beginPath();
-        ctx.arc(150, 150, 122, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 88px Arial, Helvetica, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("SYDF", 150, 155);
-
-        return c.toDataURL("image/png");
-      }
-
-      /* ============================================================
-         ✅ PDF DOWNLOAD
-      ============================================================ */
+      /* PDF DOWNLOAD LOGIC */
       async function downloadPDF() {
         if (typeof window.jspdf === "undefined" || !window.jspdf.jsPDF) {
-          alert("❌ PDF library load nahi hui. Internet connection check karein.");
-          return;
+          return alert("❌ PDF library load nahi hui.");
         }
         if (filteredPayments.length === 0) {
-          alert("⚠️ PDF ke liye koi payment record available nahi hai.");
-          return;
+          return alert("⚠️ PDF ke liye koi record nahi hai.");
         }
 
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF("l", "mm", "a4"); // landscape
+        const doc = new jsPDF("l", "mm", "a4");
         const pageW = doc.internal.pageSize.getWidth();
         const pageH = doc.internal.pageSize.getHeight();
         const teal = [26, 188, 156];
 
-        /* ---------- HEADER ---------- */
-        const logo = makeLogoDataURL();
-        doc.addImage(logo, "PNG", 14, 11, 24, 24);
+        // ✅ WEBSITE LOGO LOAD KARNE KA LOGIC
+        let logoLoaded = false;
+        const img = new Image();
+        img.src = "images/logo.png"; // Ensure aapki website mein yahan logo ho
+        await new Promise((resolve) => {
+          img.onload = () => {
+            logoLoaded = true;
+            resolve();
+          };
+          img.onerror = () => {
+            resolve();
+          }; // Agar image na mile to skip karega
+        });
+
+        if (logoLoaded) {
+          // Image ratio maintain karne ke liye (approx 24x24 box)
+          doc.addImage(img, "PNG", 14, 11, 24, 24);
+        } else {
+          // Fallback agar logo na mile
+          doc.setFillColor(26, 188, 156);
+          doc.circle(26, 23, 12, "F");
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(12);
+          doc.text("SYDF", 26, 25, { align: "center" });
+        }
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(16);
         doc.setTextColor(15, 32, 39);
         doc.text("SWAT YOUTH DEVELOPMENT FORUM", 44, 20);
-
         doc.setFontSize(12);
         doc.setTextColor(22, 160, 133);
         doc.text("Finance Report — Payments", 44, 27);
-
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8.5);
         doc.setTextColor(90, 90, 90);
 
         const rangeText =
           filterFrom || filterTo
-            ? `Date Range: ${filterFrom ? formatDate(filterFrom) : "Beginning"}  to  ${filterTo ? formatDate(filterTo) : "Today"}`
+            ? `Date Range: ${filterFrom ? formatDate(filterFrom) : "Beginning"} to ${filterTo ? formatDate(filterTo) : "Today"}`
             : "Date Range: All Records";
-
         doc.text(rangeText, 44, 34);
+        doc.text(`Generated: ${new Date().toLocaleString("en-PK")}`, 44, 39);
         doc.text(
-          `Generated: ${new Date().toLocaleString("en-PK")}`,
-          44,
-          39,
-        );
-        doc.text(
-          `Generated By: ${currentAdminName}  (${currentAdminRole || "Admin"}${currentAdminRole === "District Admin" && currentAdminDistrict ? " - " + currentAdminDistrict : ""})`,
+          `Generated By: ${currentAdminName} (${currentAdminRole || "Admin"})`,
           44,
           44,
         );
 
-        // divider
         doc.setDrawColor(26, 188, 156);
         doc.setLineWidth(0.7);
         doc.line(14, 52, pageW - 14, 52);
 
-        /* ---------- SUMMARY BOXES ---------- */
-        const total = filteredPayments.reduce(
-          (s, p) => s + Number(p.amount || 0),
-          0,
-        );
+        const total = filteredPayments
+          .filter((p) => p.status !== "Rejected")
+          .reduce((s, p) => s + Number(p.amount || 0), 0);
         const paidCount = filteredPayments.filter(
           (p) => p.status === "Paid",
         ).length;
@@ -1336,7 +1447,7 @@
 
         const stats = [
           ["Total Income", "Rs. " + total.toLocaleString()],
-          ["Total Payments", String(filteredPayments.length)],
+          ["Total Records", String(filteredPayments.length)],
           [
             "Average Payment",
             "Rs. " +
@@ -1348,31 +1459,26 @@
         ];
 
         const marginX = 14;
-        const usableW = pageW - marginX * 2;
         const gap = 6;
-        const boxW = (usableW - gap * 3) / 4;
+        const boxW = (pageW - marginX * 2 - gap * 3) / 4;
         const boxY = 58;
         const boxH = 18;
-
         stats.forEach((s, i) => {
           const x = marginX + i * (boxW + gap);
           doc.setFillColor(240, 250, 248);
           doc.setDrawColor(200, 235, 228);
           doc.setLineWidth(0.3);
           doc.roundedRect(x, boxY, boxW, boxH, 2, 2, "FD");
-
           doc.setFont("helvetica", "normal");
           doc.setFontSize(7.5);
           doc.setTextColor(120, 120, 120);
           doc.text(s[0].toUpperCase(), x + 4, boxY + 6.5);
-
           doc.setFont("helvetica", "bold");
           doc.setFontSize(11.5);
           doc.setTextColor(22, 160, 133);
           doc.text(s[1], x + 4, boxY + 14);
         });
 
-        /* ---------- TABLE ---------- */
         const body = filteredPayments.map((p) => [
           "#" + (p.receipt_no || "-"),
           p.member_name || "-",
@@ -1439,6 +1545,9 @@
               } else if (data.cell.raw === "Pending") {
                 data.cell.styles.textColor = [217, 119, 6];
                 data.cell.styles.fontStyle = "bold";
+              } else if (data.cell.raw === "Rejected") {
+                data.cell.styles.textColor = [239, 68, 68];
+                data.cell.styles.fontStyle = "bold";
               }
             }
             if (data.section === "body" && data.column.index === 3) {
@@ -1448,14 +1557,12 @@
           },
         });
 
-        /* ---------- FOOTERS (all pages) ---------- */
         const pageCount = doc.internal.getNumberOfPages();
         for (let i = 1; i <= pageCount; i++) {
           doc.setPage(i);
           doc.setDrawColor(220, 230, 228);
           doc.setLineWidth(0.3);
           doc.line(marginX, pageH - 13, pageW - marginX, pageH - 13);
-
           doc.setFont("helvetica", "normal");
           doc.setFontSize(7.5);
           doc.setTextColor(130, 130, 130);
@@ -1469,14 +1576,8 @@
           });
         }
 
-        /* ---------- SAVE ---------- */
         const stamp = new Date().toISOString().slice(0, 10);
-        const rangeTag =
-          filterFrom || filterTo
-            ? `_${filterFrom || "start"}_to_${filterTo || "today"}`
-            : "_all";
-        doc.setProperties({ title: "SWAT YOUTH DEVELOPMENT FORUM - Finance Report" });
-        doc.save(`SWAT_YOUTH_Finance_Report${rangeTag}_${stamp}.pdf`);
+        doc.save(`SWAT_YOUTH_Finance_Report_${stamp}.pdf`);
       }
     </script>
   </body>
