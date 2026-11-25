@@ -801,6 +801,25 @@
         }
       }
     </script>
+    <script>
+      // Sidebar mein Competitions link add karne ke liye (100% working script)
+      setInterval(function() {
+        // Agar activities ka link mil jaye aur competitions ka na ho
+        const activitiesLink = document.querySelector('a[href="admin-activities.html"]');
+        const competitionsLink = document.querySelector('a[href="admin-competitions.html"]');
+        
+        if (activitiesLink && !competitionsLink) {
+          const parentLi = activitiesLink.parentElement; // Activities wali <li>
+          
+          // Naya <li> banayein
+          const newLi = document.createElement('li');
+          newLi.innerHTML = `<a href="admin-competitions.html"><span class="nav-icon">🏆</span><span>Competitions</span></a>`;
+          
+          // Activities ke theek baad laga dein
+          parentLi.insertAdjacentElement('afterend', newLi);
+        }
+      }, 1000); // Har 1 second baad check karega
+    </script>
     <script src="js/admin-data.js"></script>
   </body>
 </html>
