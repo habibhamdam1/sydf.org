@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Competitions - Admin</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/pages/dashboard.css" />
+    <link rel="stylesheet" href="css/pages/admin.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <style>
+      .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+      .modal-overlay.active { display: flex; }
+      .modal-box { background: linear-gradient(135deg, #1a2f3a, #0f2027); border: 1px solid rgba(26, 188, 156, 0.3); border-radius: 20px; padding: 35px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); }
+      .modal-close { position: absolute; top: 15px; right: 20px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+      .modal-box h2 { color: #1abc9c; margin-bottom: 25px; font-size: 22px; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .form-group { margin-bottom: 16px; }
+      .form-group label { display: block; font-size: 12px; color: white; opacity: 0.85; margin-bottom: 6px; font-weight: 500; }
+      .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; color: white; font-family: "Poppins", sans-serif; font-size: 13px; outline: none; resize: vertical; }
+      .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1abc9c; background: rgba(26, 188, 156, 0.08); }
+      .form-group select option { background: #203a43; }
+      .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+      .btn-modal { flex: 1; padding: 13px; border-radius: 10px; border: none; font-family: "Poppins", sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
+      .btn-cancel { background: rgba(255, 255, 255, 0.08); color: white; }
+      .btn-save-modal { background: linear-gradient(135deg, #1abc9c, #16a085); color: white; }
+      .comp-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; transition: 0.3s; }
+      .comp-card:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); }
+      .comp-info h3 { color: white; font-size: 18px; margin-bottom: 5px; }
+      .comp-info p { color: rgba(255,255,255,0.7); font-size: 12px; margin-bottom: 3px; }
+      .comp-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-right: 5px; margin-top: 5px; }
+      .badge-school { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+      .badge-madrasa { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
+      .badge-public { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+      .badge-open { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+      .badge-closed { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+      .comp-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      .btn-view { padding: 8px 15px; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
+      .btn-close-comp { padding: 8px 15px; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
+      .btn-del-comp { padding: 8px 15px; background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
+      .applicants-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      .applicants-table th { text-align: left; padding: 12px; color: #1abc9c; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .applicants-table td { padding: 12px; color: white; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    </style>
+  </head>
+  <body class="dashboard-body">
+    <aside class="dashboard-sidebar admin-sidebar" id="dashboardSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><h1>SYDF</h1><p>Admin Panel</p></div>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main</div>
+        <ul><li><a href="admin.html"><span class="nav-icon">📊</span><span>Dashboard</span></a></li></ul>
+        <div class="nav-section-title">Members</div>
+        <ul>
+          <li><a href="admin-members.html"><span class="nav-icon">👥</span><span>All Members</span></a></li>
+          <li><a href="admin-applications.html"><span class="nav-icon">📝</span><span>Applications</span></a></li>
+          <li><a href="admin-waitlist.html"><span class="nav-icon">⏳</span><span>Waitlist</span></a></li>
+          <li><a href="admin-cabinet.html"><span class="nav-icon">🏛️</span><span>Cabinet</span></a></li>
+          <li><a href="admin-districts.html"><span class="nav-icon">🗺️</span><span>Districts</span></a></li>
+        </ul>
+        <div class="nav-section-title">Events & Content</div>
+        <ul>
+          <li><a href="admin-activities.html"><span class="nav-icon">🎯</span><span>Activities</span></a></li>
+          <li><a href="admin-competitions.html" class="active"><span class="nav-icon">🏆</span><span>Competitions / Quiz</span></a></li>
+          <li><a href="admin-news.html"><span class="nav-icon">📰</span><span>News</span></a></li>
+          <li><a href="admin-gallery.html"><span class="nav-icon">🖼️</span><span>Gallery</span></a></li>
+          <li><a href="admin-documents.html"><span class="nav-icon">📄</span><span>Documents</span></a></li>
+        </ul>
+        <div class="nav-section-title">Finance</div>
+        <ul>
+          <li><a href="admin-finance.html"><span class="nav-icon">💰</span><span>Payments</span></a></li>
+          <li><a href="admin-expenses.html"><span class="nav-icon">💸</span><span>Expenses</span></a></li>
+          <li><a href="admin-donations.html"><span class="nav-icon">🎁</span><span>Donations</span></a></li>
+          <li><a href="admin-sponsorships.html"><span class="nav-icon">🤝</span><span>Sponsorships</span></a></li>
+        </ul>
+        <div class="nav-section-title">System</div>
+        <ul>
+          <li><a href="admin-notifications.html"><span class="nav-icon">🔔</span><span>Notifications</span></a></li>
+          <li><a href="admin-email.html"><span class="nav-icon">📧</span><span>Email</span></a></li>
+          <li><a href="admin-reports.html"><span class="nav-icon">📈</span><span>Reports</span></a></li>
+          <li><a href="admin-settings.html"><span class="nav-icon">⚙️</span><span>Settings</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 10px; color: #93c5fd; text-decoration: none; font-size: 14px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.15); margin-bottom: 8px;"><span>🌐</span><span>Back to Website</span></a>
+        <a href="#" class="logout-btn"><span>🚪</span><span>Logout</span></a>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="dashboard-main">
+      <div class="dashboard-topbar">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="topbar-title"><h2>Competitions</h2><p>Manage Quiz & Competitions</p></div>
+        <div class="topbar-actions">
+          <div class="topbar-user">
+            <div class="user-avatar admin-avatar" id="topAvatar">A</div>
+            <div class="user-info"><span class="user-name">Admin</span><span class="user-uid">Super Admin</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+          <div>
+            <h1 style="color: white">🏆 Competitions & Quizzes</h1>
+            <p style="color: rgba(255,255,255,0.7)">Create and manage public contests</p>
+          </div>
+          <button id="addCompBtn" style="display: flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, #1abc9c, #16a085); color: white; border: none; border-radius: 12px; font-family: Poppins; font-size: 14px; font-weight: 600; cursor: pointer;">
+            <span>＋</span> Create New Competition
+          </button>
+        </div>
+
+        <div id="competitionsList">
+          <p style="color: white; opacity: 0.7; text-align: center; padding: 40px;">Loading competitions...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- CREATE COMPETITION MODAL -->
+    <div class="modal-overlay" id="compModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="document.getElementById('compModal').classList.remove('active')">✕</button>
+        <h2>🏆 Create Competition</h2>
+        <form id="compForm">
+          <div class="form-group">
+            <label>Competition Title *</label>
+            <input type="text" id="compTitle" required placeholder="e.g. All Swat Schools Quiz 2025" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category *</label>
+              <select id="compCategory" required>
+                <option value="School">School Level</option>
+                <option value="Madrasa">Madrasa Level</option>
+                <option value="Public">General Public</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Registration Fee (Rs.)</label>
+              <input type="number" id="compFee" value="0" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Event Date *</label>
+              <input type="date" id="compDate" required />
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="compStatus">
+                <option value="Open">Open for Registration</option>
+                <option value="Closed">Closed</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Book / Syllabus PDF (Optional)</label>
+            <input type="file" id="compBook" accept=".pdf" style="padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2);" />
+            <small style="color: #aaa; font-size: 11px; display: block; margin-top: 5px;">Upload PDF (Competitors will download this after applying).</small>
+          </div>
+          <div class="form-group">
+            <label>Description / Rules</label>
+            <textarea id="compDesc" rows="3" placeholder="Enter competition details, rules, and eligibility..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-modal btn-cancel" onclick="document.getElementById('compModal').classList.remove('active')">Cancel</button>
+            <button type="submit" class="btn-modal btn-save-modal" id="btnSaveComp">🚀 Publish Competition</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW APPLICANTS MODAL -->
+    <div class="modal-overlay" id="viewModal">
+      <div class="modal-box" style="max-width: 900px;">
+        <button class="modal-close" onclick="document.getElementById('viewModal').classList.remove('active')">✕</button>
+        <h2 id="viewTitle">Applicants</h2>
+        <div style="max-height: 60vh; overflow-y: auto;">
+          <table class="applicants-table">
+            <thead>
+              <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Father</th>
+                <th>School/Class</th>
+                <th>Contact</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="applicantsBody">
+              <tr><td colspan="6" style="text-align: center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      let allCompetitions = [];
+
+      window.addEventListener("load", async function () {
+        let attempts = 0;
+        while ((typeof supabaseClient === "undefined" || !supabaseClient) && attempts < 30) {
+          await new Promise((r) => setTimeout(r, 100));
+          attempts++;
+        }
+        if (!supabaseClient) return;
+
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return (window.location.href = "admin-login.html");
+
+        await loadCompetitions();
+
+        document.getElementById("addCompBtn").addEventListener("click", () => {
+          document.getElementById("compForm").reset();
+          document.getElementById("compModal").classList.add("active");
+        });
+
+        document.getElementById("compForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const btn = document.getElementById("btnSaveComp");
+          btn.disabled = true; btn.textContent = "Publishing...";
+
+          let bookUrl = null;
+          const fileInput = document.getElementById("compBook");
+
+          // Upload Book if selected
+          if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const fileName = `book_${Date.now()}.pdf`;
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+              .from('competition-books')
+              .upload(fileName, file);
+
+            if (uploadError) {
+              btn.disabled = false; btn.textContent = "🚀 Publish Competition";
+              return alert("❌ Book Upload Failed: " + uploadError.message);
+            }
+
+            const { data: urlData } = supabaseClient.storage.from('competition-books').getPublicUrl(fileName);
+            bookUrl = urlData.publicUrl;
+          }
+
+          const newComp = {
+            title: document.getElementById("compTitle").value,
+            category: document.getElementById("compCategory").value,
+            reg_fee: document.getElementById("compFee").value,
+            event_date: document.getElementById("compDate").value,
+            status: document.getElementById("compStatus").value,
+            description: document.getElementById("compDesc").value,
+            book_url: bookUrl
+          };
+
+          const { error } = await supabaseClient.from("competitions").insert([newComp]);
+          
+          btn.disabled = false; btn.textContent = "🚀 Publish Competition";
+
+          if (error) return alert("❌ " + error.message);
+
+          alert("✅ Competition Created Successfully!");
+          document.getElementById("compModal").classList.remove("active");
+          await loadCompetitions();
+        });
+      });
+
+      async function loadCompetitions() {
+        const { data, error } = await supabaseClient.from("competitions").select("*").order("created_at", { ascending: false });
+        if (error) return console.error(error);
+        allCompetitions = data || [];
+        renderCompetitions();
+      }
+
+      function renderCompetitions() {
+        const container = document.getElementById("competitionsList");
+        if (allCompetitions.length === 0) {
+          container.innerHTML = '<p style="color: white; opacity: 0.7; text-align: center; padding: 40px;">No competitions created yet.</p>';
+          return;
+        }
+
+        container.innerHTML = allCompetitions.map(c => {
+          let catClass = "badge-public";
+          if (c.category === "School") catClass = "badge-school";
+          if (c.category === "Madrasa") catClass = "badge-madrasa";
+
+          let statusClass = c.status === "Open" ? "badge-open" : "badge-closed";
+
+          return `
+            <div class="comp-card">
+              <div class="comp-info">
+                <h3>${c.title}</h3>
+                <p>📅 Event Date: ${c.event_date ? new Date(c.event_date).toLocaleDateString() : "TBA"}</p>
+                <p>💰 Fee: Rs. ${c.reg_fee}</p>
+                <div>
+                  <span class="comp-badge ${catClass}">${c.category}</span>
+                  <span class="comp-badge ${statusClass}">${c.status}</span>
+                </div>
+              </div>
+              <div class="comp-actions">
+                <button class="btn-view" onclick="viewApplicants(${c.id}, '${c.title.replace(/'/g, "\\'")}')">👁️ Applicants</button>
+                <button class="btn-close-comp" onclick="toggleCompStatus(${c.id}, '${c.status}')">${c.status === "Open" ? "🔒 Close" : "🔓 Open"}</button>
+                <button class="btn-del-comp" onclick="deleteComp(${c.id})">🗑️</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      window.toggleCompStatus = async function(id, currentStatus) {
+        const newStatus = currentStatus === "Open" ? "Closed" : "Open";
+        const { error } = await supabaseClient.from("competitions").update({ status: newStatus }).eq("id", id);
+        if (error) return alert("❌ " + error.message);
+        await loadCompetitions();
+      };
+
+      window.deleteComp = async function(id) {
+        if (!confirm("Are you sure you want to delete this competition? All registrations will be lost!")) return;
+        const { error } = await supabaseClient.from("competitions").delete().eq("id", id);
+        if (error) return alert("❌ " + error.message);
+        await loadCompetitions();
+      };
+
+      window.viewApplicants = async function(compId, compTitle) {
+        document.getElementById("viewTitle").textContent = `Applicants - ${compTitle}`;
+        const tbody = document.getElementById("applicantsBody");
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading...</td></tr>';
+        document.getElementById("viewModal").classList.add("active");
+
+        const { data, error } = await supabaseClient.from("competition_registrations").select("*").eq("competition_id", compId).order("created_at", { ascending: false });
+        
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">Error: ${error.message}</td></tr>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No one has applied yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.map(r => `
+          <tr>
+            <td style="font-family: monospace; color: #93c5fd;">${r.roll_no}</td>
+            <td>${r.full_name}</td>
+            <td>${r.father_name || "-"}</td>
+            <td>${r.school_name || "-"} <br><small>${r.class_grade || ""}</small></td>
+            <td>${r.contact}</td>
+            <td>${r.status}</td>
+          </tr>
+        `).join("");
+      };
+    </script>
+  </body>
+</html>
