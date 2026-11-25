@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apply for Competition - SYDF</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <!-- PDF Library for Roll No Slip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+      body { background: #0f2027; color: white; min-height: 100vh; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; }
+      .container { max-width: 800px; width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+      h1, h2 { color: #1abc9c; margin-bottom: 15px; text-align: center; }
+      p.sub { color: #aaa; text-align: center; margin-bottom: 30px; font-size: 14px; }
+      
+      .comp-list { display: flex; flex-direction: column; gap: 15px; }
+      .comp-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; transition: 0.3s; }
+      .comp-card:hover { background: rgba(255,255,255,0.08); border-color: #1abc9c; }
+      .comp-card h3 { color: white; margin-bottom: 5px; font-size: 18px; }
+      .comp-card p { color: #aaa; font-size: 13px; margin-bottom: 5px; }
+      .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(26, 188, 156, 0.2); color: #1abc9c; margin-right: 5px; }
+      
+      .btn-apply { padding: 10px 20px; background: #1abc9c; color: #0f2027; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 14px; }
+      .btn-apply:hover { background: #16a085; }
+      
+      /* Form Styles */
+      .form-group { margin-bottom: 20px; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      label { display: block; margin-bottom: 8px; font-size: 13px; color: #ddd; }
+      input, select { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; font-family: 'Poppins'; outline: none; }
+      input:focus, select:focus { border-color: #1abc9c; }
+      .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #1abc9c, #16a085); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+      .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+      
+      /* Success Screen */
+      #successScreen { display: none; text-align: center; }
+      .success-icon { font-size: 60px; margin-bottom: 20px; }
+      .roll-box { background: rgba(26,188,156,0.1); border: 2px dashed #1abc9c; padding: 20px; border-radius: 15px; margin: 20px 0; }
+      .roll-box h3 { font-size: 30px; color: #1abc9c; margin-bottom: 5px; letter-spacing: 2px; }
+      .action-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+      .btn-download { padding: 12px 25px; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+      .btn-dl-roll { background: #3b82f6; color: white; }
+      .btn-dl-book { background: #f59e0b; color: white; }
+      
+      @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; }
+        .comp-card { flex-direction: column; align-items: flex-start; }
+        .btn-apply { width: 100%; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- VIEW 1: COMPETITION LIST -->
+      <div id="listView">
+        <h1>🏆 Competitions & Quizzes</h1>
+        <p class="sub">Apply for open events below</p>
+        <div class="comp-list" id="compList">
+          <p style="text-align: center; color: #aaa;">Loading competitions...</p>
+        </div>
+      </div>
+
+      <!-- VIEW 2: APPLY FORM -->
+      <div id="formView" style="display: none;">
+        <button onclick="window.location.search=''" style="background: none; border: none; color: #1abc9c; cursor: pointer; margin-bottom: 15px; font-size: 14px; font-weight: 600;">← Back to List</button>
+        <h1 id="formTitle">Apply</h1>
+        <p class="sub" id="formSub">Fill details to get your Roll Number</p>
+        
+        <form id="applyForm">
+          <input type="hidden" id="compId" />
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="fullName" required placeholder="Enter your full name" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Father's Name *</label>
+              <input type="text" id="fatherName" required placeholder="Father's name" />
+            </div>
+            <div class="form-group">
+              <label>Contact Number *</label>
+              <input type="tel" id="contact" required placeholder="03XX-XXXXXXX" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" id="schoolGroup">
+              <label>School / Madrasa Name *</label>
+              <input type="text" id="schoolName" placeholder="Your institution name" />
+            </div>
+            <div class="form-group" id="classGroup">
+              <label>Class / Grade *</label>
+              <input type="text" id="classGrade" placeholder="e.g. 9th, 10th" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>CNIC / B-Form (Optional)</label>
+              <input type="text" id="cnic" placeholder="XXXXX-XXXXXXX-X" />
+            </div>
+            <div class="form-group">
+              <label>City *</label>
+              <input type="text" id="city" required placeholder="Your city" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email (Optional)</label>
+            <input type="email" id="email" placeholder="your@email.com" />
+          </div>
+          <button type="submit" class="btn-submit" id="btnSubmit">Submit Application</button>
+        </form>
+      </div>
+
+      <!-- VIEW 3: SUCCESS SCREEN -->
+      <div id="successScreen">
+        <div class="success-icon">🎉</div>
+        <h2>Application Submitted!</h2>
+        <p class="sub">Aapki application kamyabi se submit ho gayi hai.</p>
+        
+        <div class="roll-box">
+          <p style="color: #ddd; font-size: 12px; margin-bottom: 5px;">YOUR ROLL NUMBER</p>
+          <h3 id="displayRollNo">-</h3>
+          <p style="color: #aaa; font-size: 12px;" id="displayCompName">-</p>
+        </div>
+
+        <div class="action-btns">
+          <button class="btn-download btn-dl-roll" onclick="downloadRollSlip()">📥 Download Roll No Slip</button>
+          <a id="bookDownloadBtn" class="btn-download btn-dl-book" href="#" target="_blank" style="display: none;">📚 Download Competition Book</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentComp = null;
+      let successData = null;
+
+      window.addEventListener("load", async function() {
+        let attempts = 0;
+        while ((typeof supabaseClient === "undefined" || !supabaseClient) && attempts < 30) {
+          await new Promise((r) => setTimeout(r, 100));
+          attempts++;
+        }
+        if (!supabaseClient) return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const compId = urlParams.get('id');
+
+        if (compId) {
+          loadApplyForm(compId);
+        } else {
+          loadCompetitionList();
+        }
+
+        // Form Submit Event
+        document.getElementById("applyForm").addEventListener("submit", submitApplication);
+      });
+
+      async function loadCompetitionList() {
+        const { data, error } = await supabaseClient.from("competitions").select("*").eq("status", "Open").order("created_at", { ascending: false });
+        const container = document.getElementById("compList");
+        
+        if (error || !data || data.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa;">No open competitions at the moment.</p>';
+          return;
+        }
+
+        container.innerHTML = data.map(c => `
+          <div class="comp-card">
+            <div>
+              <h3>${c.title}</h3>
+              <p>📅 ${new Date(c.event_date).toLocaleDateString()} &nbsp;|&nbsp; 💰 Fee: Rs. ${c.reg_fee}</p>
+              <span class="badge">${c.category}</span>
+            </div>
+            <a href="?id=${c.id}" class="btn-apply">Apply Now →</a>
+          </div>
+        `).join("");
+      }
+
+      async function loadApplyForm(id) {
+        document.getElementById("listView").style.display = "none";
+        document.getElementById("formView").style.display = "block";
+
+        const { data, error } = await supabaseClient.from("competitions").select("*").eq("id", id).single();
+        
+        if (error || !data) {
+          alert("Competition not found or closed.");
+          window.location.search = '';
+          return;
+        }
+
+        currentComp = data;
+        document.getElementById("formTitle").textContent = "Apply: " + data.title;
+        document.getElementById("compId").value = data.id;
+
+        // Hide school/class fields if category is Public
+        if (data.category === "Public") {
+          document.getElementById("schoolGroup").style.display = "none";
+          document.getElementById("classGroup").style.display = "none";
+          document.getElementById("schoolName").required = false;
+          document.getElementById("classGrade").required = false;
+        }
+      }
+
+      async function submitApplication(e) {
+        e.preventDefault();
+        const btn = document.getElementById("btnSubmit");
+        btn.disabled = true; btn.textContent = "Submitting...";
+
+        // Generate Roll No (e.g., SYDF-SCH-1234)
+        const catCode = currentComp.category.substring(0, 3).toUpperCase();
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const rollNo = `SYDF-${catCode}-${randomNum}`;
+
+        const regData = {
+          competition_id: currentComp.id,
+          roll_no: rollNo,
+          full_name: document.getElementById("fullName").value.trim(),
+          father_name: document.getElementById("fatherName").value.trim(),
+          school_name: document.getElementById("schoolName").value.trim() || null,
+          class_grade: document.getElementById("classGrade").value.trim() || null,
+          contact: document.getElementById("contact").value.trim(),
+          email: document.getElementById("email").value.trim() || null,
+          cnic_bform: document.getElementById("cnic").value.trim() || null,
+          city: document.getElementById("city").value.trim(),
+          status: "Approved"
+        };
+
+        const { data, error } = await supabaseClient.from("competition_registrations").insert([regData]).select().single();
+
+        btn.disabled = false; btn.textContent = "Submit Application";
+
+        if (error) return alert("❌ Error: " + error.message);
+
+        // Success
+        successData = { ...regData, compTitle: currentComp.title, compDate: currentComp.event_date, bookUrl: currentComp.book_url };
+        
+        document.getElementById("formView").style.display = "none";
+        document.getElementById("successScreen").style.display = "block";
+        document.getElementById("displayRollNo").textContent = rollNo;
+        document.getElementById("displayCompName").textContent = currentComp.title;
+
+        // Show Book Download Button if URL exists
+        if (currentComp.book_url) {
+          const bookBtn = document.getElementById("bookDownloadBtn");
+          bookBtn.href = currentComp.book_url;
+          bookBtn.style.display = "inline-flex";
+        }
+      }
+
+      // ✅ ROLL NO SLIP PDF GENERATION
+      function downloadRollSlip() {
+        if (!successData) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); // A5 size for slip
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+
+        // Header
+        doc.setFillColor(26, 188, 156); doc.rect(0, 0, pageW, 25, "F");
+        doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(14);
+        doc.text("SWAT YOUTH DEVELOPMENT FORUM", pageW / 2, 12, { align: "center" });
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Competition Roll No Slip / Admit Card", pageW / 2, 19, { align: "center" });
+
+        // Body
+        doc.setTextColor(15, 32, 39); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text("Competition: " + successData.compTitle, 10, 35);
+        
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Event Date: " + (successData.compDate ? new Date(successData.compDate).toLocaleDateString() : "TBA"), 10, 42);
+        doc.text("City: " + successData.city, 10, 48);
+
+        // Roll No Box
+        doc.setFillColor(240, 253, 249); doc.roundedRect(10, 55, pageW - 20, 20, 3, 3, "F");
+        doc.setDrawColor(26, 188, 156); doc.setLineWidth(0.5); doc.roundedRect(10, 55, pageW - 20, 20, 3, 3, "S");
+        doc.setTextColor(100, 100, 100); doc.setFontSize(8); doc.text("ROLL NUMBER", pageW / 2, 61, { align: "center" });
+        doc.setTextColor(26, 188, 156); doc.setFontSize(18); doc.setFont("helvetica", "bold");
+        doc.text(successData.roll_no, pageW / 2, 70, { align: "center" });
+
+        // Details
+        doc.setTextColor(15, 32, 39); doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        let y = 85;
+        doc.text("Name:", 10, y); doc.setFont("helvetica", "bold"); doc.text(successData.full_name, 40, y);
+        y += 7;
+        doc.setFont("helvetica", "normal"); doc.text("Father Name:", 10, y); doc.setFont("helvetica", "bold"); doc.text(successData.father_name, 40, y);
+        y += 7;
+        if (successData.school_name) { doc.setFont("helvetica", "normal"); doc.text("School:", 10, y); doc.setFont("helvetica", "bold"); doc.text(successData.school_name, 40, y); y += 7; }
+        if (successData.class_grade) { doc.setFont("helvetica", "normal"); doc.text("Class:", 10, y); doc.setFont("helvetica", "bold"); doc.text(successData.class_grade, 40, y); y += 7; }
+        doc.setFont("helvetica", "normal"); doc.text("Contact:", 10, y); doc.setFont("helvetica", "bold"); doc.text(successData.contact, 40, y);
+
+        // Footer
+        doc.setDrawColor(200, 200, 200); doc.line(10, pageH - 20, pageW - 10, pageH - 20);
+        doc.setTextColor(150, 150, 150); doc.setFontSize(8); doc.setFont("helvetica", "italic");
+        doc.text("Please bring this slip on the event day. This is a computer-generated document.", pageW / 2, pageH - 14, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.text("Powered by SYDF", pageW / 2, pageH - 8, { align: "center" });
+
+        doc.save(`RollSlip_${successData.roll_no}.pdf`);
+      }
+    </script>
+  </body>
+</html>
