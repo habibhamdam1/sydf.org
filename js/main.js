@@ -595,16 +595,19 @@ function addBottomButtons(sidebarNav) {
     divider.style.cssText =
       "height: 1px; background: var(--card-border); margin: 15px 10px;";
     sidebarNav.appendChild(divider);
+    const footerList = document.createElement("ul");
+    footerList.style.cssText = "list-style: none; padding: 0; margin: 0;";
     if (!hasBackBtn) {
       const backLi = document.createElement("li");
       backLi.innerHTML = `<a href="index.html" class="back-to-site-btn" style="color: var(--accent);"><span class="nav-icon">🌐</span><span>Back to Website</span></a>`;
-      sidebarNav.appendChild(backLi);
+      footerList.appendChild(backLi);
     }
     if (!hasLogoutBtn) {
       const logoutLi = document.createElement("li");
       logoutLi.innerHTML = `<a href="#" class="logout-btn" style="color: #ef4444;"><span class="nav-icon">🚪</span><span>Logout</span></a>`;
-      sidebarNav.appendChild(logoutLi);
+      footerList.appendChild(logoutLi);
     }
+    sidebarNav.appendChild(footerList);
   }
 }
 

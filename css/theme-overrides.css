@@ -231,16 +231,28 @@ html:not([data-theme="dark"])
 
 /* 8. DASHBOARD GLASSMORPHISM (Restored) */
 html:not([data-theme="dark"]) .dashboard-content .welcome-card,
+html:not([data-theme="dark"]) .dashboard-content .welcome-hero,
 html:not([data-theme="dark"]) .dashboard-content .glass-card,
 html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .score-card,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-card,
+html:not([data-theme="dark"]) .dashboard-content .stat-box,
 html:not([data-theme="dark"]) .dashboard-content .summary-card {
-  background: rgba(255, 255, 255, 0.45) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 241, 242, 0.72)
+  ) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .badge-role {
+  background: rgba(225, 29, 72, 0.1) !important;
+  border-color: var(--card-border-hover) !important;
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
 }
 
 /* 9. INPUTS & TEXT FIX (DASHBOARD SPECIFIC) */
@@ -286,10 +298,18 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
   border-right-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  z-index: 99999 !important;
+  z-index: 100 !important;
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
+}
+.dashboard-main {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.modal-overlay.active {
+  z-index: 1000000 !important;
 }
 .dashboard-sidebar .sidebar-header {
   flex-shrink: 0 !important;
@@ -1160,7 +1180,37 @@ body::after {
 /* ============================================================
    MOBILE / WEBVIEW SCROLLING FIXES
    ============================================================ */
+/* Keep sidebar visible and prevent dashboard-main flex/grid overflow across desktop & tablet */
+@media (min-width: 1025px) {
+  .dashboard-main {
+    width: calc(100% - 260px) !important;
+  }
+  .admin-body .dashboard-main,
+  .dashboard-sidebar.admin-sidebar ~ .dashboard-main {
+    width: calc(100% - 270px) !important;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard-sidebar,
+  .admin-sidebar {
+    width: 225px !important;
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+  }
+  .dashboard-main,
+  .admin-body .dashboard-main,
+  .dashboard-sidebar.admin-sidebar ~ .dashboard-main {
+    margin-left: 225px !important;
+    width: calc(100% - 225px) !important;
+  }
+}
 @media (max-width: 768px) {
+  .dashboard-main,
+  .admin-body .dashboard-main,
+  .dashboard-sidebar.admin-sidebar ~ .dashboard-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
   .dashboard-sidebar {
     display: flex !important;
     flex-direction: column !important;

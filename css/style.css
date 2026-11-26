@@ -942,7 +942,7 @@ hr {
 }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: 20px;
   max-width: 1100px;
   margin: 0 auto;
@@ -1452,6 +1452,9 @@ html:not([data-theme="dark"]) select option {
   display: flex;
   flex-direction: column;
   gap: 3px;
+}
+.sidebar-nav li {
+  list-style: none;
 }
 .sidebar-nav li a {
   display: flex;
@@ -2150,7 +2153,7 @@ html:not([data-theme="dark"]) select option {
 /* Dashboard Stats */
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 20px;
 }
 .dash-stat-card {
