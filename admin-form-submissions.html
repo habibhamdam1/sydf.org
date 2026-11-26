@@ -78,6 +78,7 @@
           <h1>SYDF</h1>
           <p>Admin Panel</p>
         </div>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-title">Main</div>
@@ -101,11 +102,20 @@
       </nav>
     </aside>
 
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <main class="dashboard-main">
       <div class="dashboard-topbar">
+        <button class="menu-toggle" id="menuToggle">☰</button>
         <div class="topbar-title">
           <h2>Form Submissions</h2>
           <p id="formTitleSub">Loading...</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-user">
+            <div class="user-avatar admin-avatar" id="topAvatar">A</div>
+            <div class="user-info"><span class="user-name">Admin</span><span class="user-uid" id="topRole">Super Admin</span></div>
+          </div>
         </div>
       </div>
 

@@ -44,6 +44,7 @@
     <aside class="dashboard-sidebar admin-sidebar" id="dashboardSidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><h1>SYDF</h1><p>Admin Panel</p></div>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
       </div>
       <nav class="sidebar-nav">
         <div class="nav-section-title">Main</div>
@@ -87,8 +88,11 @@
       </div>
     </aside>
 
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <main class="dashboard-main">
       <div class="dashboard-topbar">
+        <button class="menu-toggle" id="menuToggle">☰</button>
         <div class="topbar-title"><h2>Menu Manager</h2><p>Manage website header & footer links</p></div>
         <div class="topbar-actions">
           <div class="topbar-user">

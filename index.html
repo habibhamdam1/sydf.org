@@ -618,20 +618,5 @@
         }
       });
     </script>
-        <script>
-      // Top Navbar mein Competitions ka link add karne ke liye
-      window.addEventListener("load", function() {
-        setTimeout(() => {
-          const navMenu = document.querySelector('header nav ul'); 
-          if (navMenu && !navMenu.innerHTML.includes('competition-apply.html')) {
-            // Link create karein
-            const newLi = document.createElement('li');
-            newLi.innerHTML = `<a href="competition-apply.html" style="color: #fbbf24; font-weight: 600;">Competitions 🏆</a>`;
-            // Menu ke aakhir mein add kar dein
-            navMenu.appendChild(newLi);
-          }
-        }, 500); // 0.5 second wait karega taake JS menu load kar le
-      });
-    </script>
   </body>
 </html>

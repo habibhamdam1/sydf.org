@@ -334,6 +334,9 @@
       ".detail-hero", // Activity detail / Event detail
       ".profile-hero", // Member profile
       ".album-hero", // Gallery album
+      ".form-hero", // Dynamic forms
+      ".portal-container", // Public grievance portal
+      ".error-hero", // 404 page
       ".auth-section", // Login/Register
     ];
 

@@ -346,6 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { href: "membership.html", label: "Membership" },
         { href: "donate.html", label: "Donate" },
         { href: "contact.html", label: "Contact" },
+        { href: "competition-apply.html", label: "Competitions 🏆" },
       ];
       let navHTML = "<ul>";
       defaultLinks.forEach((link) => {
@@ -504,11 +505,12 @@ document.addEventListener("DOMContentLoaded", function () {
           <ul>
             <li><a href="admin-activities.html" class="${currentPage === "admin-activities.html" ? "active" : ""}"><span class="nav-icon">🎯</span><span>Activities</span></a></li>
             <li><a href="admin-events.html" class="${currentPage === "admin-events.html" ? "active" : ""}"><span class="nav-icon">📅</span><span>Events</span></a></li>
+            <li><a href="admin-competitions.html" class="${currentPage === "admin-competitions.html" ? "active" : ""}"><span class="nav-icon">🏆</span><span>Competitions / Quiz</span></a></li>
             <li><a href="admin-news.html" class="${currentPage === "admin-news.html" ? "active" : ""}"><span class="nav-icon">📰</span><span>News & Blog</span></a></li>
             <li><a href="admin-gallery.html" class="${currentPage === "admin-gallery.html" ? "active" : ""}"><span class="nav-icon">🖼️</span><span>Gallery</span></a></li>
             <li><a href="admin-documents.html" class="${currentPage === "admin-documents.html" ? "active" : ""}"><span class="nav-icon">📄</span><span>Documents</span></a></li>
             <li><a href="admin-custom-pages.html" class="${currentPage === "admin-custom-pages.html" ? "active" : ""}"><span class="nav-icon">📄</span><span>Custom Pages</span></a></li>
-            <li><a href="admin-forms.html" class="${currentPage === "admin-forms.html" ? "active" : ""}"><span class="nav-icon">📝</span><span>Form Builder</span></a></li>
+            <li><a href="admin-forms.html" class="${currentPage === "admin-forms.html" || currentPage === "admin-form-submissions.html" ? "active" : ""}"><span class="nav-icon">📝</span><span>Form Builder</span></a></li>
           </ul>
           <div class="nav-section-title">Finance</div>
           <ul>
@@ -776,7 +778,9 @@ async function enforceAdminPermissions() {
         "admin-menu-manager.html": "admin_acc_reports",
         "admin-custom-pages.html": "admin_acc_news",
         "admin-forms.html": "admin_acc_news",
+        "admin-form-submissions.html": "admin_acc_news",
         "admin-events.html": "admin_acc_activities",
+        "admin-competitions.html": "admin_acc_activities",
         "admin-volunteers.html": "admin_acc_members",
         "admin-messages.html": "admin_acc_reports",
       };

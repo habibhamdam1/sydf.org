@@ -274,7 +274,7 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
 
 /* 11. SIDEBAR & TOPBAR OVERRIDES */
 .dashboard-topbar {
-  z-index: 100000 !important;
+  z-index: 90 !important;
   background: var(--header-bg) !important;
   border-bottom-color: var(--card-border) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
@@ -287,9 +287,26 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
   backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
   z-index: 99999 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
-.sidebar-header {
+.dashboard-sidebar .sidebar-header {
+  flex-shrink: 0 !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin-top: 0 !important;
+  z-index: 2 !important;
   border-bottom-color: var(--card-border) !important;
+}
+.dashboard-sidebar .sidebar-nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+.dashboard-sidebar .sidebar-footer {
+  flex-shrink: 0 !important;
 }
 .topbar-btn {
   background: var(--card-bg) !important;
@@ -326,38 +343,67 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
 }
 
 /* ============================================================
-   12. ULTIMATE MOBILE FIX (SIDEBAR & PUBLIC MENU)
+   12. MOBILE & DESKTOP-VIEW RESPONSIVE FIXES
    ============================================================ */
-@media (max-width: 1024px) {
-  /* Dashboard Sidebar */
+/* Keep dashboard sidebar visible in Mobile Desktop View / Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard-sidebar,
+  .dashboard-sidebar.admin-sidebar {
+    width: 225px !important;
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+    visibility: visible !important;
+  }
+  .dashboard-main,
+  .admin-body .dashboard-main,
+  .dashboard-sidebar.admin-sidebar ~ .dashboard-main {
+    margin-left: 225px !important;
+  }
+  .menu-toggle {
+    display: none !important;
+  }
+  .sidebar-close {
+    display: none !important;
+  }
+}
+
+/* Collapse dashboard sidebar into drawer ONLY below 769px */
+@media (max-width: 768px) {
   .dashboard-sidebar {
     top: 0 !important;
     height: 100vh !important;
-    padding-top: 70px !important; /* Space for topbar */
+    height: 100dvh !important;
+    padding-top: 0 !important;
     z-index: 99999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: visible !important;
+    overflow: hidden !important;
   }
 
-  /* Sidebar Header (SYDF Logo & Close Button) */
   .dashboard-sidebar .sidebar-header {
     display: flex !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
     width: 100% !important;
-    height: 70px !important;
+    min-height: 70px !important;
+    margin-top: 0 !important;
     padding: 15px 20px !important;
     background: var(--header-bg) !important;
     border-bottom: 1px solid var(--card-border) !important;
-    z-index: 100000 !important;
+    z-index: 2 !important;
+    flex-shrink: 0 !important;
     align-items: center;
   }
 
-  /* Overlay */
   .sidebar-overlay {
     z-index: 99998 !important;
   }
+}
 
-  /* PUBLIC MOBILE MENU */
+/* PUBLIC MOBILE MENU (matches style.css 1150px breakpoint) */
+@media (max-width: 1150px) {
   .glass-header {
     z-index: 100000 !important;
   }
@@ -473,13 +519,39 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
 }
 
 /* ============================================================
-   14. ID CARD & PRINT PROTECTION
+   14. ID CARD & PRINT PROTECTION (THEME-AWARE HEADER/LOADING)
    ============================================================ */
-body .dashboard-content .page-header-block .page-header-info h1 {
+html:not([data-theme="dark"]) .dashboard-content .page-header-block .page-header-info h1 {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .page-header-block .page-header-info p {
+  color: var(--text-secondary) !important;
+  -webkit-text-fill-color: var(--text-secondary) !important;
+  opacity: 0.9 !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .page-header-block .btn-verify {
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .loading-box h3,
+html:not([data-theme="dark"]) .dashboard-content .loading-box p,
+html:not([data-theme="dark"]) .dashboard-content .loading-box .ico {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .id-cards-wrapper .card-label {
+  color: var(--text-muted) !important;
+  -webkit-text-fill-color: var(--text-muted) !important;
+}
+
+html[data-theme="dark"] body .dashboard-content .page-header-block .page-header-info h1 {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
-body .dashboard-content .page-header-block .page-header-info p {
+html[data-theme="dark"] body .dashboard-content .page-header-block .page-header-info p {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   opacity: 0.75 !important;
@@ -488,25 +560,33 @@ body .dashboard-content .page-header-block .btn-print {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
-body .dashboard-content .page-header-block .btn-verify {
+html[data-theme="dark"] body .dashboard-content .page-header-block .btn-verify {
   color: #93c5fd !important;
   -webkit-text-fill-color: #93c5fd !important;
 }
-body .dashboard-content .loading-box h3,
-body .dashboard-content .loading-box p,
-body .dashboard-content .loading-box .ico {
+html[data-theme="dark"] body .dashboard-content .loading-box h3,
+html[data-theme="dark"] body .dashboard-content .loading-box p,
+html[data-theme="dark"] body .dashboard-content .loading-box .ico {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 body .dashboard-content .loading-box.warn .ico {
+  color: #d97706 !important;
+  -webkit-text-fill-color: #d97706 !important;
+}
+body .dashboard-content .loading-box.err .ico {
+  color: #dc2626 !important;
+  -webkit-text-fill-color: #dc2626 !important;
+}
+html[data-theme="dark"] body .dashboard-content .loading-box.warn .ico {
   color: #fbbf24 !important;
   -webkit-text-fill-color: #fbbf24 !important;
 }
-body .dashboard-content .loading-box.err .ico {
+html[data-theme="dark"] body .dashboard-content .loading-box.err .ico {
   color: #fca5a5 !important;
   -webkit-text-fill-color: #fca5a5 !important;
 }
-body .dashboard-content .id-cards-wrapper .card-label {
+html[data-theme="dark"] body .dashboard-content .id-cards-wrapper .card-label {
   color: rgba(255, 255, 255, 0.5) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -1078,55 +1158,50 @@ body::after {
   }
 }
 /* ============================================================
-   🚨 EMERGENCY PATCH: WEBVIEW & SCROLLING FIXES
-   (Add this at the very bottom of theme-overrides.css)
+   MOBILE / WEBVIEW SCROLLING FIXES
    ============================================================ */
-
-@media (max-width: 1024px) {
-  /* 1. WEBVIEW SIDEBAR FIX (Admin & Member) */
+@media (max-width: 768px) {
   .dashboard-sidebar {
     display: flex !important;
     flex-direction: column !important;
-    visibility: visible !important; 
-    z-index: 999999 !important; /* Highest priority */
+    visibility: visible !important;
+    z-index: 999999 !important;
   }
-  
-  /* 2. SIDEBAR SCROLL FIX (Logout Button Hide Hona) */
   .dashboard-sidebar .sidebar-nav {
     flex: 1 1 auto !important;
+    min-height: 0 !important;
     overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important; /* Smooth scroll on mobile */
-    padding-bottom: 120px !important; /* Logout button ke liye extra jagah */
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 30px !important;
   }
   .dashboard-sidebar.active {
     transform: translateX(0) !important;
     -webkit-transform: translateX(0) !important;
   }
+}
 
-  /* 3. PUBLIC MENU SCROLL FIX (Login Button Stuck) */
+@media (max-width: 1150px) {
   .glass-header nav.active {
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
-  
   .glass-header nav.active ul {
-    padding-bottom: 150px !important; /* Login button screen ke andar fit hoga */
+    padding-bottom: 90px !important;
     padding-top: 10px !important;
   }
-  
-  /* Login button ko force visible karein */
   .glass-header nav ul li a.btn-login {
     display: block !important;
-    margin-top: 15px !important;
-    margin-bottom: 50px !important;
+    margin-top: 12px !important;
+    margin-bottom: 24px !important;
   }
 }
+
 /* ============================================================
-   🚨 EMERGENCY PATCH: COMPLETE LIGHT THEME TEXT RESCUE
-   (Covers Dashboard, Public Pages, AND Login/Register Pages)
+   COMPLETE LIGHT THEME TEXT & SURFACE RESCUE
+   (Covers Dashboard, Admin, Modals, Tables, and Public Pages)
    ============================================================ */
 
-/* 1. DASHBOARD TEXT RESCUE (Maroon) */
+/* 1. DASHBOARD & ADMIN CONTENT RESCUE (Light Mode) */
 html:not([data-theme="dark"]) .dashboard-content h1,
 html:not([data-theme="dark"]) .dashboard-content h2,
 html:not([data-theme="dark"]) .dashboard-content h3,
@@ -1137,29 +1212,349 @@ html:not([data-theme="dark"]) .dashboard-content p,
 html:not([data-theme="dark"]) .dashboard-content label,
 html:not([data-theme="dark"]) .dashboard-content td,
 html:not([data-theme="dark"]) .dashboard-content th,
+html:not([data-theme="dark"]) .dashboard-content li,
 html:not([data-theme="dark"]) .dashboard-content small,
 html:not([data-theme="dark"]) .dashboard-content strong,
 html:not([data-theme="dark"]) .dashboard-content .card-header h3,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-info h3,
 html:not([data-theme="dark"]) .dashboard-content .welcome-text h1,
 html:not([data-theme="dark"]) .dashboard-content .welcome-text p,
-html:not([data-theme="dark"]) .dashboard-content span:not(.badge):not([class*="status-badge"]):not(.role-badge):not(.uid-badge):not(.nav-icon):not(.user-avatar):not(.member-avatar):not(.app-avatar):not(.score-value):not(.stat-value):not(.summary-value):not(.overview-value):not(.fin-stat-value):not(.btn-primary):not(.btn-login) {
-    color: var(--text-primary) !important;
-    -webkit-text-fill-color: var(--text-primary) !important;
+html:not([data-theme="dark"]) .dashboard-content .page-header-info h1,
+html:not([data-theme="dark"]) .dashboard-content .page-header-info p,
+html:not([data-theme="dark"]) .dashboard-content .comp-card,
+html:not([data-theme="dark"]) .dashboard-content .comp-info h3,
+html:not([data-theme="dark"]) .dashboard-content .comp-info p,
+html:not([data-theme="dark"]) .dashboard-content .score-item .lbl,
+html:not([data-theme="dark"]) .dashboard-content .score-item .max,
+html:not([data-theme="dark"]) .dashboard-content .badges-section .lbl,
+html:not([data-theme="dark"]) .dashboard-content .payment-row .month,
+html:not([data-theme="dark"]) .dashboard-content .payment-row .next-label,
+html:not([data-theme="dark"]) .dashboard-content .quick-action,
+html:not([data-theme="dark"]) .dashboard-content .quick-action p,
+html:not([data-theme="dark"]) .dashboard-content .profile-hero-info h1,
+html:not([data-theme="dark"]) .dashboard-content .profile-hero-info .meta-row,
+html:not([data-theme="dark"]) .dashboard-content .completion-text,
+html:not([data-theme="dark"]) .dashboard-content .score-mini-info h4,
+html:not([data-theme="dark"]) .dashboard-content .badges-card h4,
+html:not([data-theme="dark"]) .dashboard-content .form-card-header h2,
+html:not([data-theme="dark"]) .dashboard-content .form-card-header p,
+html:not([data-theme="dark"]) .dashboard-content .field-box label,
+html:not([data-theme="dark"]) .dashboard-content .field-help,
+html:not([data-theme="dark"]) .dashboard-content .settings-card-header h3,
+html:not([data-theme="dark"]) .dashboard-content .settings-card-header p,
+html:not([data-theme="dark"]) .dashboard-content .toggle-row .info h4,
+html:not([data-theme="dark"]) .dashboard-content .toggle-row .info p,
+html:not([data-theme="dark"]) .dashboard-content .info-row .value,
+html:not([data-theme="dark"]) .dashboard-content .field-group label,
+html:not([data-theme="dark"]) .dashboard-content .danger-row p,
+html:not([data-theme="dark"]) .dashboard-content .notif-title,
+html:not([data-theme="dark"]) .dashboard-content .notif-time,
+html:not([data-theme="dark"]) .dashboard-content .notif-msg,
+html:not([data-theme="dark"]) .dashboard-content .notif-meta,
+html:not([data-theme="dark"]) .dashboard-content .doc-title-block h3,
+html:not([data-theme="dark"]) .dashboard-content .doc-meta,
+html:not([data-theme="dark"]) .dashboard-content .info-banner p,
+html:not([data-theme="dark"]) .dashboard-content .empty-box h3,
+html:not([data-theme="dark"]) .dashboard-content .empty-box p,
+html:not([data-theme="dark"]) .dashboard-content .empty-state h3,
+html:not([data-theme="dark"]) .dashboard-content .empty-state p,
+html:not([data-theme="dark"]) .dashboard-content .page-info,
+html:not([data-theme="dark"]) .dashboard-content [style*="color: white"]:not(.btn-primary):not(.btn-login):not(.btn-save):not(.btn-submit):not(.btn-export):not(.btn-approve):not(.btn-reject):not(.user-avatar):not(.member-avatar):not(.app-avatar):not(.admin-item-avatar):not(.profile-big-avatar):not([style*="linear-gradient"]):not([style*="border-radius:50%"]),
+html:not([data-theme="dark"]) .dashboard-content [style*="color:white"]:not(.btn-primary):not(.btn-login):not(.btn-save):not(.btn-submit):not(.btn-export):not(.btn-approve):not(.btn-reject):not(.user-avatar):not(.member-avatar):not(.app-avatar):not(.admin-item-avatar):not(.profile-big-avatar):not([style*="linear-gradient"]):not([style*="border-radius:50%"]),
+html:not([data-theme="dark"]) .dashboard-content [style*="color:#fff"]:not(.btn-primary):not(.btn-login):not(.btn-save):not(.btn-submit):not(.btn-export):not([style*="linear-gradient"]),
+html:not([data-theme="dark"]) .dashboard-content [style*="color: #fff"]:not(.btn-primary):not(.btn-login):not(.btn-save):not(.btn-submit):not(.btn-export):not([style*="linear-gradient"]),
+html:not([data-theme="dark"]) .dashboard-content a:not(.btn-primary):not(.btn-login):not(.btn-print):not(.btn-verify):not(.action-btn):not(.back-to-site-btn):not(.logout-btn),
+html:not([data-theme="dark"]) .dashboard-content span:not(.badge):not([class*="status-badge"]):not(.role-badge):not(.uid-badge):not(.comp-badge):not(.nav-icon):not(.user-avatar):not(.member-avatar):not(.app-avatar):not(.score-value):not(.stat-value):not(.summary-value):not(.overview-value):not(.fin-stat-value):not(.btn-primary):not(.btn-login):not(.action-btn) {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 2. PUBLIC CARDS TEXT RESCUE (Maroon) */
+/* Dashboard light surfaces, secondary buttons, pagination, filter-bar, inputs */
+html:not([data-theme="dark"]) .dashboard-content .comp-card,
+html:not([data-theme="dark"]) .dashboard-content .event-card,
+html:not([data-theme="dark"]) .dashboard-content .page-card,
+html:not([data-theme="dark"]) .dashboard-content .form-card,
+html:not([data-theme="dark"]) .dashboard-content .menu-card,
+html:not([data-theme="dark"]) .dashboard-content .bin-card,
+html:not([data-theme="dark"]) .dashboard-content .table-card,
+html:not([data-theme="dark"]) .dashboard-content .filter-bar,
+html:not([data-theme="dark"]) .dashboard-content .doc-card,
+html:not([data-theme="dark"]) .dashboard-content .info-banner,
+html:not([data-theme="dark"]) .dashboard-content .sponsor-card,
+html:not([data-theme="dark"]) .dashboard-content .quick-action {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: var(--card-border) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .fbtn-reset,
+html:not([data-theme="dark"]) .dashboard-content .btn-del-comp,
+html:not([data-theme="dark"]) .dashboard-content .page-btn:not(.active),
+html:not([data-theme="dark"]) .dashboard-content .profile-tab:not(.active),
+html:not([data-theme="dark"]) .dashboard-content .menu-tab:not(.active),
+html:not([data-theme="dark"]) .dashboard-content .bin-tab:not(.active),
+html:not([data-theme="dark"]) .dashboard-content .btn-icon {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border: 1px solid var(--card-border) !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .comp-badge.badge-school,
+html:not([data-theme="dark"]) .dashboard-content .btn-view {
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .comp-badge.badge-madrasa {
+  color: #7e22ce !important;
+  -webkit-text-fill-color: #7e22ce !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .comp-badge.badge-public {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .comp-badge.badge-open {
+  color: #047857 !important;
+  -webkit-text-fill-color: #047857 !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .comp-badge.badge-closed,
+html:not([data-theme="dark"]) .dashboard-content .btn-close-comp {
+  color: #b91c1c !important;
+  -webkit-text-fill-color: #b91c1c !important;
+}
+html:not([data-theme="dark"]) .dashboard-content input,
+html:not([data-theme="dark"]) .dashboard-content select,
+html:not([data-theme="dark"]) .dashboard-content textarea,
+html:not([data-theme="dark"]) .filter-bar input,
+html:not([data-theme="dark"]) .filter-bar select {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+
+/* Preserve Certificate & ID Card internals */
+html:not([data-theme="dark"]) .dashboard-content .certificate .watermark-logo {
+  display: block !important;
+}
+html:not([data-theme="dark"]) .dashboard-content .id-card .sidebar-brand,
+html:not([data-theme="dark"]) .dashboard-content .id-card .sidebar-id-block .val,
+html:not([data-theme="dark"]) .dashboard-content .id-card .sidebar-id-block .lbl {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* 2. MODALS RESCUE IN LIGHT MODE (.modal-box sits outside .dashboard-content) */
+html:not([data-theme="dark"]) .modal-box {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid var(--card-border-hover) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 25px 60px rgba(76, 5, 25, 0.18) !important;
+}
+html:not([data-theme="dark"]) .modal-box h1,
+html:not([data-theme="dark"]) .modal-box h2,
+html:not([data-theme="dark"]) .modal-box h3,
+html:not([data-theme="dark"]) .modal-box h4,
+html:not([data-theme="dark"]) .modal-box p,
+html:not([data-theme="dark"]) .modal-box label,
+html:not([data-theme="dark"]) .modal-box td,
+html:not([data-theme="dark"]) .modal-box th,
+html:not([data-theme="dark"]) .modal-box li,
+html:not([data-theme="dark"]) .modal-box small,
+html:not([data-theme="dark"]) .modal-box strong,
+html:not([data-theme="dark"]) .modal-box span:not(.badge):not([class*="badge"]),
+html:not([data-theme="dark"]) .modal-box a:not(.btn-primary):not(.btn-save-modal) {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+html:not([data-theme="dark"]) .modal-box th {
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  border-bottom-color: var(--card-border) !important;
+}
+html:not([data-theme="dark"]) .modal-box td {
+  border-bottom-color: var(--card-border) !important;
+}
+html:not([data-theme="dark"]) .modal-box input,
+html:not([data-theme="dark"]) .modal-box select,
+html:not([data-theme="dark"]) .modal-box textarea {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border: 1px solid var(--input-border) !important;
+}
+html:not([data-theme="dark"]) .modal-box input::placeholder,
+html:not([data-theme="dark"]) .modal-box textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+html:not([data-theme="dark"]) .modal-box .btn-cancel,
+html:not([data-theme="dark"]) .modal-box .btn-close-modal {
+  background: rgba(225, 29, 72, 0.08) !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border: 1px solid var(--card-border) !important;
+}
+html:not([data-theme="dark"]) .modal-box .modal-close {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #b91c1c !important;
+  -webkit-text-fill-color: #b91c1c !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* 3. PUBLIC PAGES SURFACES & TEXT RESCUE (Light Mode) */
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .page-hero-content,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-block,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .news-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .event-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .story-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .faq-item,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .committee-section,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .committee-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .partner-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .member-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .package-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .type-option,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .related-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .notfound-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .profile-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-content,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .map-placeholder,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .portal-card {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: var(--card-border) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
 html:not([data-theme="dark"]) .glass-card h1,
 html:not([data-theme="dark"]) .glass-card h2,
 html:not([data-theme="dark"]) .glass-card h3,
 html:not([data-theme="dark"]) .glass-card h4,
 html:not([data-theme="dark"]) .glass-card p,
-html:not([data-theme="dark"]) .glass-card span:not(.badge):not(.icon) {
-    color: var(--text-primary) !important;
-    -webkit-text-fill-color: var(--text-primary) !important;
+html:not([data-theme="dark"]) .glass-card span:not(.badge):not(.icon),
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .page-hero-content p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .intro-block p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .motm-section > p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .activity-meta,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .activity-body h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .activity-body p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .news-meta,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .news-body h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .news-body p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .news-author,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .event-month,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .event-info h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .event-meta,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .event-desc,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .story-member-info h5,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .story-body h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .story-body p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .story-date,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .loading-state,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .empty-state,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .loading-wrap,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .loading-wrap p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .notfound-card h2,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .notfound-card p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .breadcrumb,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-title,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .meta-text .val,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-content,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-content h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-content strong,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-content p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .detail-content li,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-outline,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-title,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-meta,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-content,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-content h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-content strong,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-content p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .article-content li,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .share-btn,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .related-card,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .member-name,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .member-district,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .faq-question h4,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .faq-answer p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .contact-cta p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .position-card h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .committee-card h4,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .benefit-mini h4,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .benefit-mini p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-header p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .radio-option,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .amount,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .period,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .fee-desc,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .waitlist-block h2,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .waitlist-block > p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .apply-block h2,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .apply-block > p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .social-link,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .map-placeholder h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .package-card h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .package-features li,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .activity-card h4,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .activity-card p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .benefit-item p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .partner-card h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .partner-card p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .become-partner-block p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .type-option h4,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .checkbox-label,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .checkbox-item span,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-block h3,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-block p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-block li,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .glass-block label,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .last-updated,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .profile-name,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .info-item .val,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .privacy-notice .txt,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-content h1,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-content p,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-btn.secondary,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-secondary,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group label,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) section [style*="color: white"]:not(.btn-primary):not(.btn-login):not(.btn-submit):not(.btn-donate):not(.btn-sponsor):not(.btn-join):not(.contact-btn):not(.partner-btn):not(.error-btn.primary):not(.activity-status-badge):not(.news-badge):not(.gallery-overlay):not(.user-avatar):not(.member-avatar):not(.member-avatar-lg):not(.story-member-avatar):not(.coord-avatar):not([style*="linear-gradient"]):not([style*="border-radius:50%"]),
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) section [style*="color:white"]:not(.btn-primary):not(.btn-login):not(.btn-submit):not(.btn-donate):not(.btn-sponsor):not(.btn-join):not(.contact-btn):not(.partner-btn):not(.error-btn.primary):not(.activity-status-badge):not(.news-badge):not(.gallery-overlay):not(.user-avatar):not(.member-avatar):not(.member-avatar-lg):not(.story-member-avatar):not(.coord-avatar):not([style*="linear-gradient"]):not([style*="border-radius:50%"]) {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* 3. LOGIN / REGISTER / AUTH PAGES RESCUE (Maroon) */
+/* Public light-mode inputs & secondary buttons */
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .search-faq,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .search-box input,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .filter-select,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-input,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-select,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group input,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group select,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group textarea {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  border-color: var(--input-border) !important;
+}
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .search-faq::placeholder,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-input::placeholder,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group input::placeholder,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-btn.secondary,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-secondary,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-outline,
+html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .share-btn {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid var(--card-border-hover) !important;
+}
+
+/* 4. LOGIN / REGISTER / AUTH PAGES RESCUE (Light Mode) */
 html:not([data-theme="dark"]) .auth-section h1,
 html:not([data-theme="dark"]) .auth-section h2,
 html:not([data-theme="dark"]) .auth-section h3,
@@ -1174,17 +1569,26 @@ html:not([data-theme="dark"]) .auth-section .welcome-note,
 html:not([data-theme="dark"]) .auth-section .form-note,
 html:not([data-theme="dark"]) .auth-section .admin-note,
 html:not([data-theme="dark"]) .auth-section .register-note,
-html:not([data-theme="dark"]) .auth-section .info-text {
-    color: var(--text-primary) !important;
-    -webkit-text-fill-color: var(--text-primary) !important;
+html:not([data-theme="dark"]) .auth-section .info-text,
+html:not([data-theme="dark"]) .auth-section .feature-item,
+html:not([data-theme="dark"]) .auth-section .remember-me,
+html:not([data-theme="dark"]) .auth-section .strength-text,
+html:not([data-theme="dark"]) .auth-section .state-block p,
+html:not([data-theme="dark"]) .auth-footer {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* Auth Pages ke Links aur Accents ko unka color wapas do */
-html:not([data-theme="dark"]) .auth-section a,
+html:not([data-theme="dark"]) .auth-section a:not(.btn-primary):not(.btn-secondary),
 html:not([data-theme="dark"]) .auth-section .forgot-link,
 html:not([data-theme="dark"]) .auth-section .register-note a,
 html:not([data-theme="dark"]) .auth-section .admin-note a,
 html:not([data-theme="dark"]) .auth-section .info-title {
-    color: var(--accent) !important;
-    -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+}
+html:not([data-theme="dark"]) .auth-section .btn-primary,
+html:not([data-theme="dark"]) .auth-section .btn-primary * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }

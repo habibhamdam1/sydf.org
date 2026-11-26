@@ -6,7 +6,8 @@
 .admin-sidebar {
   width: 270px;
 }
-.admin-body .dashboard-main {
+.admin-body .dashboard-main,
+.admin-sidebar ~ .dashboard-main {
   margin-left: 270px;
 }
 
@@ -315,11 +316,21 @@
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-sidebar {
+    width: 225px;
+  }
+  .admin-body .dashboard-main,
+  .admin-sidebar ~ .dashboard-main {
+    margin-left: 225px;
+  }
+}
 @media (max-width: 768px) {
   .admin-sidebar {
     width: 270px;
   }
-  .admin-body .dashboard-main {
+  .admin-body .dashboard-main,
+  .admin-sidebar ~ .dashboard-main {
     margin-left: 0;
   }
   .admin-quick {
@@ -828,7 +839,7 @@
 }
 .applications-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
   gap: 22px;
 }
 .application-card {
@@ -1481,7 +1492,7 @@
 }
 .archive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 20px;
 }
 .archive-card {
@@ -1613,7 +1624,7 @@
    ========================================== */
 .districts-admin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
   gap: 22px;
 }
 .district-admin-card {
@@ -2374,7 +2385,7 @@
    ========================================== */
 .sponsors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
   gap: 22px;
 }
 .sponsor-card {
@@ -3181,7 +3192,7 @@
 }
 .email-settings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
   gap: 22px;
 }
 .email-settings-card {
@@ -3699,7 +3710,7 @@
 }
 .reports-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 15px;
 }
 .report-item {
