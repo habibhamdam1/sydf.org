@@ -7,7 +7,36 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const ALLOWED_METHODS = ["JazzCash", "EasyPaisa", "Bank Transfer", "Cash"];
+  const ALLOWED_METHODS = ["JazzCash", "EasyPaisa", "Cash"];
+
+  const DEFAULT_PAYMENT_ACCOUNTS = {
+    jazzcash: "03441667794",
+    easypaisa: "03449746411",
+  };
+
+  function cleanPhoneMatch(raw) {
+    return String(raw || "").replace(/[^\d+]/g, "").trim();
+  }
+
+  function extractPaymentNumbersFromDescription(description, defaults) {
+    const fallback = defaults || DEFAULT_PAYMENT_ACCOUNTS;
+    const text = String(description || "");
+    const jcMatch = text.match(
+      /jazz\s*cash\s*(?:no|number|#|ac|account)?\s*[:\-]?\s*([+0-9][0-9\s-]{8,15})/i,
+    );
+    const epMatch = text.match(
+      /easy\s*paisa\s*(?:no|number|#|ac|account)?\s*[:\-]?\s*([+0-9][0-9\s-]{8,15})/i,
+    );
+    const jazzcash =
+      (jcMatch && cleanPhoneMatch(jcMatch[1])) ||
+      fallback.jazzcash ||
+      DEFAULT_PAYMENT_ACCOUNTS.jazzcash;
+    const easypaisa =
+      (epMatch && cleanPhoneMatch(epMatch[1])) ||
+      fallback.easypaisa ||
+      DEFAULT_PAYMENT_ACCOUNTS.easypaisa;
+    return { jazzcash, easypaisa };
+  }
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -39,7 +68,7 @@
     if (!ALLOWED_METHODS.includes(method)) {
       return {
         valid: false,
-        error: "Please select a payment method (JazzCash, EasyPaisa, Bank Transfer, or Cash).",
+        error: "Please select a payment method (JazzCash, EasyPaisa, or Cash).",
       };
     }
 
@@ -178,6 +207,8 @@
 
   return {
     ALLOWED_METHODS,
+    DEFAULT_PAYMENT_ACCOUNTS,
+    extractPaymentNumbersFromDescription,
     escapeHtml,
     isPaidCompetition,
     formatFeeLabel,

@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import "./competition-utils.js";
 
 const {
+  ALLOWED_METHODS,
+  extractPaymentNumbersFromDescription,
   formatFeeLabel,
   validateCompetitionPayment,
   buildRegistrationPayload,
@@ -123,4 +125,31 @@ test("parseRegistrationPayment and buildVerificationUpdate handle native columns
     isMissingColumnError({ code: "PGRST204", message: "Could not find the 'transaction_id' column" }),
     true,
   );
+});
+
+test("Bank Transfer is excluded and JazzCash/EasyPaisa numbers extract from description", () => {
+  assert.deepEqual(ALLOWED_METHODS, ["JazzCash", "EasyPaisa", "Cash"]);
+
+  const bankRejected = validateCompetitionPayment({
+    regFee: 250,
+    paymentMethod: "Bank Transfer",
+    transactionId: "FT123456",
+  });
+  assert.equal(bankRejected.valid, false);
+
+  const extracted = extractPaymentNumbersFromDescription(
+    "Eligibility: Metric, FSc, BS, Madrasa\nExpected Test Date But Could Change: 30 December 2026\nJazzcash: 03441667794\nEasypaisa: 03449746411",
+  );
+  assert.deepEqual(extracted, {
+    jazzcash: "03441667794",
+    easypaisa: "03449746411",
+  });
+
+  const customExtracted = extractPaymentNumbersFromDescription(
+    "JazzCash No: 0300-1122334 | EasyPaisa: 0345-5566778",
+  );
+  assert.deepEqual(customExtracted, {
+    jazzcash: "03001122334",
+    easypaisa: "03455566778",
+  });
 });

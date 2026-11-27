@@ -136,8 +136,9 @@
       .payment-fee-pill {
         padding: 5px 13px;
         border-radius: 999px;
-        background: var(--accent);
-        color: var(--accent-contrast);
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid var(--card-border-hover);
         font-size: 12px;
         font-weight: 700;
       }
@@ -472,7 +473,6 @@
                     <option value="">Select Payment Method</option>
                     <option value="JazzCash">JazzCash</option>
                     <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Cash">Cash</option>
                   </select>
                 </div>
@@ -484,7 +484,7 @@
                     placeholder="e.g. TID1234567890"
                   />
                   <small id="trxHint" class="trx-hint">
-                    Enter your JazzCash / EasyPaisa / Bank Transaction ID for admin verification.
+                    Enter your JazzCash / EasyPaisa Transaction ID for admin verification.
                   </small>
                 </div>
               </div>
@@ -557,12 +557,8 @@
       let currentComp = null;
       let successData = null;
       let paymentAccounts = {
-        jazzcash: "Contact SYDF Finance",
-        jazzcashTitle: "SYDF",
-        easypaisa: "Contact SYDF Finance",
-        easypaisaTitle: "SYDF",
-        bank: "Contact SYDF Finance",
-        bankTitle: "SYDF",
+        jazzcash: "03441667794",
+        easypaisa: "03449746411",
       };
 
       function showCompError(msg) {
@@ -574,30 +570,10 @@
         }
       }
 
-      async function loadPaymentAccounts() {
-        try {
-          const { data } = await supabaseClient
-            .from("settings")
-            .select("key, value");
-          if (!data) return;
-          const s = {};
-          data.forEach((d) => {
-            s[d.key] = d.value;
-          });
-          const defaultTitle = s.account_title || "SYDF";
-          if (s.jazzcash) paymentAccounts.jazzcash = s.jazzcash;
-          if (s.easypaisa) paymentAccounts.easypaisa = s.easypaisa;
-          if (s.bank_name && s.bank_account) {
-            paymentAccounts.bank = `${s.bank_name}: ${s.bank_account}`;
-          } else if (s.bank_account) {
-            paymentAccounts.bank = s.bank_account;
-          }
-          paymentAccounts.jazzcashTitle = s.jazzcash_title || defaultTitle;
-          paymentAccounts.easypaisaTitle = s.easypaisa_title || defaultTitle;
-          paymentAccounts.bankTitle = s.bank_title || defaultTitle;
-        } catch (err) {
-          console.log("Settings load skipped:", err);
-        }
+      function syncPaymentNumbersFromComp(comp) {
+        paymentAccounts = SYDFCompetition.extractPaymentNumbersFromDescription(
+          comp && comp.description,
+        );
       }
 
       function updatePaymentMethodUI() {
@@ -611,23 +587,17 @@
           : "Rs. 0";
 
         if (method === "JazzCash") {
-          hintEl.innerHTML = `<strong>JazzCash Account:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.jazzcash)} &nbsp;|&nbsp; <strong>Title:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.jazzcashTitle)}<br>Send <strong>${feeLabel}</strong> and enter the Transaction ID below.`;
+          hintEl.innerHTML = `<strong>JazzCash Number:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.jazzcash)}<br>Send <strong>${feeLabel}</strong> to this JazzCash number and enter the Transaction ID below.`;
           trxLabel.textContent = "Transaction ID / Trx Ref *";
           trxInput.required = true;
           trxInput.placeholder = "e.g. TID1234567890";
           trxHint.textContent = "Required: Enter your JazzCash Transaction ID for admin verification.";
         } else if (method === "EasyPaisa") {
-          hintEl.innerHTML = `<strong>EasyPaisa Account:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.easypaisa)} &nbsp;|&nbsp; <strong>Title:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.easypaisaTitle)}<br>Send <strong>${feeLabel}</strong> and enter the Transaction ID below.`;
+          hintEl.innerHTML = `<strong>EasyPaisa Number:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.easypaisa)}<br>Send <strong>${feeLabel}</strong> to this EasyPaisa number and enter the Transaction ID below.`;
           trxLabel.textContent = "Transaction ID / Trx Ref *";
           trxInput.required = true;
           trxInput.placeholder = "e.g. EP1234567890";
           trxHint.textContent = "Required: Enter your EasyPaisa Transaction ID for admin verification.";
-        } else if (method === "Bank Transfer") {
-          hintEl.innerHTML = `<strong>Bank Account:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.bank)} &nbsp;|&nbsp; <strong>Title:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.bankTitle)}<br>Transfer <strong>${feeLabel}</strong> and enter your bank reference / TID below.`;
-          trxLabel.textContent = "Transaction ID / Bank Reference *";
-          trxInput.required = true;
-          trxInput.placeholder = "e.g. FT250123456";
-          trxHint.textContent = "Required: Enter your bank reference / Transaction ID for admin verification.";
         } else if (method === "Cash") {
           hintEl.innerHTML = `<strong>Cash Payment Selected:</strong> Pay <strong>${feeLabel}</strong> directly at the SYDF office or authorized coordinator. You can leave the receipt field blank or enter a receipt/collector note. Admin will verify your payment.`;
           trxLabel.textContent = "Cash Receipt / Collector Note (Optional)";
@@ -635,13 +605,12 @@
           trxInput.placeholder = "e.g. Receipt #12 or Paid to Coordinator (Optional)";
           trxHint.textContent = "Optional for Cash payments — admin will verify your cash submission.";
         } else {
-          hintEl.textContent =
-            "Select a payment method below to view account details or Cash instructions.";
+          hintEl.innerHTML = `<strong>JazzCash:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.jazzcash)} &nbsp;|&nbsp; <strong>EasyPaisa:</strong> ${SYDFCompetition.escapeHtml(paymentAccounts.easypaisa)}<br>Select <strong>JazzCash</strong>, <strong>EasyPaisa</strong>, or <strong>Cash</strong> below to submit your fee proof.`;
           trxLabel.textContent = "Transaction ID / Trx Ref *";
           trxInput.required = SYDFCompetition.isPaidCompetition(currentComp);
           trxInput.placeholder = "e.g. TID1234567890";
           trxHint.textContent =
-            "Enter your Transaction ID for digital payments, or choose Cash if paying in person.";
+            "Enter your JazzCash / EasyPaisa Transaction ID, or choose Cash if paying in person.";
         }
       }
 
@@ -655,8 +624,6 @@
           attempts++;
         }
         if (!supabaseClient) return;
-
-        await loadPaymentAccounts();
 
         const urlParams = new URLSearchParams(window.location.search);
         const compId = urlParams.get("id");
@@ -733,6 +700,7 @@
         }
 
         currentComp = data;
+        syncPaymentNumbersFromComp(data);
         document.getElementById("formTitle").textContent =
           "Apply: " + data.title;
         document.getElementById("compId").value = data.id;
