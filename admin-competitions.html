@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
+    <script src="js/competition-utils.js"></script>
     <style>
       .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
       .modal-overlay.active { display: flex; }
@@ -40,9 +41,39 @@
       .btn-view { padding: 8px 15px; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
       .btn-close-comp { padding: 8px 15px; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
       .btn-del-comp { padding: 8px 15px; background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: Poppins; }
-      .applicants-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-      .applicants-table th { text-align: left; padding: 12px; color: #1abc9c; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-      .applicants-table td { padding: 12px; color: white; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .applicants-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+      .applicants-table th { text-align: left; padding: 12px 10px; color: var(--accent, #1abc9c); font-size: 12px; border-bottom: 1px solid var(--card-border, rgba(255,255,255,0.12)); }
+      .applicants-table td { padding: 12px 10px; color: var(--text-primary, white); font-size: 13px; border-bottom: 1px solid var(--card-border, rgba(255,255,255,0.06)); vertical-align: middle; }
+      .comp-desc-line { margin-top: 6px; font-size: 12px; opacity: 0.85; white-space: pre-line; max-width: 600px; }
+      .app-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+      .app-filter-bar input, .app-filter-bar select { padding: 9px 12px; border-radius: 10px; border: 1px solid var(--input-border, rgba(255,255,255,0.2)); background: var(--input-bg, rgba(255,255,255,0.08)); color: var(--text-primary, white); font-family: "Poppins", sans-serif; font-size: 12.5px; }
+      .app-filter-bar input { flex: 1; min-width: 200px; }
+      .app-summary-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 11.5px; font-weight: 600; }
+      .app-summary-pill { padding: 4px 10px; border-radius: 999px; background: var(--accent-soft, rgba(26,188,156,0.14)); border: 1px solid var(--card-border, rgba(255,255,255,0.15)); }
+      .pay-method-tag { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; background: rgba(59, 130, 246, 0.14); color: #2563eb; border: 1px solid rgba(59, 130, 246, 0.28); }
+      .pay-method-tag.cash { background: rgba(245, 158, 11, 0.14); color: #b45309; border-color: rgba(245, 158, 11, 0.3); }
+      .pay-method-tag.free { background: rgba(16, 185, 129, 0.14); color: #047857; border-color: rgba(16, 185, 129, 0.3); }
+      html[data-theme="dark"] .pay-method-tag { color: #93c5fd; }
+      html[data-theme="dark"] .pay-method-tag.cash { color: #fbbf24; }
+      html[data-theme="dark"] .pay-method-tag.free { color: #6ee7b7; }
+      .trx-code { display: block; margin-top: 4px; font-family: monospace; font-size: 12px; opacity: 0.9; }
+      .app-status-pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+      .app-status-pill.approved { background: rgba(16, 185, 129, 0.16); color: #047857; border: 1px solid rgba(16, 185, 129, 0.35); }
+      .app-status-pill.pending { background: rgba(245, 158, 11, 0.16); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.35); }
+      .app-status-pill.rejected { background: rgba(239, 68, 68, 0.16); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.35); }
+      html[data-theme="dark"] .app-status-pill.approved { color: #6ee7b7; }
+      html[data-theme="dark"] .app-status-pill.pending { color: #fbbf24; }
+      html[data-theme="dark"] .app-status-pill.rejected { color: #fca5a5; }
+      .verify-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+      .btn-verify-ok { padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.16); color: #047857; cursor: pointer; font-size: 11.5px; font-weight: 700; font-family: Poppins, sans-serif; }
+      .btn-verify-no { padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.16); color: #b91c1c; cursor: pointer; font-size: 11.5px; font-weight: 700; font-family: Poppins, sans-serif; }
+      html[data-theme="dark"] .btn-verify-ok { color: #6ee7b7; }
+      html[data-theme="dark"] .btn-verify-no { color: #fca5a5; }
+      .admin-inline-msg { display: none; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; font-weight: 600; }
+      .admin-inline-msg.ok { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #047857; }
+      .admin-inline-msg.err { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #b91c1c; }
+      html[data-theme="dark"] .admin-inline-msg.ok { color: #6ee7b7; }
+      html[data-theme="dark"] .admin-inline-msg.err { color: #fca5a5; }
     </style>
   </head>
   <body class="dashboard-body">
@@ -116,18 +147,21 @@
           </button>
         </div>
 
+        <div id="adminCompNotice" class="admin-inline-msg"></div>
+
         <div id="competitionsList">
           <p style="color: white; opacity: 0.7; text-align: center; padding: 40px;">Loading competitions...</p>
         </div>
       </div>
     </main>
 
-    <!-- CREATE COMPETITION MODAL -->
+    <!-- CREATE / EDIT COMPETITION MODAL -->
     <div class="modal-overlay" id="compModal">
       <div class="modal-box">
         <button class="modal-close" onclick="document.getElementById('compModal').classList.remove('active')">✕</button>
-        <h2>🏆 Create Competition</h2>
+        <h2 id="compModalTitle">🏆 Create Competition</h2>
         <form id="compForm">
+          <input type="hidden" id="editCompId" value="" />
           <div class="form-group">
             <label>Competition Title *</label>
             <input type="text" id="compTitle" required placeholder="e.g. All Swat Schools Quiz 2025" />
@@ -176,21 +210,32 @@
       </div>
     </div>
 
-    <!-- VIEW APPLICANTS MODAL -->
+    <!-- VIEW APPLICANTS & VERIFY PAYMENTS MODAL -->
     <div class="modal-overlay" id="viewModal">
-      <div class="modal-box" style="max-width: 900px;">
+      <div class="modal-box" style="max-width: 980px;">
         <button class="modal-close" onclick="document.getElementById('viewModal').classList.remove('active')">✕</button>
         <h2 id="viewTitle">Applicants</h2>
-        <div style="max-height: 60vh; overflow: auto;">
+        <div id="modalNotice" class="admin-inline-msg"></div>
+        <div class="app-summary-pills" id="appSummaryPills"></div>
+        <div class="app-filter-bar">
+          <input type="text" id="appSearch" placeholder="Search by Roll No, Name, Contact, or Transaction ID..." />
+          <select id="appStatusFilter">
+            <option value="All">All Status</option>
+            <option value="Pending">Pending Verification</option>
+            <option value="Approved">Verified / Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <div style="max-height: 56vh; overflow: auto;">
           <table class="applicants-table">
             <thead>
               <tr>
                 <th>Roll No</th>
-                <th>Name</th>
-                <th>Father</th>
-                <th>School/Class</th>
-                <th>Contact</th>
+                <th>Applicant</th>
+                <th>School / Contact</th>
+                <th>Payment Proof</th>
                 <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="applicantsBody">
@@ -204,6 +249,25 @@
     <script src="js/main.js"></script>
     <script>
       let allCompetitions = [];
+      let currentApplicants = [];
+      let currentViewingCompId = null;
+
+      function notifyAdmin(msg, isError = false, targetId = "adminCompNotice") {
+        if (!isError && typeof window.syfSuccess === "function") {
+          window.syfSuccess(msg);
+        } else if (isError && typeof window.syfError === "function") {
+          window.syfError(msg);
+        }
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.textContent = msg;
+          el.className = "admin-inline-msg " + (isError ? "err" : "ok");
+          el.style.display = "block";
+          setTimeout(() => {
+            el.style.display = "none";
+          }, 4000);
+        }
+      }
 
       window.addEventListener("load", async function () {
         let attempts = 0;
@@ -220,58 +284,77 @@
 
         document.getElementById("addCompBtn").addEventListener("click", () => {
           document.getElementById("compForm").reset();
+          document.getElementById("editCompId").value = "";
+          document.getElementById("compModalTitle").textContent = "🏆 Create Competition";
+          document.getElementById("btnSaveComp").textContent = "🚀 Publish Competition";
           document.getElementById("compModal").classList.add("active");
         });
+
+        document.getElementById("appSearch").addEventListener("input", renderApplicantsTable);
+        document.getElementById("appStatusFilter").addEventListener("change", renderApplicantsTable);
 
         document.getElementById("compForm").addEventListener("submit", async function (e) {
           e.preventDefault();
           const btn = document.getElementById("btnSaveComp");
-          btn.disabled = true; btn.textContent = "Publishing...";
+          const editId = document.getElementById("editCompId").value;
+          btn.disabled = true;
+          btn.textContent = editId ? "Saving..." : "Publishing...";
 
-          let bookUrl = null;
+          let existingComp = editId
+            ? allCompetitions.find((x) => String(x.id) === String(editId))
+            : null;
+          let bookUrl = existingComp ? existingComp.book_url : null;
           const fileInput = document.getElementById("compBook");
 
-          // Upload Book if selected
           if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
             const fileName = `book_${Date.now()}.pdf`;
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
-              .from('competition-books')
+            const { error: uploadError } = await supabaseClient.storage
+              .from("competition-books")
               .upload(fileName, file);
 
             if (uploadError) {
-              btn.disabled = false; btn.textContent = "🚀 Publish Competition";
-              return alert("❌ Book Upload Failed: " + uploadError.message);
+              btn.disabled = false;
+              btn.textContent = editId ? "💾 Save Changes" : "🚀 Publish Competition";
+              return notifyAdmin("❌ Book Upload Failed: " + uploadError.message, true);
             }
 
-            const { data: urlData } = supabaseClient.storage.from('competition-books').getPublicUrl(fileName);
+            const { data: urlData } = supabaseClient.storage
+              .from("competition-books")
+              .getPublicUrl(fileName);
             bookUrl = urlData.publicUrl;
           }
 
-          const newComp = {
-            title: document.getElementById("compTitle").value,
+          const compPayload = {
+            title: document.getElementById("compTitle").value.trim(),
             category: document.getElementById("compCategory").value,
             reg_fee: document.getElementById("compFee").value,
             event_date: document.getElementById("compDate").value,
             status: document.getElementById("compStatus").value,
-            description: document.getElementById("compDesc").value,
-            book_url: bookUrl
+            description: document.getElementById("compDesc").value.trim(),
+            book_url: bookUrl,
           };
 
-          const { error } = await supabaseClient.from("competitions").insert([newComp]);
-          
-          btn.disabled = false; btn.textContent = "🚀 Publish Competition";
+          const { error } = editId
+            ? await supabaseClient.from("competitions").update(compPayload).eq("id", editId)
+            : await supabaseClient.from("competitions").insert([compPayload]);
 
-          if (error) return alert("❌ " + error.message);
+          btn.disabled = false;
+          btn.textContent = editId ? "💾 Save Changes" : "🚀 Publish Competition";
 
-          alert("✅ Competition Created Successfully!");
+          if (error) return notifyAdmin("❌ " + error.message, true);
+
+          notifyAdmin(editId ? "✅ Competition Updated!" : "✅ Competition Created Successfully!");
           document.getElementById("compModal").classList.remove("active");
           await loadCompetitions();
         });
       });
 
       async function loadCompetitions() {
-        const { data, error } = await supabaseClient.from("competitions").select("*").order("created_at", { ascending: false });
+        const { data, error } = await supabaseClient
+          .from("competitions")
+          .select("*")
+          .order("created_at", { ascending: false });
         if (error) return console.error(error);
         allCompetitions = data || [];
         renderCompetitions();
@@ -280,80 +363,237 @@
       function renderCompetitions() {
         const container = document.getElementById("competitionsList");
         if (allCompetitions.length === 0) {
-          container.innerHTML = '<p style="color: white; opacity: 0.7; text-align: center; padding: 40px;">No competitions created yet.</p>';
+          container.innerHTML =
+            '<p style="color: white; opacity: 0.7; text-align: center; padding: 40px;">No competitions created yet.</p>';
           return;
         }
 
-        container.innerHTML = allCompetitions.map(c => {
-          let catClass = "badge-public";
-          if (c.category === "School") catClass = "badge-school";
-          if (c.category === "Madrasa") catClass = "badge-madrasa";
+        container.innerHTML = allCompetitions
+          .map((c) => {
+            let catClass = "badge-public";
+            if (c.category === "School") catClass = "badge-school";
+            if (c.category === "Madrasa") catClass = "badge-madrasa";
 
-          let statusClass = c.status === "Open" ? "badge-open" : "badge-closed";
+            const statusClass = c.status === "Open" ? "badge-open" : "badge-closed";
+            const feeText = SYDFCompetition.formatFeeLabel(c.reg_fee);
+            const descHtml = c.description && c.description.trim()
+              ? `<p class="comp-desc-line">${SYDFCompetition.escapeHtml(c.description.trim())}</p>`
+              : "";
 
-          return `
-            <div class="comp-card">
-              <div class="comp-info">
-                <h3>${c.title}</h3>
-                <p>📅 Event Date: ${c.event_date ? new Date(c.event_date).toLocaleDateString() : "TBA"}</p>
-                <p>💰 Fee: Rs. ${c.reg_fee}</p>
-                <div>
-                  <span class="comp-badge ${catClass}">${c.category}</span>
-                  <span class="comp-badge ${statusClass}">${c.status}</span>
+            return `
+              <div class="comp-card">
+                <div class="comp-info">
+                  <h3>${SYDFCompetition.escapeHtml(c.title)}</h3>
+                  <p>📅 Event Date: ${c.event_date ? new Date(c.event_date).toLocaleDateString() : "TBA"}</p>
+                  <p>💰 Fee: ${feeText}</p>
+                  ${descHtml}
+                  <div>
+                    <span class="comp-badge ${catClass}">${SYDFCompetition.escapeHtml(c.category)}</span>
+                    <span class="comp-badge ${statusClass}">${SYDFCompetition.escapeHtml(c.status)}</span>
+                  </div>
+                </div>
+                <div class="comp-actions">
+                  <button class="btn-view" onclick="viewApplicants(${c.id}, '${SYDFCompetition.escapeHtml(c.title).replace(/'/g, "\\'")}')">👁️ Applicants &amp; Verify</button>
+                  <button class="btn-view" onclick="editComp(${c.id})">✏️ Edit</button>
+                  <button class="btn-close-comp" onclick="toggleCompStatus(${c.id}, '${c.status}')">${c.status === "Open" ? "🔒 Close" : "🔓 Open"}</button>
+                  <button class="btn-del-comp" onclick="deleteComp(${c.id})">🗑️</button>
                 </div>
               </div>
-              <div class="comp-actions">
-                <button class="btn-view" onclick="viewApplicants(${c.id}, '${c.title.replace(/'/g, "\\'")}')">👁️ Applicants</button>
-                <button class="btn-close-comp" onclick="toggleCompStatus(${c.id}, '${c.status}')">${c.status === "Open" ? "🔒 Close" : "🔓 Open"}</button>
-                <button class="btn-del-comp" onclick="deleteComp(${c.id})">🗑️</button>
-              </div>
-            </div>
-          `;
-        }).join("");
+            `;
+          })
+          .join("");
       }
 
-      window.toggleCompStatus = async function(id, currentStatus) {
+      window.editComp = function (id) {
+        const c = allCompetitions.find((x) => String(x.id) === String(id));
+        if (!c) return;
+        document.getElementById("editCompId").value = c.id;
+        document.getElementById("compTitle").value = c.title || "";
+        document.getElementById("compCategory").value = c.category || "School";
+        document.getElementById("compFee").value = c.reg_fee != null ? c.reg_fee : 0;
+        document.getElementById("compDate").value = c.event_date ? String(c.event_date).split("T")[0] : "";
+        document.getElementById("compStatus").value = c.status || "Open";
+        document.getElementById("compDesc").value = c.description || "";
+        document.getElementById("compBook").value = "";
+        document.getElementById("compModalTitle").textContent = "✏️ Edit Competition";
+        document.getElementById("btnSaveComp").textContent = "💾 Save Changes";
+        document.getElementById("compModal").classList.add("active");
+      };
+
+      window.toggleCompStatus = async function (id, currentStatus) {
         const newStatus = currentStatus === "Open" ? "Closed" : "Open";
-        const { error } = await supabaseClient.from("competitions").update({ status: newStatus }).eq("id", id);
-        if (error) return alert("❌ " + error.message);
+        const { error } = await supabaseClient
+          .from("competitions")
+          .update({ status: newStatus })
+          .eq("id", id);
+        if (error) return notifyAdmin("❌ " + error.message, true);
         await loadCompetitions();
       };
 
-      window.deleteComp = async function(id) {
+      window.deleteComp = async function (id) {
         if (!confirm("Are you sure you want to delete this competition? All registrations will be lost!")) return;
         const { error } = await supabaseClient.from("competitions").delete().eq("id", id);
-        if (error) return alert("❌ " + error.message);
+        if (error) return notifyAdmin("❌ " + error.message, true);
+        notifyAdmin("🗑️ Competition deleted.");
         await loadCompetitions();
       };
 
-      window.viewApplicants = async function(compId, compTitle) {
+      window.viewApplicants = async function (compId, compTitle) {
+        currentViewingCompId = compId;
         document.getElementById("viewTitle").textContent = `Applicants - ${compTitle}`;
+        document.getElementById("appSearch").value = "";
+        document.getElementById("appStatusFilter").value = "All";
         const tbody = document.getElementById("applicantsBody");
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading...</td></tr>';
         document.getElementById("viewModal").classList.add("active");
 
-        const { data, error } = await supabaseClient.from("competition_registrations").select("*").eq("competition_id", compId).order("created_at", { ascending: false });
-        
+        const { data, error } = await supabaseClient
+          .from("competition_registrations")
+          .select("*")
+          .eq("competition_id", compId)
+          .order("created_at", { ascending: false });
+
         if (error) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">Error: ${error.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">Error: ${SYDFCompetition.escapeHtml(error.message)}</td></tr>`;
           return;
         }
 
-        if (!data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No one has applied yet.</td></tr>';
+        currentApplicants = data || [];
+        renderApplicantsTable();
+      };
+
+      function renderApplicantsTable() {
+        const tbody = document.getElementById("applicantsBody");
+        const pillsEl = document.getElementById("appSummaryPills");
+        const q = (document.getElementById("appSearch").value || "").trim().toLowerCase();
+        const statusFilter = document.getElementById("appStatusFilter").value;
+
+        let pendingCount = 0;
+        let approvedCount = 0;
+        currentApplicants.forEach((r) => {
+          const parsed = SYDFCompetition.parseRegistrationPayment(r);
+          if (parsed.status === "Pending") pendingCount++;
+          if (parsed.status === "Approved") approvedCount++;
+        });
+
+        pillsEl.innerHTML = `
+          <span class="app-summary-pill">Total: ${currentApplicants.length}</span>
+          <span class="app-summary-pill">⏳ Pending: ${pendingCount}</span>
+          <span class="app-summary-pill">✅ Verified: ${approvedCount}</span>
+        `;
+
+        const filtered = currentApplicants.filter((r) => {
+          const parsed = SYDFCompetition.parseRegistrationPayment(r);
+          if (statusFilter !== "All" && parsed.status !== statusFilter) return false;
+          if (!q) return true;
+          const haystack = [
+            r.roll_no,
+            r.full_name,
+            r.father_name,
+            r.contact,
+            parsed.method,
+            parsed.transactionId,
+          ]
+            .join(" ")
+            .toLowerCase();
+          return haystack.includes(q);
+        });
+
+        if (filtered.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="text-align: center; opacity: 0.75;">No matching applicants found.</td></tr>';
           return;
         }
 
-        tbody.innerHTML = data.map(r => `
-          <tr>
-            <td style="font-family: monospace; color: #93c5fd;">${r.roll_no}</td>
-            <td>${r.full_name}</td>
-            <td>${r.father_name || "-"}</td>
-            <td>${r.school_name || "-"} <br><small>${r.class_grade || ""}</small></td>
-            <td>${r.contact}</td>
-            <td>${r.status}</td>
-          </tr>
-        `).join("");
+        tbody.innerHTML = filtered
+          .map((r) => {
+            const p = SYDFCompetition.parseRegistrationPayment(r);
+            const methodLower = p.method.toLowerCase();
+            const methodCls =
+              methodLower === "cash"
+                ? "cash"
+                : methodLower.startsWith("free")
+                  ? "free"
+                  : "";
+            const statusCls =
+              p.status === "Approved"
+                ? "approved"
+                : p.status === "Rejected"
+                  ? "rejected"
+                  : "pending";
+            const statusLabel =
+              p.status === "Approved"
+                ? "✅ Verified"
+                : p.status === "Rejected"
+                  ? "❌ Rejected"
+                  : "⏳ Pending";
+
+            return `
+              <tr>
+                <td style="font-family: monospace; font-weight: 700;">${SYDFCompetition.escapeHtml(r.roll_no)}</td>
+                <td>
+                  <strong>${SYDFCompetition.escapeHtml(r.full_name)}</strong>
+                  <br><small style="opacity:0.75;">S/D/O: ${SYDFCompetition.escapeHtml(r.father_name || "-")}</small>
+                </td>
+                <td>
+                  ${SYDFCompetition.escapeHtml(r.school_name || r.city || "-")}
+                  ${r.class_grade ? `<small> (${SYDFCompetition.escapeHtml(r.class_grade)})</small>` : ""}
+                  <br><small style="opacity:0.8;">📞 ${SYDFCompetition.escapeHtml(r.contact || "-")}</small>
+                </td>
+                <td>
+                  <span class="pay-method-tag ${methodCls}">${SYDFCompetition.escapeHtml(p.method)}</span>
+                  ${p.transactionId !== "-" ? `<span class="trx-code">Trx: ${SYDFCompetition.escapeHtml(p.transactionId)}</span>` : ""}
+                </td>
+                <td>
+                  <span class="app-status-pill ${statusCls}">${statusLabel}</span>
+                </td>
+                <td>
+                  <div class="verify-actions">
+                    ${p.status !== "Approved" ? `<button class="btn-verify-ok" onclick="verifyApplicant('${r.id}', 'Approved')">✅ Verify</button>` : ""}
+                    ${p.status !== "Rejected" ? `<button class="btn-verify-no" onclick="verifyApplicant('${r.id}', 'Rejected')">❌ Reject</button>` : ""}
+                  </div>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      window.verifyApplicant = async function (regId, targetStatus) {
+        const reg = currentApplicants.find((r) => String(r.id) === String(regId));
+        if (!reg) return;
+
+        const { fullUpdate, fallbackUpdate } = SYDFCompetition.buildVerificationUpdate(reg, targetStatus);
+
+        let result = await supabaseClient
+          .from("competition_registrations")
+          .update(fullUpdate)
+          .eq("id", regId);
+
+        if (result.error && SYDFCompetition.isMissingColumnError(result.error)) {
+          result = await supabaseClient
+            .from("competition_registrations")
+            .update(fallbackUpdate)
+            .eq("id", regId);
+        }
+
+        if (result.error) {
+          notifyAdmin("❌ Failed: " + result.error.message, true, "modalNotice");
+          return;
+        }
+
+        Object.assign(reg, fullUpdate);
+        if (reg.encodedInStatus || (reg.status && reg.status.includes("|"))) {
+          reg.status = fallbackUpdate.status;
+        }
+        renderApplicantsTable();
+        notifyAdmin(
+          targetStatus === "Approved"
+            ? "✅ Payment verified & applicant approved!"
+            : "❌ Application rejected.",
+          false,
+          "modalNotice",
+        );
       };
     </script>
   </body>

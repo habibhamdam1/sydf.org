@@ -237,16 +237,17 @@ html:not([data-theme="dark"]) .dashboard-content .content-card,
 html:not([data-theme="dark"]) .dashboard-content .score-card,
 html:not([data-theme="dark"]) .dashboard-content .dash-stat-card,
 html:not([data-theme="dark"]) .dashboard-content .stat-box,
-html:not([data-theme="dark"]) .dashboard-content .summary-card {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(255, 241, 242, 0.72)
-  ) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important;
+html:not([data-theme="dark"]) .dashboard-content .summary-card,
+html:not([data-theme="dark"]) .dashboard-content .stat-mini-card,
+html:not([data-theme="dark"]) .dashboard-content .overview-card,
+html:not([data-theme="dark"]) .dashboard-content .settings-card,
+html:not([data-theme="dark"]) .dashboard-content .profile-hero,
+html:not([data-theme="dark"]) .dashboard-content .profile-form-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
 }
 html:not([data-theme="dark"]) .dashboard-content .badge-role {
   background: rgba(225, 29, 72, 0.1) !important;
@@ -261,7 +262,7 @@ html:not([data-theme="dark"]) .dashboard-content select,
 html:not([data-theme="dark"]) .dashboard-content textarea {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.72) !important;
   opacity: 1 !important;
 }
 
@@ -289,15 +290,15 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
   z-index: 90 !important;
   background: var(--header-bg) !important;
   border-bottom-color: var(--card-border) !important;
-  backdrop-filter: blur(20px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
 .dashboard-sidebar {
   background: var(--header-bg) !important;
   border-right-color: var(--card-border) !important;
-  backdrop-filter: blur(20px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   z-index: 100 !important;
   overflow: hidden !important;
   display: flex !important;
@@ -447,10 +448,14 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
   }
 
   html[data-theme="dark"] .glass-header nav.active {
-    background-color: #0a1d33 !important;
+    background: rgba(6, 17, 32, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
   }
   html:not([data-theme="dark"]) .glass-header nav.active {
-    background-color: #fff1f2 !important;
+    background: rgba(255, 245, 248, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
   }
 
   .glass-header nav.active ul {
@@ -467,7 +472,7 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
     display: block !important;
     text-align: center !important;
     padding: 15px 20px !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
     font-size: 15px !important;
     font-weight: 600 !important;
     width: 100% !important;
@@ -479,7 +484,8 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
   .glass-header nav ul li a:hover,
   .glass-header nav ul li a.active {
     background: var(--accent) !important;
-    color: #ffffff !important;
+    color: var(--accent-contrast) !important;
+    -webkit-text-fill-color: var(--accent-contrast) !important;
     border-color: var(--accent) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px var(--accent-glow);
@@ -492,9 +498,27 @@ html:not([data-theme="dark"]) .dashboard-content textarea {
       var(--accent),
       var(--accent-dark)
     ) !important;
-    color: #ffffff !important;
+    color: var(--accent-contrast) !important;
+    -webkit-text-fill-color: var(--accent-contrast) !important;
     border: none !important;
     box-shadow: 0 4px 15px var(--accent-glow) !important;
+  }
+}
+
+/* Ensure member dashboard stats-grid spans full width inside flex column */
+.dashboard-content .stats-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Keep 4-card stats symmetric 2x2 on tablet / mobile-desktop */
+@media (min-width: 560px) and (max-width: 1120px) {
+  .dashboard-content .stats-row,
+  .dashboard-content .stats-grid,
+  .stats-section .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
@@ -810,20 +834,24 @@ html:not([data-theme="dark"]) .stat-card,
 html:not([data-theme="dark"]) .tehsil-card,
 html:not([data-theme="dark"]) .info-row,
 html:not([data-theme="dark"]) .cta-card {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(225, 29, 72, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(225, 29, 72, 0.08) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
 }
 html[data-theme="dark"] .district-header-card,
 html[data-theme="dark"] .tehsil-header-card,
 html[data-theme="dark"] .section-card,
 html[data-theme="dark"] .stat-card,
 html[data-theme="dark"] .tehsil-card,
-html[data-theme="dark"] .info-row {
-  background: rgba(12, 24, 42, 0.55) !important;
-  border: 1px solid rgba(140, 200, 220, 0.15) !important;
+html[data-theme="dark"] .info-row,
+html[data-theme="dark"] .cta-card {
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
 }
 html:not([data-theme="dark"]) .district-header-card h1,
 html:not([data-theme="dark"]) .tehsil-header-card h1,
@@ -846,15 +874,12 @@ html:not([data-theme="dark"]) .breadcrumb {
   color: var(--text-secondary) !important;
   -webkit-text-fill-color: var(--text-secondary) !important;
 }
-html:not([data-theme="dark"]) .district-card {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(225, 29, 72, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-}
-html[data-theme="dark"] .district-card {
-  background: rgba(12, 24, 42, 0.55) !important;
-  border: 1px solid rgba(140, 200, 220, 0.15) !important;
+.district-card {
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
 }
 html:not([data-theme="dark"]) .district-card .district-header h3,
 html:not([data-theme="dark"]) .district-card .district-footer p {
@@ -964,59 +989,129 @@ html:not([data-theme="dark"]) .dashboard-content .cert-role {
   border: 1px solid rgba(184, 148, 74, 0.3) !important;
 }
 
-/* 17. GLASSMORPHISM MISC */
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.9);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
-  --glass-blur: blur(16px) saturate(150%);
+/* 17. LIGHTWEIGHT FAST GLASSMORPHISM SYSTEM */
+:root,
+html {
+  --glass-bg: rgba(255, 255, 255, 0.54);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.78);
+  --glass-shadow: 0 8px 24px rgba(136, 19, 55, 0.1);
+  --glass-blur: blur(8px);
 }
 html[data-theme="dark"] {
-  --glass-bg: rgba(15, 32, 39, 0.65);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(14, 34, 58, 0.52);
+  --glass-border: 1px solid rgba(186, 230, 253, 0.18);
+  --glass-shadow: 0 8px 26px rgba(0, 0, 0, 0.38);
 }
-.glass-card,
-.content-card,
-.dash-stat-card,
-.admin-list-item,
-.filter-bar,
-.modal-box,
-.profile-form-card,
-.cert-info-bar,
-.data-table,
-.table-card,
-.glass-header,
-.filters-bar {
+@media (max-width: 900px) {
+  :root,
+  html,
+  html[data-theme="dark"] {
+    --glass-blur: blur(6px);
+  }
+}
+
+body:not(.admin-login-body):not(.verify-body) .glass-card,
+body:not(.admin-login-body):not(.verify-body) .hero-content,
+body:not(.admin-login-body):not(.verify-body) .about-content,
+body:not(.admin-login-body):not(.verify-body) .cta-content,
+body:not(.admin-login-body):not(.verify-body) .page-hero-content,
+body:not(.admin-login-body):not(.verify-body) .glass-block,
+body:not(.admin-login-body):not(.verify-body) .content-card,
+body:not(.admin-login-body):not(.verify-body) .dash-stat-card,
+body:not(.admin-login-body):not(.verify-body) .welcome-hero,
+body:not(.admin-login-body):not(.verify-body) .score-card,
+body:not(.admin-login-body):not(.verify-body) .stat-mini-card,
+body:not(.admin-login-body):not(.verify-body) .overview-card,
+body:not(.admin-login-body):not(.verify-body) .stat-box,
+body:not(.admin-login-body):not(.verify-body) .summary-card,
+body:not(.admin-login-body):not(.verify-body) .settings-card,
+body:not(.admin-login-body):not(.verify-body) .profile-hero,
+body:not(.admin-login-body):not(.verify-body) .profile-form-card,
+body:not(.admin-login-body):not(.verify-body) .admin-list-item,
+body:not(.admin-login-body):not(.verify-body) .filter-bar,
+body:not(.admin-login-body):not(.verify-body) .filters-bar,
+body:not(.admin-login-body):not(.verify-body) .table-card,
+body:not(.admin-login-body):not(.verify-body) .form-card,
+body:not(.admin-login-body):not(.verify-body) .comp-card,
+body:not(.admin-login-body):not(.verify-body) .event-card,
+body:not(.admin-login-body):not(.verify-body) .news-card,
+body:not(.admin-login-body):not(.verify-body) .story-card,
+body:not(.admin-login-body):not(.verify-body) .faq-item,
+body:not(.admin-login-body):not(.verify-body) .committee-section,
+body:not(.admin-login-body):not(.verify-body) .committee-card,
+body:not(.admin-login-body):not(.verify-body) .partner-card,
+body:not(.admin-login-body):not(.verify-body) .member-card,
+body:not(.admin-login-body):not(.verify-body) .package-card,
+body:not(.admin-login-body):not(.verify-body) .type-option,
+body:not(.admin-login-body):not(.verify-body) .detail-card,
+body:not(.admin-login-body):not(.verify-body) .article-card,
+body:not(.admin-login-body):not(.verify-body) .related-card,
+body:not(.admin-login-body):not(.verify-body) .notfound-card,
+body:not(.admin-login-body):not(.verify-body) .profile-card,
+body:not(.admin-login-body):not(.verify-body) .error-content,
+body:not(.admin-login-body):not(.verify-body) .map-placeholder,
+body:not(.admin-login-body):not(.verify-body) .portal-card,
+body:not(.admin-login-body):not(.verify-body) .application-card,
+body:not(.admin-login-body):not(.verify-body) .cabinet-position-card,
+body:not(.admin-login-body):not(.verify-body) .archive-card,
+body:not(.admin-login-body):not(.verify-body) .doc-card,
+body:not(.admin-login-body):not(.verify-body) .sponsor-card,
+body:not(.admin-login-body):not(.verify-body) .auth-welcome,
+body:not(.admin-login-body):not(.verify-body) .auth-form-block,
+body:not(.admin-login-body):not(.verify-body) .cert-info-bar {
   background: var(--glass-bg) !important;
   backdrop-filter: var(--glass-blur) !important;
   -webkit-backdrop-filter: var(--glass-blur) !important;
   border: var(--glass-border) !important;
   box-shadow: var(--glass-shadow) !important;
-  transform: translateZ(0) !important;
-  -webkit-transform: translateZ(0) !important;
-  will-change: backdrop-filter;
 }
+
+.glass-header,
 .dashboard-sidebar,
 .dashboard-topbar {
-  background: var(--glass-bg) !important;
-  backdrop-filter: var(--glass-blur) !important;
-  -webkit-backdrop-filter: var(--glass-blur) !important;
-  border: var(--glass-border) !important;
-  box-shadow: var(--glass-shadow) !important;
+  background: var(--header-bg) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-color: var(--header-border) !important;
 }
+.glass-footer {
+  background: var(--footer-bg) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-top: 1px solid var(--footer-border) !important;
+}
+.modal-box {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 16px 40px rgba(76, 5, 25, 0.16) !important;
+}
+html[data-theme="dark"] .modal-box {
+  background: rgba(10, 24, 46, 0.88) !important;
+  border: 1px solid rgba(186, 230, 253, 0.22) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Prevent Chromium nested backdrop-filter compositing cancellation */
+.table-card .data-table,
 .table-card .data-table tbody tr,
+.glass-block .mini-stat,
+.glass-block .activity-card,
+.glass-card .glass-card,
+.content-card .content-card,
 .admin-list-item .admin-item-avatar,
 .cert-container,
 .certificate {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
 .data-table thead {
-  background: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 242, 246, 0.72) !important;
 }
 html[data-theme="dark"] .data-table thead {
-  background: rgba(15, 32, 39, 0.9) !important;
+  background: rgba(12, 28, 50, 0.78) !important;
 }
 
 /* 18. FLOATING STARS */
@@ -1136,46 +1231,9 @@ html:not([data-theme="dark"]) body::after {
 }
 body::before,
 body::after {
-  inset: -50% !important;
-  will-change: transform, opacity !important;
-}
-@keyframes floatStarsDownGPU {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-400px, 400px, 0);
-  }
-}
-@keyframes floatStarsUpGPU {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(800px, -800px, 0);
-  }
-}
-body::before {
-  animation:
-    twinkleStarsFast 4.5s ease-in-out infinite,
-    floatStarsDownGPU 90s linear infinite !important;
-}
-body::after {
-  animation:
-    twinkleStarsSlow 8s ease-in-out infinite,
-    floatStarsUpGPU 130s linear infinite !important;
-}
-@media (max-width: 768px) {
-  body::before {
-    animation:
-      twinkleStarsFast 6s ease-in-out infinite,
-      floatStarsDownGPU 120s linear infinite !important;
-  }
-  body::after {
-    animation:
-      twinkleStarsSlow 10s ease-in-out infinite,
-      floatStarsUpGPU 180s linear infinite !important;
-  }
+  inset: 0 !important;
+  will-change: auto !important;
+  animation: none !important;
 }
 /* ============================================================
    MOBILE / WEBVIEW SCROLLING FIXES
@@ -1332,8 +1390,11 @@ html:not([data-theme="dark"]) .dashboard-content .doc-card,
 html:not([data-theme="dark"]) .dashboard-content .info-banner,
 html:not([data-theme="dark"]) .dashboard-content .sponsor-card,
 html:not([data-theme="dark"]) .dashboard-content .quick-action {
-  background: rgba(255, 255, 255, 0.72) !important;
-  border-color: var(--card-border) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
 }
 html:not([data-theme="dark"]) .dashboard-content .fbtn-reset,
 html:not([data-theme="dark"]) .dashboard-content .btn-del-comp,
@@ -1342,7 +1403,7 @@ html:not([data-theme="dark"]) .dashboard-content .profile-tab:not(.active),
 html:not([data-theme="dark"]) .dashboard-content .menu-tab:not(.active),
 html:not([data-theme="dark"]) .dashboard-content .bin-tab:not(.active),
 html:not([data-theme="dark"]) .dashboard-content .btn-icon {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
   border: 1px solid var(--card-border) !important;
@@ -1375,7 +1436,7 @@ html:not([data-theme="dark"]) .dashboard-content textarea,
 html:not([data-theme="dark"]) .filter-bar input,
 html:not([data-theme="dark"]) .filter-bar select {
   color-scheme: light !important;
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.72) !important;
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
   border-color: var(--input-border) !important;
@@ -1394,10 +1455,12 @@ html:not([data-theme="dark"]) .dashboard-content .id-card .sidebar-id-block .lbl
 
 /* 2. MODALS RESCUE IN LIGHT MODE (.modal-box sits outside .dashboard-content) */
 html:not([data-theme="dark"]) .modal-box {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border: 1px solid var(--card-border-hover) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
   color: var(--text-primary) !important;
-  box-shadow: 0 25px 60px rgba(76, 5, 25, 0.18) !important;
+  box-shadow: 0 16px 40px rgba(76, 5, 25, 0.16) !important;
 }
 html:not([data-theme="dark"]) .modal-box h1,
 html:not([data-theme="dark"]) .modal-box h2,
@@ -1472,9 +1535,11 @@ html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .pro
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .error-content,
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .map-placeholder,
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .portal-card {
-  background: rgba(255, 255, 255, 0.72) !important;
-  border-color: var(--card-border) !important;
-  box-shadow: var(--card-shadow) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
 }
 
 html:not([data-theme="dark"]) .glass-card h1,
@@ -1585,7 +1650,7 @@ html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .for
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group select,
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .form-group textarea {
   color-scheme: light !important;
-  background: #ffffff !important;
+  background: rgba(255, 255, 255, 0.72) !important;
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
   border-color: var(--input-border) !important;
@@ -1600,7 +1665,9 @@ html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .err
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-secondary,
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .btn-outline,
 html:not([data-theme="dark"]) body:not(.admin-login-body):not(.verify-body) .share-btn {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  backdrop-filter: blur(12px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
   border: 1px solid var(--card-border-hover) !important;
 }
 
@@ -1641,4 +1708,23 @@ html:not([data-theme="dark"]) .auth-section .btn-primary,
 html:not([data-theme="dark"]) .auth-section .btn-primary * {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
+}
+.auth-welcome .welcome-logo {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  border-color: var(--card-border-hover) !important;
+}
+.auth-form-block h2 {
+  color: var(--accent) !important;
+}
+.auth-section .btn-primary,
+.auth-section .btn-primary.btn-full {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
+  box-shadow: 0 8px 22px var(--accent-glow) !important;
+}
+.page-hero-content h1,
+.intro-block h2,
+.mini-stat .num {
+  color: var(--accent) !important;
 }
